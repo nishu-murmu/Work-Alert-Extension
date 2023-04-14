@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { truncate } from '../../../util'
+import { timeRange, truncate } from '../../../util'
 import { jobsProps } from '../../../util/types'
 
 const WorkCard = (props: any) => {
@@ -10,7 +10,7 @@ const WorkCard = (props: any) => {
       {props.props.props.jobs.map((item: jobsProps) => (
         <div className="text-green-500 bg-custom-bg  rounded-md p-5 h-auto">
           <div className="flex text-lg justify-between px-2 w-full text-gray-500">
-            <div>{JSON.stringify(item.date)}Hours Ago</div>
+            <div>{item.date && timeRange(item.date.toString())} Hours Ago</div>
             <div>{item.budget}</div>
           </div>
           <div className="text-white text-2xl pt-4 pl-4 font-extrabold">{item.title}</div>

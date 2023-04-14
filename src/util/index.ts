@@ -78,3 +78,8 @@ export const truncate = (string: string) => {
   const decodedText = handleHTMLcoding(string)
   return decodedText.length > 190 ? decodedText.substring(0, 190) + ' ...' : decodedText
 }
+
+export const timeRange = (time: string) => {
+  const range: number = Date.now() - Number(new Date(time))
+  return (range / Number(60 * 60 * 1000)).toFixed(0)
+}
