@@ -1,10 +1,13 @@
 import axios from 'axios'
 import XMLParser from 'fast-xml-parser'
-import { jobsProps, keywordProps } from './types'
+import { keywordProps } from './types'
+import useOpJobs from '../customHooks/useOptionJobs'
+import useBgJobs from '../customHooks/useBgJob'
 const parser = new XMLParser.XMLParser()
 
 export const getAllJobsData = async (keywords: keywordProps) => {
   let filtered: {}[] = []
+  const { getLocalJobs } = useBgJobs()
 
   const url = keywords.rssLink
   if (url)
@@ -53,24 +56,15 @@ export const getAllJobsData = async (keywords: keywordProps) => {
       .catch((error) => {
         console.log(error)
       })
-  chrome.storage.local.set({
-    jobs: filtered,
+  getLocalJobs().then((allJobs) => {
+    let prevJobs = allJobs || []
+    console.log(allJobs, 'jobs')
+    chrome.storage.local.set({
+      jobsByKeyword: [
+        ...prevJobs,
+        { jobs: filtered, rssLink: keywords.rssLink, keyword: keywords.keyword },
+      ],
+    })
   })
   return filtered
-}
-
-export const getJobsLocalStorage = (): Promise<jobsProps[]> => {
-  return new Promise((resolve) => {
-    chrome.storage.local.get(['jobs'], (data: any) => {
-      resolve(data)
-    })
-  })
-}
-
-export const getAllJobsLocalStorage = (): Promise<keywordProps[]> => {
-  return new Promise((resolve) => {
-    chrome.storage.local.get(['allJobs'], (data: any) => {
-      resolve(data.allJobs)
-    })
-  })
 }

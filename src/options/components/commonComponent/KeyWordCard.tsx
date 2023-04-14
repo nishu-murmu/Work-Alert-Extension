@@ -1,33 +1,34 @@
 import { BinIcon } from '../../../util/Icons'
 import { useRecoilState } from 'recoil'
-import { keyWordList } from '../../atoms'
-import { getAllJobsLocalStorage } from '../../../util'
+import { allJobsState, keyWordList } from '../../atoms'
 import { useEffect } from 'react'
 
 const KeyWordCard = () => {
   const [keywordList, setKeywordList] = useRecoilState(keyWordList)
+  const [allJobs, setallJobs] = useRecoilState(allJobsState)
+  // useEffect(() => {
+  //   const getAllJobsLocal = async () => {
+  //     let result = await getAllJobsLocalStorage()
+  //     if (result)
+  //       result = result.filter((item, index) => {
+  //         return (
+  //           index ===
+  //           result.findIndex((obj) => {
+  //             return JSON.stringify(obj) === JSON.stringify(item)
+  //           })
+  //         )
+  //       })
+  //     setKeywordList(result)
+  //   }
+  //   getAllJobsLocal()
+  // }, [keywordList])
 
-  useEffect(() => {
-    const getAllJobsLocal = async () => {
-      let result = await getAllJobsLocalStorage()
-      result = result.filter((item, index) => {
-        return (
-          index ===
-          result.findIndex((obj) => {
-            return JSON.stringify(obj) === JSON.stringify(item)
-          })
-        )
-      })
-      setKeywordList(result)
-    }
-    getAllJobsLocal()
-  }, [])
+  useEffect(() => {}, [allJobs])
 
-  console.log(keywordList, 'keyword list')
   return (
     <div className="flex flex-col gap-y-4 overflow-y-scroll h-[440px] py-2">
-      {keywordList &&
-        keywordList.map((item) => (
+      {allJobs &&
+        allJobs.map((item) => (
           <div
             key={item.keyword}
             className=" border border-green-400 hover:cursor-pointer rounded-md p-8 m-2"

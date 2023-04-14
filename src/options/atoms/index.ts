@@ -1,5 +1,5 @@
 import { atom } from 'recoil'
-import { keywordProps } from '../../util/types'
+import { jobsProps, keywordProps } from '../../util/types'
 
 export const keyWordState = atom({
   key: 'keywordState',
@@ -8,5 +8,15 @@ export const keyWordState = atom({
 
 export const keyWordList = atom({
   key: 'keywordList',
+  default: [] as keywordProps[],
+})
+
+export const jobsState = atom({
+  key: 'jobs',
+  default: {} as jobsProps,
+})
+
+export const allJobsState = atom({
+  key: 'allJobs',
   default: [] as keywordProps[],
 })

@@ -15,5 +15,5 @@ export interface jobsProps {
   title: string
   description: string
   hourly?: string
-  data: Date
+  date: Date
 }

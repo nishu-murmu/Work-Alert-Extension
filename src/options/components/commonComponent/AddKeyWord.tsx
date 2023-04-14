@@ -1,27 +1,28 @@
-import { useState } from 'react'
-import { getAllJobsData, getAllJobsLocalStorage, getJobsLocalStorage } from '../../../util'
+import { useEffect, useState } from 'react'
+import { getAllJobsData } from '../../../util'
+import useOpJobs from '../../../customHooks/useOptionJobs'
+import { useRecoilState } from 'recoil'
+import { allJobsState, jobsState } from '../../atoms'
+import useBgJobs from '../../../customHooks/useBgJob'
 
 const AddKeyWordSection: React.FC = () => {
   const [keyword, setKeyword] = useState<string>('')
   const [rssLink, setRssLink] = useState<string>('')
+  const [jobs, setJobs] = useRecoilState(jobsState)
+  const [allJobs, setallJobs] = useRecoilState(allJobsState)
+  const { getLocalJobs, setLocalJobs } = useBgJobs()
 
   const getJobsData = async () => {
-    const allJobs = await getAllJobsData({ keyword, rssLink })
-
-    const jobs = await getJobsLocalStorage()
-    console.log(jobs, 'just jobs')
-
-    const allJobsLocal = await getAllJobsLocalStorage()
-    console.log(allJobsLocal, 'all jobs local')
-
-    if (allJobsLocal.filter((item) => item.keyword === keyword).length === 0)
+    if (!allJobs || allJobs?.filter((item: any) => item.keyword === keyword).length === 0)
+      // if (allJobs === undefined) setAllJobs([])
       chrome.storage.local.set({
-        allJobs: [...allJobsLocal, { keyword, rssLink, jobs: jobs }],
+        allJobs: [...allJobs, { keyword, rssLink, jobs }],
       })
 
     setKeyword('')
     setRssLink('')
   }
+  useEffect(() => {}, [allJobs])
 
   return (
     <div className="flex justify-center flex-col gap-y-4">
@@ -42,7 +43,7 @@ const AddKeyWordSection: React.FC = () => {
         />
       </div>
       <button
-        onClick={() => getJobsData()}
+        onClick={() => setLocalJobs(keyword, rssLink)}
         className=" border w-2/5 mx-auto bg-transparent place-content-center border-white text-lg px-5 py-2 rounded-md"
       >
         Add New Keyword
