@@ -1,8 +1,16 @@
 import { BinIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
+import { useRecoilState } from 'recoil'
+import { clickedKeyword, isJobs } from '../../atoms'
 
 const KeyWordCard = () => {
   const { allJobs } = useOpJobs()
+  const [isClick, setIsClicked] = useRecoilState(isJobs)
+  const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
+  const clickHandler = (key: {}) => {
+    setIsClicked((prev) => !prev)
+    setIsClickKeyword(key)
+  }
 
   return (
     <div className="flex flex-col gap-y-4 overflow-y-scroll h-[440px] py-2">
@@ -10,6 +18,7 @@ const KeyWordCard = () => {
         allJobs.map((item) => (
           <div
             key={item.keyword}
+            onClick={() => clickHandler({ keyword: item.keyword, jobs: item.jobs })}
             className=" border border-green-400 hover:cursor-pointer rounded-md p-8 m-2"
           >
             <div className="text-sm pl-12 text-gray-400">Keyword</div>

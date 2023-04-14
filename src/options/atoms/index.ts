@@ -10,3 +10,13 @@ export const allJobsState = atom({
   key: 'allJobs',
   default: [] as keywordProps[],
 })
+
+export const isJobs = atom({
+  key: 'isJobs',
+  default: false,
+})
+
+export const clickedKeyword = atom({
+  key: 'clickedKeyword',
+  default: {},
+})

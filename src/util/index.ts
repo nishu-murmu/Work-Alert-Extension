@@ -1,6 +1,7 @@
 import axios from 'axios'
 import XMLParser from 'fast-xml-parser'
 import { keywordProps } from './types'
+import he from 'he'
 import useOpJobs from '../customHooks/use-option-jobs'
 import useBgJobs from '../customHooks/use-bg-job'
 const parser = new XMLParser.XMLParser()
@@ -67,4 +68,13 @@ export const getAllJobsData = async (keywords: keywordProps) => {
     })
   })
   return filtered
+}
+
+const handleHTMLcoding = (text: string) => {
+  return he.decode(text)
+}
+
+export const truncate = (string: string) => {
+  const decodedText = handleHTMLcoding(string)
+  return decodedText.length > 190 ? decodedText.substring(0, 190) + ' ...' : decodedText
 }
