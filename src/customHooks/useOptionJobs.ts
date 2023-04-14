@@ -1,14 +1,19 @@
 import { useRecoilState } from 'recoil'
 import { getAllJobsData } from '../util'
 import { allJobsState, jobsState } from '../options/atoms'
+import { useEffect } from 'react'
 
 const useOpJobs = () => {
   const [allJobs, setallJobs] = useRecoilState(allJobsState)
 
+  useEffect(() => {
+    getLocalJobs()
+    return () => {}
+  }, [])
+
   const getLocalJobs = () => {
     chrome.storage.local.get('jobsByKeyword', (res) => {
-      console.log(res, 'response')
-      setallJobs(res.jobs)
+      setallJobs(res.jobsByKeyword)
     })
   }
 

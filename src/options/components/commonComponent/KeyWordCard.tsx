@@ -1,29 +1,8 @@
 import { BinIcon } from '../../../util/Icons'
-import { useRecoilState } from 'recoil'
-import { allJobsState, keyWordList } from '../../atoms'
-import { useEffect } from 'react'
+import useOpJobs from '../../../customHooks/useOptionJobs'
 
 const KeyWordCard = () => {
-  const [keywordList, setKeywordList] = useRecoilState(keyWordList)
-  const [allJobs, setallJobs] = useRecoilState(allJobsState)
-  // useEffect(() => {
-  //   const getAllJobsLocal = async () => {
-  //     let result = await getAllJobsLocalStorage()
-  //     if (result)
-  //       result = result.filter((item, index) => {
-  //         return (
-  //           index ===
-  //           result.findIndex((obj) => {
-  //             return JSON.stringify(obj) === JSON.stringify(item)
-  //           })
-  //         )
-  //       })
-  //     setKeywordList(result)
-  //   }
-  //   getAllJobsLocal()
-  // }, [keywordList])
-
-  useEffect(() => {}, [allJobs])
+  const { allJobs } = useOpJobs()
 
   return (
     <div className="flex flex-col gap-y-4 overflow-y-scroll h-[440px] py-2">

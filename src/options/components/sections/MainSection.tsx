@@ -1,17 +1,7 @@
 import AddKeyWordSection from '../commonComponent/AddKeyWord'
-import { useEffect, useState } from 'react'
 import KeyWordsSection from './KeyWordsSection'
-import { useRecoilState } from 'recoil'
-import { keyWordList } from '../../atoms'
+
 const MainSection: React.FC = () => {
-  const [showKeyWord, setShowKeyword] = useState(false)
-  const [keywordList, setKeywordList] = useRecoilState(keyWordList)
-  // useEffect(() => {
-  //   ;(async () => {
-  //     const result = await getAllJobsLocalStorage()
-  //     console.log(result, 'all jobs details')
-  //   })()
-  // }, [])
   return (
     <div className="container flex flex-col justify-center p-4 mx-auto">
       <AddKeyWordSection />
