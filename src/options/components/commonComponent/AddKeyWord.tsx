@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { getAllJobsData } from '../../../util'
-import useOpJobs from '../../../customHooks/useOptionJobs'
+import useOpJobs from '../../../customHooks/use-option-jobs'
 import { useRecoilState } from 'recoil'
 import { allJobsState, jobsState } from '../../atoms'
-import useBgJobs from '../../../customHooks/useBgJob'
+import useBgJobs from '../../../customHooks/use-bg-job'
 
 const AddKeyWordSection: React.FC = () => {
   const [keyword, setKeyword] = useState<string>('')

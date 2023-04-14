@@ -1,5 +1,5 @@
 import { BinIcon } from '../../../util/Icons'
-import useOpJobs from '../../../customHooks/useOptionJobs'
+import useOpJobs from '../../../customHooks/use-option-jobs'
 
 const KeyWordCard = () => {
   const { allJobs } = useOpJobs()

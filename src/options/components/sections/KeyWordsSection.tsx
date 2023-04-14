@@ -1,5 +1,4 @@
 import { useRecoilState } from 'recoil'
-import { keyWordList } from '../../atoms'
 import KeyWordCards from '../commonComponent/KeyWordCard'
 import { useEffect } from 'react'
 

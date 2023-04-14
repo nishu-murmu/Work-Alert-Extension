@@ -1,8 +1,8 @@
 import axios from 'axios'
 import XMLParser from 'fast-xml-parser'
 import { keywordProps } from './types'
-import useOpJobs from '../customHooks/useOptionJobs'
-import useBgJobs from '../customHooks/useBgJob'
+import useOpJobs from '../customHooks/use-option-jobs'
+import useBgJobs from '../customHooks/use-bg-job'
 const parser = new XMLParser.XMLParser()
 
 export const getAllJobsData = async (keywords: keywordProps) => {
