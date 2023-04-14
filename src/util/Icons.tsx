@@ -17,10 +17,10 @@ export const BinIcon = ({ className, fillColor, strokeWidth, strokeColor }: Icon
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      fill="none"
+      fill={fillColor}
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke={strokeColor}
       className="w-6 h-6"
     >
       <path

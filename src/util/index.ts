@@ -1,12 +1,13 @@
 import axios from 'axios'
 import XMLParser from 'fast-xml-parser'
+import { jobsProps, keywordProps } from './types'
 const parser = new XMLParser.XMLParser()
 
-export const getAllJobsData = async (keywords: []) => {
+export const getAllJobsData = async (keywords: keywordProps) => {
   let filtered: {}[] = []
 
-  for (let i = 0; i < keywords.length; i++) {
-    const url = keywords[i].rsslink
+  const url = keywords.rssLink
+  if (url)
     await fetch(url, {
       method: 'GET',
       headers: {
@@ -18,7 +19,7 @@ export const getAllJobsData = async (keywords: []) => {
         const original = response
         let xmlJobList = parser.parse(original)
 
-        xmlJobList.rss.channel.item.map((item) => {
+        xmlJobList.rss.channel.item.map((item: any) => {
           filtered.push({
             title: item.title.replace(' - Upwork', ''),
             link: item.link,
@@ -43,7 +44,7 @@ export const getAllJobsData = async (keywords: []) => {
               .replace(/(<br \/>)+/g, '')
               .replace(/(&nbsp;)+/g, ''),
             uid: item.guid,
-            keyword: keywords[i].text,
+            keyword: keywords.keyword,
             __seen: false,
             notification_triggered: false,
           })
@@ -52,6 +53,24 @@ export const getAllJobsData = async (keywords: []) => {
       .catch((error) => {
         console.log(error)
       })
-  }
+  chrome.storage.local.set({
+    jobs: filtered,
+  })
   return filtered
+}
+
+export const getJobsLocalStorage = (): Promise<jobsProps[]> => {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(['jobs'], (data: any) => {
+      resolve(data)
+    })
+  })
+}
+
+export const getAllJobsLocalStorage = (): Promise<keywordProps[]> => {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(['allJobs'], (data: any) => {
+      resolve(data.allJobs)
+    })
+  })
 }
