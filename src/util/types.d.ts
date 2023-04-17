@@ -20,6 +20,6 @@ export interface jobsProps {
   uid?: string
   link: string
   guid?: string
-  __seen: boolean
+  __seen?: boolean
   notification_triggered: boolean
 }

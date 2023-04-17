@@ -1,5 +1,5 @@
 import { useRecoilState } from 'recoil'
-import WordCard from '../commonComponent/WorkCard'
+import WordCards from '../commonComponent/WorkCard'
 import { clickedKeyword, isJobs } from '../../atoms'
 import { ArrowLeftIcon } from '../../../util/Icons'
 
@@ -24,7 +24,7 @@ const WorkSection = (props: any) => {
         </div>
       </div>
       <div id="keywords" className="w-4/5 mx-auto justify-center">
-        <WordCard props={props} />
+        <WordCards />
       </div>
     </>
   )

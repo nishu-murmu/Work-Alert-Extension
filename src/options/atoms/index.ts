@@ -16,9 +16,9 @@ export const isJobs = atom({
   default: false,
 })
 
-export const clickedKeyword: RecoilState<{ keyword: string; jobs: never[] }> = atom({
+export const clickedKeyword = atom({
   key: 'clickedKeyword',
-  default: { keyword: '', jobs: [] },
+  default: { keyword: '', jobs: [], isClicked: false },
 })
 
 export const clickedValue = atom({

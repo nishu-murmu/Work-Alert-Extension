@@ -2,7 +2,7 @@ import { useRecoilState } from 'recoil'
 import { getAllJobsData } from '../util'
 import { allJobsState, jobsState } from '../options/atoms'
 import { useEffect } from 'react'
-import { jobsProps } from '../util/types'
+import { jobsProps, keywordProps } from '../util/types'
 
 const useOpJobs = () => {
   const [allJobs, setallJobs] = useRecoilState(allJobsState)
@@ -30,7 +30,28 @@ const useOpJobs = () => {
     }
   }
 
-  return { getLocalJobs, setLocalJobs, allJobs }
+  const viewJobsHandler = (keyword: keywordProps) => {
+    chrome.storage.local.set({
+      jobsByKeyword: allJobs
+        .filter((a) => a.keyword === keyword.keyword)
+        .map((a) => {
+          if (a.jobs) {
+            return {
+              ...a,
+              jobs: a.jobs.map((job) => ({
+                ...job,
+                __seen: true,
+              })),
+            }
+          } else {
+            return a
+          }
+        }),
+    })
+    getLocalJobs()
+  }
+
+  return { getLocalJobs, setLocalJobs, viewJobsHandler ,allJobs }
 }
 
 export default useOpJobs

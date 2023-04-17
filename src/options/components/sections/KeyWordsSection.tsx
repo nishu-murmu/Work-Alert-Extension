@@ -1,6 +1,4 @@
-import { useRecoilState } from 'recoil'
 import KeyWordCards from '../commonComponent/KeyWordCard'
-import { useEffect } from 'react'
 
 const KeyWordsSection: React.FC = () => {
   return (

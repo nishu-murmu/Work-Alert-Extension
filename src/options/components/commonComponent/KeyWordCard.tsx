@@ -4,13 +4,14 @@ import { RecoilState, useRecoilState } from 'recoil'
 import { clickedKeyword, isJobs } from '../../atoms'
 import { useEffect } from 'react'
 
-const KeyWordCard = () => {
-  const { allJobs, setLocalJobs, getLocalJobs } = useOpJobs()
+const KeyWordCards = () => {
+  const { allJobs, setLocalJobs, viewJobsHandler } = useOpJobs()
   const [isClick, setIsClicked] = useRecoilState(isJobs)
-  const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
+  const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
   const clickHandler = (key: any) => {
     setIsClicked((prev) => !prev)
-    setIsClickKeyword(key)
+    setClickKeyword(key)
+    viewJobsHandler(key)
   }
   console.log(allJobs, 'all jobs')
 
@@ -31,13 +32,13 @@ const KeyWordCard = () => {
                 </span>
                 <span
                   className="text-lg hover:underline hover:cursor-pointer"
-                  onClick={() => clickHandler({ keyword: item.keyword, jobs: item.jobs })}
+                  onClick={() => clickHandler({ keyword: item.keyword, jobs: item.jobs, isClicked: true, rssLink: item.rssLink })}
                 >
                   {item.keyword}
                 </span>
               </div>
               <span className="text-lg text-black py-2 px-3 bg-green-500 rounded-full">
-                {item.jobs && item.jobs?.length}
+                {item.jobs && item.jobs.length}
               </span>
             </div>
           </div>
@@ -45,4 +46,4 @@ const KeyWordCard = () => {
     </div>
   )
 }
-export default KeyWordCard
+export default KeyWordCards
