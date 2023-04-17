@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { allJobsState, isEmpty, jobsState } from '../../atoms'
 import useBgJobs from '../../../customHooks/use-bg-job'
+import useOpJobs from '../../../customHooks/use-option-jobs'
 
 const AddKeyWordSection: React.FC = () => {
   const [keyword, setKeyword] = useState<string>('')
@@ -9,13 +10,16 @@ const AddKeyWordSection: React.FC = () => {
   const [jobs, setJobs] = useRecoilState(jobsState)
   const [allJobs, setallJobs] = useRecoilState(allJobsState)
   const [isEmptyFields, setIsEmptyFields] = useRecoilState(isEmpty)
-  const { getLocalJobs, setLocalJobs } = useBgJobs()
+  const { setLocalJobs, getLocalJobs } = useOpJobs()
 
   const submitHandler = (keyword: string, rssLink: string) => {
     if (!keyword || !rssLink) {
       setIsEmptyFields((prevState) => !prevState)
     } else {
       setLocalJobs(keyword, rssLink)
+      setTimeout(() => {
+        getLocalJobs()
+      }, 1000);
     }
   }
 

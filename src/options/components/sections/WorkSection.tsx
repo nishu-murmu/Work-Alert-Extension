@@ -6,7 +6,6 @@ import { ArrowLeftIcon } from '../../../util/Icons'
 const WorkSection = (props: any) => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
-  console.log(clickKeyword)
   return (
     <>
       <div className="text-2xl flex justify-between w-4/5 mx-auto">

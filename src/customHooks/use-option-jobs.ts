@@ -26,10 +26,7 @@ const useOpJobs = () => {
       })
       getLocalJobs()
     } else {
-      getAllJobsData({ keyword, rssLink }).then((data: jobsProps[]) => {
-        console.log(data)
-        setallJobs(data)
-      })
+      getAllJobsData({ keyword, rssLink })
     }
   }
 

@@ -1,13 +1,14 @@
 import { BinIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
-import { useRecoilState } from 'recoil'
+import { RecoilState, useRecoilState } from 'recoil'
 import { clickedKeyword, isJobs } from '../../atoms'
+import { useEffect } from 'react'
 
 const KeyWordCard = () => {
-  const { allJobs, setLocalJobs } = useOpJobs()
+  const { allJobs, setLocalJobs, getLocalJobs } = useOpJobs()
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
-  const clickHandler = (key: {}) => {
+  const clickHandler = (key: any) => {
     setIsClicked((prev) => !prev)
     setIsClickKeyword(key)
   }

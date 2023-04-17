@@ -10,7 +10,6 @@ const parser = new XMLParser.XMLParser()
 export const getAllJobsData = async (keywords: keywordProps) => {
   let filtered: jobsProps[] = []
   const { getLocalJobs } = useBgJobs()
-  // const { getLocalJobs } = useOpJobs()
 
   const url = keywords.rssLink
   if (url)
@@ -25,7 +24,6 @@ export const getAllJobsData = async (keywords: keywordProps) => {
         const original = response
         let xmlJobList = parser.parse(original)
 
-        console.log(xmlJobList.rss.channel, 'item')
         xmlJobList.rss.channel.item.map((item: jobsProps) =>
           filtered.push({
             title: item.title.replace(' - Upwork', ''),
@@ -62,7 +60,6 @@ export const getAllJobsData = async (keywords: keywordProps) => {
       })
   getLocalJobs().then((allJobs) => {
     let prevJobs = allJobs || []
-    console.log(allJobs, 'jobs')
 
     // setting local storage first and syncing it
     chrome.storage.local.set({
@@ -73,7 +70,6 @@ export const getAllJobsData = async (keywords: keywordProps) => {
     })
     getLocalJobs()
   })
-  return filtered
 }
 
 const handleHTMLcoding = (text: string) => {
@@ -85,8 +81,9 @@ export const truncate = (string: string) => {
   return decodedText.length > 190 ? decodedText.substring(0, 190) + ' ...' : decodedText
 }
 
-export const timeRange = (time: string) => {
-  console.log(time, 'time')
+export const timeRange = (time: string): number | string => {
   const range: number = Date.now() - Number(new Date(time))
-  return (range / Number(60 * 60 * 10000)).toFixed(0)
+  const hours: number = range / Number(60 * 60 * 10000)
+  if (parseInt(hours.toFixed(0)) == 0) return Number((Number(hours.toFixed(4)) * 60).toFixed(2))
+  else return hours.toFixed(0)
 }

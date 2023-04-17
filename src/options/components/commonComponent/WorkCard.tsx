@@ -4,7 +4,7 @@ import { jobsProps } from '../../../util/types'
 
 const WorkCard = (props: any) => {
   const [readMoreClicked, setReadMoreClicked] = useState(false)
-  const [clickedValue, setClickedValue] = useState('')
+  const [clickedValue, setClickedValue] = useState<string | undefined>('')
   let jobs = props.props.props.jobs
   console.log(props, 'card props')
   return (
@@ -12,7 +12,11 @@ const WorkCard = (props: any) => {
       {jobs.map((item: jobsProps) => (
         <div className="text-green-500 bg-custom-bg  rounded-md p-5 h-auto">
           <div className="flex text-lg justify-between px-2 w-full text-gray-500">
-            <div>{item.date && timeRange(item.date.toString())} Hours Ago</div>
+            <div>
+              {item.date && typeof timeRange(item.date.toString()) === 'number'
+                ? `${timeRange(item.date.toString())} minutes ago`
+                : `${timeRange(item.date.toString())} hours ago`}
+            </div>
             <div>{item.budget}</div>
           </div>
           <div className="text-white text-2xl pt-4 pl-4 font-extrabold">{item.title}</div>
