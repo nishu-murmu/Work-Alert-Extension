@@ -73,6 +73,7 @@ export const getAllJobsData = async (keywords: keywordProps) => {
     }
     getLocalJobs()
   })
+  return filtered
 }
 
 const handleHTMLcoding = (text: string) => {
