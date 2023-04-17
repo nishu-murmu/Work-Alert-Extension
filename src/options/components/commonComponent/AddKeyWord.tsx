@@ -19,6 +19,8 @@ const AddKeyWordSection: React.FC = () => {
       setLocalJobs(keyword, rssLink)
       setTimeout(() => {
         getLocalJobs()
+        setKeyword("")
+        setRssLink("")
       }, 1000);
     }
   }

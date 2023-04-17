@@ -19,9 +19,11 @@ const WorkCards:React.FC = () => {
           <div className="text-green-500 bg-custom-bg  rounded-md p-5 h-auto">
             <div className="flex text-lg justify-between px-2 w-full text-gray-500">
               <div>
-                {item.date && typeof timeRange(item.date.toString()) === 'number'
-                  ? `${timeRange(item.date.toString())} minutes ago`
-                  : `${timeRange(item.date.toString())} hours ago`}
+                {item.date && timeRange(item.date.toString()).type === 'minutes'
+                  ? `${timeRange(item.date.toString()).range} minutes ago`
+                  : timeRange(item.date.toString()).type === 'days'
+                  ? `${timeRange(item.date.toString()).range} days ago`
+                  : `${timeRange(item.date.toString()).range} hours ago`}
               </div>
               <div>{item.budget}</div>
             </div>
@@ -41,7 +43,9 @@ const WorkCards:React.FC = () => {
               className="font-bold text-lg pl-4 mt-4 hover:cursor-pointer"
             >
               {readMoreClicked && item.uid === clickedValue ? (
-                <a target='_blank' href={item.link}>View Job Posting</a>
+                <a target="_blank" href={item.link}>
+                  View Job Posting
+                </a>
               ) : (
                 'Read More'
               )}

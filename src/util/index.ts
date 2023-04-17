@@ -84,9 +84,10 @@ export const truncate = (string: string) => {
   return decodedText.length > 190 ? decodedText.substring(0, 190) + ' ...' : decodedText
 }
 
-export const timeRange = (time: string): number | string => {
+export const timeRange = (time: string): {range: string | number, type: string} => {
   const range: number = Date.now() - Number(new Date(time))
-  const hours: number = range / Number(60 * 60 * 10000)
-  if (parseInt(hours.toFixed(0)) == 0) return Number((Number(hours.toFixed(4)) * 60).toFixed(2))
-  else return hours.toFixed(0)
+  const hours: number = Math.floor(range / (60 * 60 * 1000))
+  if(hours > 24) return {range:Math.floor(hours/ 24), type:'days'}
+  if(hours === 0) return {range:Math.floor(range / (60 * 1000)),type: 'minutes'}
+  else return {range:hours.toFixed(0), type: 'hours'}
 }

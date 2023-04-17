@@ -33,7 +33,6 @@ const useOpJobs = () => {
   const viewJobsHandler = (keyword: keywordProps) => {
     chrome.storage.local.set({
       jobsByKeyword: allJobs
-        .filter((a) => a.keyword === keyword.keyword)
         .map((a) => {
           if (a.jobs) {
             return {
