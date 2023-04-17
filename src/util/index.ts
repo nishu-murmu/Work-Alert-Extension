@@ -62,12 +62,15 @@ export const getAllJobsData = async (keywords: keywordProps) => {
     let prevJobs = allJobs || []
 
     // setting local storage first and syncing it
-    chrome.storage.local.set({
-      jobsByKeyword: [
-        ...prevJobs,
-        { jobs: filtered, rssLink: keywords.rssLink, keyword: keywords.keyword },
-      ],
-    })
+
+    if(prevJobs.filter((item: keywordProps) => item.rssLink === keywords.rssLink).length === 0) {
+      chrome.storage.local.set({
+        jobsByKeyword: [
+          ...prevJobs,
+          { jobs: filtered, rssLink: keywords.rssLink, keyword: keywords.keyword },
+        ],
+      })
+    }
     getLocalJobs()
   })
 }
