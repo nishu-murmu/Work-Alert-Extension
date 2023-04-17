@@ -7,13 +7,19 @@ type IconProps = {
 
 type keywordProps = {
   rssLink?: string
-  keyword?: string
+  keyword: string
   jobs?: jobsProps[]
 }
 export interface jobsProps {
-  budget?: string
+  budget: string | null
+  keyword: string
   title: string
   description: string
-  hourly?: string
-  date: Date
+  hourly: string | null
+  date: string
+  uid?: string
+  link: string
+  guid?: string
+  __seen: boolean
+  notification_triggered: boolean
 }

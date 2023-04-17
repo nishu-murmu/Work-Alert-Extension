@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react'
-import { getAllJobsData } from '../../../util'
-import useOpJobs from '../../../customHooks/use-option-jobs'
+import { useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { allJobsState, jobsState } from '../../atoms'
+import { allJobsState, isEmpty, jobsState } from '../../atoms'
 import useBgJobs from '../../../customHooks/use-bg-job'
 
 const AddKeyWordSection: React.FC = () => {
@@ -10,19 +8,16 @@ const AddKeyWordSection: React.FC = () => {
   const [rssLink, setRssLink] = useState<string>('')
   const [jobs, setJobs] = useRecoilState(jobsState)
   const [allJobs, setallJobs] = useRecoilState(allJobsState)
+  const [isEmptyFields, setIsEmptyFields] = useRecoilState(isEmpty)
   const { getLocalJobs, setLocalJobs } = useBgJobs()
 
-  const getJobsData = async () => {
-    if (!allJobs || allJobs?.filter((item: any) => item.keyword === keyword).length === 0)
-      // if (allJobs === undefined) setAllJobs([])
-      chrome.storage.local.set({
-        allJobs: [...allJobs, { keyword, rssLink, jobs }],
-      })
-
-    setKeyword('')
-    setRssLink('')
+  const submitHandler = (keyword: string, rssLink: string) => {
+    if (!keyword || !rssLink) {
+      setIsEmptyFields((prevState) => !prevState)
+    } else {
+      setLocalJobs(keyword, rssLink)
+    }
   }
-  useEffect(() => {}, [allJobs])
 
   return (
     <div className="flex justify-center flex-col gap-y-4">
@@ -30,20 +25,29 @@ const AddKeyWordSection: React.FC = () => {
         <input
           type="text"
           placeholder="Keyword"
+          onFocus={() => setIsEmptyFields(false)}
           value={keyword}
-          className="bg-transparent border border-white rounded-md px-4 py-2 text-lg"
+          className={`bg-transparent border ${
+            !isEmptyFields ? 'border-white' : 'border-red-600'
+          } rounded-md px-4 py-2 text-lg`}
           onChange={(e) => setKeyword(e.target.value)}
         />
         <input
           type="text"
           placeholder="UpWork RSS Feed"
           value={rssLink}
-          className="bg-transparent px-4 py-2 text-lg border border-white rounded-md"
+          onFocus={() => setIsEmptyFields(false)}
+          className={`bg-transparent border ${
+            !isEmptyFields ? 'border-white' : 'border-red-600'
+          } rounded-md px-4 py-2 text-lg`}
           onChange={(e) => setRssLink(e.target.value)}
         />
       </div>
+      {isEmptyFields && (
+        <div className="text-red-600 text-md text-center">Please fill all the fields</div>
+      )}
       <button
-        onClick={() => setLocalJobs(keyword, rssLink)}
+        onClick={() => submitHandler(keyword, rssLink)}
         className=" border w-2/5 mx-auto bg-transparent place-content-center border-white text-lg px-5 py-2 rounded-md"
       >
         Add New Keyword

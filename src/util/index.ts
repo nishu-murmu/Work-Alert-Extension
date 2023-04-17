@@ -1,14 +1,16 @@
 import axios from 'axios'
 import XMLParser from 'fast-xml-parser'
-import { keywordProps } from './types'
+import { jobsProps, keywordProps } from './types'
 import he from 'he'
 import useOpJobs from '../customHooks/use-option-jobs'
 import useBgJobs from '../customHooks/use-bg-job'
+import { useEffect } from 'react'
 const parser = new XMLParser.XMLParser()
 
 export const getAllJobsData = async (keywords: keywordProps) => {
-  let filtered: {}[] = []
+  let filtered: jobsProps[] = []
   const { getLocalJobs } = useBgJobs()
+  // const { getLocalJobs } = useOpJobs()
 
   const url = keywords.rssLink
   if (url)
@@ -23,7 +25,8 @@ export const getAllJobsData = async (keywords: keywordProps) => {
         const original = response
         let xmlJobList = parser.parse(original)
 
-        xmlJobList.rss.channel.item.map((item: any) => {
+        console.log(xmlJobList.rss.channel, 'item')
+        xmlJobList.rss.channel.item.map((item: jobsProps) =>
           filtered.push({
             title: item.title.replace(' - Upwork', ''),
             link: item.link,
@@ -47,12 +50,12 @@ export const getAllJobsData = async (keywords: keywordProps) => {
               .replace(/<a href="([^]+)/, '')
               .replace(/(<br \/>)+/g, '')
               .replace(/(&nbsp;)+/g, ''),
-            uid: item.guid,
+            uid: item.guid && item.guid,
             keyword: keywords.keyword,
             __seen: false,
             notification_triggered: false,
-          })
-        })
+          }),
+        )
       })
       .catch((error) => {
         console.log(error)
@@ -60,12 +63,15 @@ export const getAllJobsData = async (keywords: keywordProps) => {
   getLocalJobs().then((allJobs) => {
     let prevJobs = allJobs || []
     console.log(allJobs, 'jobs')
+
+    // setting local storage first and syncing it
     chrome.storage.local.set({
       jobsByKeyword: [
         ...prevJobs,
         { jobs: filtered, rssLink: keywords.rssLink, keyword: keywords.keyword },
       ],
     })
+    getLocalJobs()
   })
   return filtered
 }
@@ -80,6 +86,7 @@ export const truncate = (string: string) => {
 }
 
 export const timeRange = (time: string) => {
+  console.log(time, 'time')
   const range: number = Date.now() - Number(new Date(time))
-  return (range / Number(60 * 60 * 1000)).toFixed(0)
+  return (range / Number(60 * 60 * 10000)).toFixed(0)
 }

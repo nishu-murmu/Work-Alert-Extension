@@ -2,6 +2,7 @@ import { useRecoilState } from 'recoil'
 import { getAllJobsData } from '../util'
 import { allJobsState, jobsState } from '../options/atoms'
 import { useEffect } from 'react'
+import { jobsProps } from '../util/types'
 
 const useOpJobs = () => {
   const [allJobs, setallJobs] = useRecoilState(allJobsState)
@@ -17,11 +18,19 @@ const useOpJobs = () => {
     })
   }
 
-  const setLocalJobs = (keyword: string, rssLink: string) => {
-    getAllJobsData({ keyword, rssLink }).then((data) => {
-      console.log(data)
-      setallJobs(data)
-    })
+  const setLocalJobs = (keyword: string, rssLink?: string) => {
+    // delete keycard logic
+    if (!rssLink) {
+      chrome.storage.local.set({
+        jobsByKeyword: allJobs.filter((item) => item.keyword !== keyword),
+      })
+      getLocalJobs()
+    } else {
+      getAllJobsData({ keyword, rssLink }).then((data: jobsProps[]) => {
+        console.log(data)
+        setallJobs(data)
+      })
+    }
   }
 
   return { getLocalJobs, setLocalJobs, allJobs }

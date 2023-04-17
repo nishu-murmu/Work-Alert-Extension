@@ -20,3 +20,13 @@ export const clickedKeyword = atom({
   key: 'clickedKeyword',
   default: {},
 })
+
+export const clickedValue = atom({
+  key: 'clickedValue',
+  default: '',
+})
+
+export const isEmpty = atom({
+  key: 'isEmpty',
+  default: false,
+})
