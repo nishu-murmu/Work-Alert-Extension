@@ -3,10 +3,18 @@ import AddKeyWordSection from '../commonComponent/AddKeyWord'
 import KeyWordsSection from './KeyWordsSection'
 import { clickedKeyword, isJobs } from '../../atoms'
 import WorkSection from './WorkSection'
+import { useEffect } from 'react'
+import { mergeJobs } from '../../../util'
 
 const MainSection: React.FC = () => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
+
+  useEffect(() => {
+    mergeJobs()
+
+  }, [])
+
   return (
     <div className="container flex flex-col justify-center p-4 mx-auto">
       <AddKeyWordSection />

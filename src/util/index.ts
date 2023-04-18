@@ -76,6 +76,23 @@ export const getAllJobsData = async (keywords: keywordProps) => {
   return filtered
 }
 
+export const mergeJobs = async() => {
+  const previousJobs = await chrome.storage.local.get("jobsByKeyword")
+  console.log(previousJobs,'previous')
+  let newJobs = []
+  try {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.type === 'from_background') {
+        newJobs = request.newJobs
+        console.log(newJobs, 'new jobs from background')
+        sendResponse('Response from option to background')
+      }
+    })
+  } catch (err) {
+    console.log(err, 'error')
+  }
+}
+
 const handleHTMLcoding = (text: string) => {
   return he.decode(text)
 }

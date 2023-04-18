@@ -1,5 +1,4 @@
 import { getAllJobsData } from "../util"
-import { jobsProps } from "../util/types"
 chrome.alarms.create({
     periodInMinutes: 1,
     when: 1,
@@ -18,9 +17,12 @@ chrome.alarms.onAlarm.addListener(async() => {
        const result = await getAllJobsData(keyword)
        newAllJobs.push({keyword:keyword.keyword, jobs: result})
     })
-    setTimeout(() => {
-        console.log(newAllJobs,'new jobs')
-    }, 1000);
+    setInterval(() => {
+      chrome.runtime.sendMessage({ type: 'from_background', newJobs: newAllJobs }, (response) => {
+        console.log(response, 'response')
+      })
+    }, 60000)
+    
 })
 
 export {}

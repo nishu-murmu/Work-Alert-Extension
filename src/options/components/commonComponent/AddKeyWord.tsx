@@ -54,7 +54,7 @@ const AddKeyWordSection: React.FC = () => {
       )}
       <button
         onClick={() => submitHandler(keyword, rssLink)}
-        className=" border w-2/5 mx-auto bg-transparent place-content-center border-white text-lg px-5 py-2 rounded-md"
+        className=" hover:text-gray-400 border w-2/5 mx-auto bg-transparent place-content-center border-white text-lg px-5 py-2 rounded-md"
       >
         Add New Keyword
       </button>
