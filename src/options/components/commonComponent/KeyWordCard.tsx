@@ -13,7 +13,6 @@ const KeyWordCards = () => {
     setClickKeyword(key)
     viewJobsHandler(key)
   }
-  console.log(allJobs, 'all jobs')
 
   return (
     <div className="flex flex-col gap-y-4 overflow-y-scroll h-[440px] py-2">

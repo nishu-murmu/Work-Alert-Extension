@@ -1,11 +1,10 @@
-import axios from 'axios'
 import XMLParser from 'fast-xml-parser'
 import { jobsProps, keywordProps } from './types'
 import he from 'he'
-import useOpJobs from '../customHooks/use-option-jobs'
 import useBgJobs from '../customHooks/use-bg-job'
-import { useEffect } from 'react'
 const parser = new XMLParser.XMLParser()
+  let newJobs: any[] = []
+  let previousJobs = []
 
 export const getAllJobsData = async (keywords: keywordProps) => {
   let filtered: jobsProps[] = []
@@ -13,7 +12,7 @@ export const getAllJobsData = async (keywords: keywordProps) => {
 
   const url = keywords.rssLink
   if (url)
-    await fetch(url, {
+    await fetch(`${url}&random=${Math.random()}`, {
       method: 'GET',
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
@@ -76,21 +75,22 @@ export const getAllJobsData = async (keywords: keywordProps) => {
   return filtered
 }
 
-export const mergeJobs = async() => {
-  const previousJobs = await chrome.storage.local.get("jobsByKeyword")
-  console.log(previousJobs,'previous')
-  let newJobs = []
-  try {
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-      if (request.type === 'from_background') {
-        newJobs = request.newJobs
-        console.log(newJobs, 'new jobs from background')
-        sendResponse('Response from option to background')
-      }
-    })
-  } catch (err) {
-    console.log(err, 'error')
+export function compareArrays(previousJob: any, newJob: any) {
+  let uniqueJobs = []
+
+  for (let i = 0; i < newJob.length; i++) {
+    let flag = false
+    for(let j = 0; j < previousJob.length; ++j) {
+        if(newJob[i]["uid"] === previousJob[j]["uid"]) {
+          flag = true
+        }
+    }
+    if(!flag) {
+      uniqueJobs.push(newJob[i])
+    }
+
   }
+  return uniqueJobs
 }
 
 const handleHTMLcoding = (text: string) => {

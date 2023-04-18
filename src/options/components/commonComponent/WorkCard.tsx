@@ -12,7 +12,6 @@ const WorkCards:React.FC = () => {
   const [clickedValue, setClickedValue] = useState<string | undefined>('')
   let jobs = allJobs.find((keyword: keywordProps) => keyword.keyword === clickKeyword.keyword)?.jobs
 
-  console.log(jobs,'jobs')
 
   return (
     <div className="flex flex-col overflow-y-scroll h-[440px] gap-y-4">

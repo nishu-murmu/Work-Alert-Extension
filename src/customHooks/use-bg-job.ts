@@ -12,7 +12,11 @@ const useBgJobs = () => {
     })
   }
 
-  return { getLocalJobs, setLocalJobs }
+  const setLocalJobsToStorage = (jobsByKeyword: any) => {
+    chrome.storage.local.set({ jobsByKeyword })
+  }
+
+  return { getLocalJobs, setLocalJobs, setLocalJobsToStorage }
 }
 
 export default useBgJobs
