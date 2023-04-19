@@ -30,3 +30,8 @@ export const isEmpty = atom({
   key: 'isEmpty',
   default: false,
 })
+
+export const keywords:RecoilState<string[]> = atom({
+  key: 'keywords',
+  default: [""]
+})
