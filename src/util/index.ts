@@ -111,7 +111,7 @@ export const compareJobs = (
   newAllJobs: any,
 ) => {
   const allKeywordJobs: any[] = []
-  previousAllJobs.jobsByKeyword.map((keyword: keywordProps) => {
+  previousAllJobs?.jobsByKeyword?.map((keyword: keywordProps) => {
     let jobs = newAllJobs.find((key: any) => key.keyword === keyword.keyword)
     const newJobs = compareArrays(keyword.jobs, jobs?.jobs ? jobs.jobs : [])
     if (newJobs.length > 0) {
@@ -120,7 +120,6 @@ export const compareJobs = (
       })
     }
   })
-  console.log({ allKeywordJobs })
   return allKeywordJobs
 }
 
