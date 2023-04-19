@@ -3,7 +3,7 @@ import WordCards from '../commonComponent/WorkCard'
 import { clickedKeyword, isJobs } from '../../atoms'
 import { ArrowLeftIcon } from '../../../util/Icons'
 
-const WorkSection = (props: any) => {
+const WorkSection = () => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
   return (
