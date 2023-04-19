@@ -23,6 +23,11 @@ const AddKeyWordSection: React.FC = () => {
     }
   }
 
+  const submitOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if(e.key === 'Enter') {
+      submitHandler(keyword, rssLink)
+    }
+  }
   return (
     <div className="flex justify-center flex-col gap-y-4">
       <div id="btn-group" className="gap-x-4 flex place-content-center">
@@ -35,6 +40,7 @@ const AddKeyWordSection: React.FC = () => {
             !isEmptyFields ? 'border-white' : 'border-red-600'
           } rounded-md px-4 py-2 text-lg`}
           onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={(e) => submitOnKeyDown(e)}
         />
         <input
           type="text"
@@ -45,6 +51,7 @@ const AddKeyWordSection: React.FC = () => {
             !isEmptyFields ? 'border-white' : 'border-red-600'
           } rounded-md px-4 py-2 text-lg`}
           onChange={(e) => setRssLink(e.target.value)}
+          onKeyDown={(e) => submitOnKeyDown(e)}
         />
       </div>
       {isEmptyFields && (
