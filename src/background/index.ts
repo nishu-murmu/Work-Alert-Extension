@@ -26,41 +26,25 @@ chrome.alarms.onAlarm.addListener(async () => {
 
   const previousAllJobs = await chrome.storage.local.get('jobsByKeyword')
 
-  const updatedJobs = compareArrays(previousAllJobs.jobsByKeyword, newAllJobs)
-
-  // if (previousAllJobs?.jobsByKeyword)
-  previousAllJobs?.jobsByKeyword?.map((keyword: keywordProps) => {
+  previousAllJobs.jobsByKeyword.map((keyword: keywordProps) => {
     let jobs = newAllJobs.find((key) => key.keyword === keyword.keyword)
-    const newJob = compareArrays(keyword.jobs, jobs?.jobs ? jobs.jobs : [])
-
-    console.log(newJob, 'new jobs')
-    setLocalJobsToStorage(newAllJobs)
-  })
-  if (newAllJobs.length > 0) {
+    const newJobs = compareArrays(keyword.jobs, jobs?.jobs ? jobs.jobs : [])
+    console.log(newJobs, 'new jobs')
     const keywordObj = countJobsKeywords(newAllJobs)
-    // Create a new notification
-    console.log('notify')
-    chrome.notifications.create('JobNotification', {
-      type: 'basic',
-      title: 'New Job Alert',
-      message: JSON.stringify(keywordObj),
-      iconUrl:
-        'https://png.pngtree.com/png-vector/20201028/ourmid/pngtree-phone-icon-in-solid-circle-png-image_2380227.jpg',
-      requireInteraction: true,
-    })
-  }
+    if(newJobs.length > 0) {
+      chrome.notifications.create(
+        {
+          type: 'basic',
+          title: 'New Job Alert',
+          message: JSON.stringify(keywordObj),
+          iconUrl:
+            'https://png.pngtree.com/png-vector/20201028/ourmid/pngtree-phone-icon-in-solid-circle-png-image_2380227.jpg',
+          requireInteraction: true,
+        },
+        () => {},
+      )
+    }
+  })
+  setLocalJobsToStorage(newAllJobs)
 })
-// {
-// budget: '$1,500\n'
-// date: '2023-04-19T06:25:00.000Z'
-// description: 'Need someone on urgent basis who can develop UI for our application.It is a web application need to be done on Flutter. Figma designs would be provided along with all required functional APIs. The backend is already been done and the designs are ready too. Around 30 screens need to be developed into a responsive UI. Someone who can start immediately and can deliver it in three weeks.'
-// hourly: null
-// keyword: 'Reactjs'
-// link: 'https://www.upwork.com/jobs/Flutter-Web-App-development_%7E017a8df7512bfa7f58?source=rss'
-// notification_triggered: false
-// title: 'Flutter Web App UI development'
-// uid: 'https://www.upwork.com/jobs/Flutter-Web-App-development_%7E017a8df7512bfa7f58?source=rss'
-// __seen: false
-// }
-
 export {}

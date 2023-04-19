@@ -8,7 +8,7 @@ let previousJobs = []
 
 export const getAllJobsData = async (keywords: keywordProps) => {
   let filtered: jobsProps[] = []
-  const { getLocalJobs } = useBgJobs()
+  const { getBgLocalJobs } = useBgJobs()
 
   const url = keywords.rssLink
   if (url)
