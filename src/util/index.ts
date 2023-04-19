@@ -120,7 +120,6 @@ export const compareJobs = (
       })
     }
   })
-  console.log({ allKeywordJobs })
   return allKeywordJobs
 }
 
