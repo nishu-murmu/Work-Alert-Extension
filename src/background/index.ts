@@ -1,5 +1,5 @@
 import useBgJobs from '../customHooks/use-bg-job'
-import { compareArrays, countJobsKeywords, getAllJobsData } from '../util'
+import { compareArrays, compareJobs, countJobsKeywords, getAllJobsData, notify } from '../util'
 import { keywordProps } from '../util/types'
 chrome.alarms.create({
   periodInMinutes: 0.05,
@@ -24,27 +24,16 @@ chrome.alarms.onAlarm.addListener(async () => {
     newAllJobs.push({ keyword: key.keyword, jobs: result, rssLink: key.rssLink })
   }
 
+  // Get previous all jobs
   const previousAllJobs = await chrome.storage.local.get('jobsByKeyword')
 
-  previousAllJobs.jobsByKeyword.map((keyword: keywordProps) => {
-    let jobs = newAllJobs.find((key) => key.keyword === keyword.keyword)
-    const newJobs = compareArrays(keyword.jobs, jobs?.jobs ? jobs.jobs : [])
-    console.log(newJobs, 'new jobs')
-    const keywordObj = countJobsKeywords(newAllJobs)
-    if(newJobs.length > 0) {
-      chrome.notifications.create(
-        {
-          type: 'basic',
-          title: 'New Job Alert',
-          message: JSON.stringify(keywordObj),
-          iconUrl:
-            'https://png.pngtree.com/png-vector/20201028/ourmid/pngtree-phone-icon-in-solid-circle-png-image_2380227.jpg',
-          requireInteraction: true,
-        },
-        () => {},
-      )
-    }
-  })
+  const allKeywordJobs = compareJobs(previousAllJobs, newAllJobs)
+
+  // if have all keyword new jobs, show notification
+  if (allKeywordJobs?.length > 0) {
+    const keywordObj = countJobsKeywords(allKeywordJobs)
+    notify(keywordObj) // send Notification
+  }
   setLocalJobsToStorage(newAllJobs)
 })
 export {}
