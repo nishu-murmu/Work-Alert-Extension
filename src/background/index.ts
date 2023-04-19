@@ -26,7 +26,7 @@ chrome.alarms.onAlarm.addListener(async () => {
 
   const previousAllJobs = await chrome.storage.local.get('jobsByKeyword')
 
-  previousAllJobs.jobsByKeyword.map((keyword: keywordProps) => {
+  previousAllJobs?.jobsByKeyword?.map((keyword: keywordProps) => {
     let jobs = newAllJobs.find((key) => key.keyword === keyword.keyword)
     const newJobs = compareArrays(keyword.jobs, jobs?.jobs ? jobs.jobs : [])
     console.log(newJobs, 'new jobs')

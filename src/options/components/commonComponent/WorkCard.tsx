@@ -17,7 +17,7 @@ const WorkCards:React.FC = () => {
     <div className="flex flex-col overflow-y-scroll h-[440px] gap-y-4">
       {jobs &&
         jobs.map((item: jobsProps) => (
-          <div className="text-green-500 bg-custom-bg  rounded-md p-5 h-auto">
+          <div key={item.uid} className="text-green-500 bg-custom-bg  rounded-md p-5 h-auto">
             <div className="flex text-lg justify-between px-2 w-full text-gray-500">
               <div>
                 {item.date && timeRange(item.date.toString()).type === 'minutes'
