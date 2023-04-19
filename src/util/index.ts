@@ -57,7 +57,7 @@ export const getAllJobsData = async (keywords: keywordProps) => {
       .catch((error) => {
         console.log(error)
       })
- 
+
   return filtered
 }
 
@@ -95,11 +95,6 @@ export const timeRange = (time: string): { range: string | number; type: string 
   else return { range: hours.toFixed(0), type: 'hours' }
 }
 
-interface KeywordObj {
-  keyword: string
-  desc: string
-}
-
 export function countJobsKeywords(arr: jobsProps[]): { [keyword: string]: number } {
   const counts: { [keyword: string]: number } = {}
   for (let i = 0; i < arr.length; i++) {
@@ -107,4 +102,38 @@ export function countJobsKeywords(arr: jobsProps[]): { [keyword: string]: number
     counts[keyword] = (counts[keyword] || 0) + 1
   }
   return counts
+}
+
+export const compareJobs = (
+  previousAllJobs: {
+    [key: string]: any
+  },
+  newAllJobs: any,
+) => {
+  const allKeywordJobs: any[] = []
+  previousAllJobs.jobsByKeyword.map((keyword: keywordProps) => {
+    let jobs = newAllJobs.find((key: any) => key.keyword === keyword.keyword)
+    const newJobs = compareArrays(keyword.jobs, jobs?.jobs ? jobs.jobs : [])
+    if (newJobs.length > 0) {
+      newJobs.forEach((element) => {
+        allKeywordJobs.push(element)
+      })
+    }
+  })
+  console.log({ allKeywordJobs })
+  return allKeywordJobs
+}
+
+export const notify = (keywordObject: { [keyword: string]: number }) => {
+  chrome.notifications.create(
+    {
+      type: 'basic',
+      title: 'New Job Alert',
+      message: JSON.stringify(keywordObject),
+      iconUrl:
+        'https://png.pngtree.com/png-vector/20201028/ourmid/pngtree-phone-icon-in-solid-circle-png-image_2380227.jpg',
+      requireInteraction: true,
+    },
+    () => {},
+  )
 }
