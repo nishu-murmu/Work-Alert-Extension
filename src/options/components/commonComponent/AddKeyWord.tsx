@@ -12,16 +12,14 @@ const AddKeyWordSection: React.FC = () => {
   const [isEmptyFields, setIsEmptyFields] = useRecoilState(isEmpty)
   const { setLocalJobs, getLocalJobs } = useOpJobs()
 
-  const submitHandler = (keyword: string, rssLink: string) => {
+  const submitHandler = async (keyword: string, rssLink: string) => {
     if (!keyword || !rssLink) {
       setIsEmptyFields((prevState) => !prevState)
     } else {
-      setLocalJobs(keyword, rssLink)
-      setTimeout(() => {
-        getLocalJobs()
-        setKeyword("")
-        setRssLink("")
-      }, 1000);
+      const res = await setLocalJobs(keyword, rssLink)
+      res && getLocalJobs()
+      setKeyword('')
+      setRssLink('')
     }
   }
 
