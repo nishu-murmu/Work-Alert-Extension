@@ -3,8 +3,8 @@ import { jobsProps, keywordProps } from './types'
 import he from 'he'
 import useBgJobs from '../customHooks/use-bg-job'
 const parser = new XMLParser.XMLParser()
-  let newJobs: any[] = []
-  let previousJobs = []
+let newJobs: any[] = []
+let previousJobs = []
 
 export const getAllJobsData = async (keywords: keywordProps) => {
   let filtered: jobsProps[] = []
@@ -57,21 +57,7 @@ export const getAllJobsData = async (keywords: keywordProps) => {
       .catch((error) => {
         console.log(error)
       })
-  getLocalJobs().then((allJobs) => {
-    let prevJobs = allJobs || []
-
-    // prevent duplicate logic
-    if(prevJobs.filter((item: keywordProps) => item.rssLink === keywords.rssLink).length === 0) {
-      // setting local storage first and syncing it
-      chrome.storage.local.set({
-        jobsByKeyword: [
-          ...prevJobs,
-          { jobs: filtered, rssLink: keywords.rssLink, keyword: keywords.keyword },
-        ],
-      })
-    }
-    getLocalJobs()
-  })
+ 
   return filtered
 }
 
@@ -80,15 +66,14 @@ export function compareArrays(previousJob: any, newJob: any) {
 
   for (let i = 0; i < newJob.length; i++) {
     let flag = false
-    for(let j = 0; j < previousJob.length; ++j) {
-        if(newJob[i]["uid"] === previousJob[j]["uid"]) {
-          flag = true
-        }
+    for (let j = 0; j < previousJob.length; ++j) {
+      if (newJob[i]['uid'] === previousJob[j]['uid']) {
+        flag = true
+      }
     }
-    if(!flag) {
+    if (!flag) {
       uniqueJobs.push(newJob[i])
     }
-
   }
   return uniqueJobs
 }
@@ -102,10 +87,24 @@ export const truncate = (string: string) => {
   return decodedText.length > 190 ? decodedText.substring(0, 190) + ' ...' : decodedText
 }
 
-export const timeRange = (time: string): {range: string | number, type: string} => {
+export const timeRange = (time: string): { range: string | number; type: string } => {
   const range: number = Date.now() - Number(new Date(time))
   const hours: number = Math.floor(range / (60 * 60 * 1000))
-  if(hours > 24) return {range:Math.floor(hours/ 24), type:'days'}
-  if(hours === 0) return {range:Math.floor(range / (60 * 1000)),type: 'minutes'}
-  else return {range:hours.toFixed(0), type: 'hours'}
+  if (hours > 24) return { range: Math.floor(hours / 24), type: 'days' }
+  if (hours === 0) return { range: Math.floor(range / (60 * 1000)), type: 'minutes' }
+  else return { range: hours.toFixed(0), type: 'hours' }
+}
+
+interface KeywordObj {
+  keyword: string
+  desc: string
+}
+
+export function countJobsKeywords(arr: jobsProps[]): { [keyword: string]: number } {
+  const counts: { [keyword: string]: number } = {}
+  for (let i = 0; i < arr.length; i++) {
+    const keyword = arr[i].keyword
+    counts[keyword] = (counts[keyword] || 0) + 1
+  }
+  return counts
 }

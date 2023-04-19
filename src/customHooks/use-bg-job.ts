@@ -1,14 +1,13 @@
 import { getAllJobsData } from '../util'
 
 const useBgJobs = () => {
-  const getLocalJobs = async () => {
+  const getBgLocalJobs = async () => {
     const result = await chrome.storage.local.get('jobsByKeyword')
     return result.jobsByKeyword
   }
 
   const setLocalJobs = (keyword: string, rssLink: string) => {
     getAllJobsData({ keyword, rssLink }).then((data) => {
-      console.log(data)
     })
   }
 
@@ -16,7 +15,7 @@ const useBgJobs = () => {
     chrome.storage.local.set({ jobsByKeyword })
   }
 
-  return { getLocalJobs, setLocalJobs, setLocalJobsToStorage }
+  return { getBgLocalJobs, setLocalJobs, setLocalJobsToStorage }
 }
 
 export default useBgJobs
