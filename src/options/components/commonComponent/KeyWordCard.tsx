@@ -1,28 +1,38 @@
 import { BinIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
-import { RecoilState, useRecoilState } from 'recoil'
-import { clickedKeyword, isJobs } from '../../atoms'
+import { useRecoilState } from 'recoil'
+import { clickedKeyword, isJobs, keywords } from '../../atoms'
+import useBgJobs from '../../../customHooks/use-bg-job'
 import { useEffect } from 'react'
+import { keywordProps } from '../../../util/types'
 
 const KeyWordCards = () => {
-  const { allJobs, setLocalJobs, viewJobsHandler } = useOpJobs()
+  const { allJobs, setLocalJobs, viewJobsHandler, deleteLocalJobs} = useOpJobs()
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
+  const [keys, setKeywords] = useRecoilState(keywords)
+
+  const {getBgKeywords} = useBgJobs()
   const clickHandler = (key: any) => {
     setIsClicked((prev) => !prev)
     setClickKeyword(key)
     viewJobsHandler(key)
   }
 
+  useEffect(() => {
+    getBgKeywords().then((res: any) => setKeywords(res))
+  },[])
+  console.log(keys,'keys')
+
   return (
     <div className="flex flex-col gap-y-4 overflow-y-scroll h-[440px] py-2">
-      {allJobs &&
-        allJobs.map((item) => (
+      {keys &&
+        keys.map((item: keywordProps) => (
           <div key={item.keyword} className=" border border-green-400 rounded-md p-8 m-2">
             <div className="text-sm pl-12 text-gray-400">Keyword</div>
             <div className="flex justify-between text-lg">
               <div className="flex gap-x-6">
-                <span onClick={() => setLocalJobs(item.keyword)}>
+                <span onClick={() => deleteLocalJobs(item.keyword)}>
                   <BinIcon
                     fillColor="black"
                     className={'hover:cursor-pointer'}
@@ -31,13 +41,20 @@ const KeyWordCards = () => {
                 </span>
                 <span
                   className="text-lg hover:underline hover:cursor-pointer"
-                  onClick={() => clickHandler({ keyword: item.keyword, jobs: item.jobs, isClicked: true, rssLink: item.rssLink })}
+                  onClick={() =>
+                    clickHandler({
+                      keyword: item.keyword,
+                      jobs: item.jobs,
+                      isClicked: true,
+                      rssLink: item.rssLink,
+                    })
+                  }
                 >
                   {item.keyword}
                 </span>
               </div>
               <span className="text-lg text-black py-2 px-3 bg-green-500 rounded-full">
-                {item.jobs && item.jobs.length}
+                {/* {item.jobs && item.jobs.length} */}
               </span>
             </div>
           </div>

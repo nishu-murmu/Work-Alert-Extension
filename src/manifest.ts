@@ -26,11 +26,6 @@ export default defineManifest({
       js: ['src/content/index.ts'],
     },
   ],
-  web_accessible_resources: [
-    {
-      resources: [],
-      matches: [],
-    },
-  ],
+  web_accessible_resources: [],
   permissions: ['tabs', 'storage', 'activeTab', 'alarms', 'notifications'],
 })
