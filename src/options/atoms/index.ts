@@ -31,7 +31,7 @@ export const isEmpty = atom({
   default: false,
 })
 
-export const keywords:RecoilState<string[]> = atom({
+export const keywords = atom({
   key: 'keywords',
-  default: [""]
+  default:[]
 })

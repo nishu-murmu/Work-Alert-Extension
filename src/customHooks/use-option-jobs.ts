@@ -1,13 +1,14 @@
 import { useRecoilState } from 'recoil'
 import { getAllJobsData } from '../util'
-import { allJobsState, jobsState } from '../options/atoms'
+import { allJobsState, jobsState, keywords } from '../options/atoms'
 import { useEffect, useState } from 'react'
 import { jobsProps, keywordProps } from '../util/types'
 import useBgJobs from './use-bg-job'
 
 const useOpJobs = () => {
   const [allJobs, setallJobs] = useRecoilState(allJobsState)
-  const { getBgLocalJobs } = useBgJobs()
+  const [keys, setKeywords] = useRecoilState(keywords)
+  const { getBgLocalJobs, getBgKeywords } = useBgJobs()
 
   useEffect(() => {
     getLocalJobs()
@@ -19,34 +20,53 @@ const useOpJobs = () => {
     })
   }
 
-  const setLocalJobs = async (keyword: string, rssLink?: string) => {
-    // delete keycard logic
-    if (!rssLink) {
-      chrome.storage.local.set({
-        jobsByKeyword: allJobs.filter((item) => item.keyword !== keyword),
-      })
-      getLocalJobs()
-    } else {
-      const ans = await getAllJobsData({ keyword, rssLink })
+  const setLocalKeywords = async (keyword: string, rssLink: string) => {
+    getBgKeywords().then((keywords: any) => {
+      if (keys.filter((item: keywordProps) => item.rssLink === rssLink).length === 0){
+        chrome.storage.local.set({ keywords: [...keys, { keyword, rssLink }] }).then(()=>{
+          getBgKeywords().then((keywords:any)=>{
+            setKeywords(keywords)
+          })
+        })
+      }
+    })
+  }
 
-      getBgLocalJobs().then((allJobs) => {
+  const deleteLocalJobs = (keyword: string) => {
+    getBgKeywords().then((keywords:any)=>{
+      let filteredKeywords=keywords.filter((a:any)=>a.keyword!=keyword)
+      chrome.storage.local.set({keywords:filteredKeywords}).then(()=>{
+        getBgKeywords().then((keywords: any) => {
+          setKeywords(keywords)
+        })
+      });
+    })
+
+    getBgLocalJobs().then((jobsByKeyword: any) => {
+      let filteredKeywords = jobsByKeyword.filter((a: any) => a.keyword != keyword)
+      chrome.storage.local.set({ jobsByKeyword: filteredKeywords }).then(() => {
+        getBgLocalJobs().then((jobsByKeyword: any) => {
+          setallJobs(jobsByKeyword)
+        })
+      })
+    })
+  }
+
+  const setLocalJobs = async (keyword: string, rssLink?: string) => {
+      const ans = await getAllJobsData({ keyword, rssLink })
+      getBgLocalJobs().then((allJobs: any) => {
         let prevJobs = allJobs || []
 
-        // prevent duplicate logic
         if (prevJobs.filter((item: keywordProps) => item.rssLink === rssLink).length === 0) {
-          // setting local storage first and syncing it
-
           chrome.storage.local.set({
             jobsByKeyword: [...prevJobs, { jobs: ans, rssLink: rssLink, keyword: keyword }],
-          })
-          chrome.storage.local.get('jobsByKeyword', (data) => {
-            setallJobs(data.jobsByKeyword)
+          }).then(() => {
+            getBgLocalJobs().then((jobsByKeyword: any) => {
+              setallJobs(jobsByKeyword)
+            })
           })
         }
       })
-      return true
-    }
-    return false
   }
 
   const viewJobsHandler = (keyword: keywordProps) => {
@@ -68,7 +88,7 @@ const useOpJobs = () => {
     getLocalJobs()
   }
 
-  return { getLocalJobs, setLocalJobs, viewJobsHandler, allJobs }
+  return { getLocalJobs, setLocalJobs, viewJobsHandler, allJobs, deleteLocalJobs, setLocalKeywords }
 }
 
 export default useOpJobs
