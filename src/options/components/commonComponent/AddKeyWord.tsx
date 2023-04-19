@@ -15,10 +15,10 @@ const AddKeyWordSection: React.FC = () => {
     if (!keyword || !rssLink) {
       setIsEmptyFields((prevState) => !prevState)
     } else {
-      setLocalKeywords(keyword, rssLink)
-      await setLocalJobs(keyword, rssLink)
       setKeyword('')
       setRssLink('')
+      setLocalKeywords(keyword, rssLink)
+      await setLocalJobs(keyword, rssLink)
     }
   }
 

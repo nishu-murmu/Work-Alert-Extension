@@ -44,10 +44,7 @@ const useOpJobs = () => {
     })
 
     getBgLocalJobs().then((jobsByKeyword: any) => {
-      console.log(jobsByKeyword,'jobs aaya')
       let filteredJobs = jobsByKeyword.filter((a: any) => a.keyword !== keyword)
-      console.log(keyword,'word')
-      console.log(filteredJobs, 'jobs')
       chrome.storage.local.set({ jobsByKeyword: filteredJobs }).then(() => {
         getBgLocalJobs().then((jobsByKeyword: any) => {
           setallJobs(jobsByKeyword)
@@ -60,13 +57,11 @@ const useOpJobs = () => {
       const ans = await getAllJobsData({ keyword, rssLink })
       getBgLocalJobs().then((allJobs: any) => {
         let prevJobs = allJobs || []
-        console.log(prevJobs,'prev jobs')
         if (prevJobs.filter((item: keywordProps) => item.rssLink === rssLink).length === 0) {
           chrome.storage.local.set({
             jobsByKeyword: [...prevJobs, { jobs: ans, rssLink: rssLink, keyword: keyword }],
           }).then(() => {
             getBgLocalJobs().then((jobsByKeyword: any) => {
-              console.log(jobsByKeyword, 'jobs after merge')
               setallJobs(jobsByKeyword)
             })
           })

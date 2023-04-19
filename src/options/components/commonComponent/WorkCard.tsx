@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { timeRange, truncate } from '../../../util'
 import { jobsProps, keywordProps } from '../../../util/types'
-import { clickedKeyword } from '../../atoms'
+import { clickedKeyword, isJobs } from '../../atoms'
 import { useRecoilState } from 'recoil'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 
@@ -9,12 +9,13 @@ const WorkCards:React.FC = () => {
   const [readMoreClicked, setReadMoreClicked] = useState(false)
   const { allJobs } = useOpJobs()
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
+  const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickedValue, setClickedValue] = useState<string | undefined>('')
   let jobs = allJobs.find((keyword: keywordProps) => keyword.keyword === clickKeyword.keyword)?.jobs
 
 
   return (
-    <div className="flex flex-col overflow-y-scroll h-[440px] gap-y-4">
+    <div className={`flex flex-col overflow-y-scroll ${isClick? "h-[620px]":'h-[440px]'} gap-y-4`}>
       {jobs &&
         jobs.map((item: jobsProps) => (
           <div key={item.uid} className="text-green-500 bg-custom-bg  rounded-md p-5 h-auto">

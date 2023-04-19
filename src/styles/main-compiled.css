@@ -563,6 +563,22 @@ video {
   height: 100vh;
 }
 
+.h-\[720px\] {
+  height: 720px;
+}
+
+.h-\[620px\] {
+  height: 620px;
+}
+
+.h-\[640px\] {
+  height: 640px;
+}
+
+.h-\[540px\] {
+  height: 540px;
+}
+
 .w-2\/5 {
   width: 40%;
 }

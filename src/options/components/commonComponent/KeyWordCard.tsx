@@ -22,10 +22,9 @@ const KeyWordCards = () => {
   useEffect(() => {
     getBgKeywords().then((res: any) => setKeywords(res))
   },[])
-  console.log(keys,'keys')
 
   return (
-    <div className="flex flex-col gap-y-4 overflow-y-scroll h-[440px] py-2">
+    <div className="flex flex-col gap-y-4 overflow-y-scroll h-[540px] py-2">
       {keys &&
         keys.map((item: keywordProps) => (
           <div key={item.keyword} className=" border border-green-400 rounded-md p-8 m-2">
