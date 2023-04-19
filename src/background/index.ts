@@ -2,10 +2,16 @@ import useBgJobs from '../customHooks/use-bg-job'
 import { compareArrays, compareJobs, countJobsKeywords, getAllJobsData, notify } from '../util'
 import { keywordProps } from '../util/types'
 
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.tabs.create({
+    url: `chrome-extension://${chrome.runtime.id}/options.html`,
+  })
+})
+
 chrome.action.onClicked.addListener(() => {
-    chrome.tabs.create({
-        url: `chrome-extension://${chrome.runtime.id}/options.html`
-    })
+  chrome.tabs.create({
+    url: `chrome-extension://${chrome.runtime.id}/options.html`,
+  })
 })
 
 chrome.alarms.create({
