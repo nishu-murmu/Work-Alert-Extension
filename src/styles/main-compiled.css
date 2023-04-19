@@ -555,28 +555,20 @@ video {
   height: 440px;
 }
 
-.h-auto {
-  height: auto;
-}
-
-.h-screen {
-  height: 100vh;
-}
-
-.h-\[720px\] {
-  height: 720px;
+.h-\[540px\] {
+  height: 540px;
 }
 
 .h-\[620px\] {
   height: 620px;
 }
 
-.h-\[640px\] {
-  height: 640px;
+.h-auto {
+  height: auto;
 }
 
-.h-\[540px\] {
-  height: 540px;
+.h-screen {
+  height: 100vh;
 }
 
 .w-2\/5 {
