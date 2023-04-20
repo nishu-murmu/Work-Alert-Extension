@@ -47,12 +47,19 @@ const useBgJobs = () => {
   }
 
   const deleteLocalKeywordsCount = (keyword: string) => {
-    getLocalKeywordsCount().then((keywordsCount:any) => {
-      const filteredCounts = keywordsCount.filter((key:any) => key.keyword!== keyword)
-      chrome.storage.local.set({keywordsCount: filteredCounts})
-    }, () => {
-      chrome.runtime.sendMessage({key: "deleteKeyCount"})
-    })
+    console.log(keyword, 'keyword in delete')
+    getLocalKeywordsCount().then(
+      (keywordsCount: any) => {
+        if (keywordsCount) {
+          const filteredCounts = keywordsCount.filter((key: any) => key.keyword !== keyword)
+          console.log(filteredCounts, 'counts')
+          chrome.storage.local.set({ keywordsCount: filteredCounts })
+        }
+      },
+      () => {
+        chrome.runtime.sendMessage({ key: 'deleteKeyCount' })
+      },
+    )
   }
 
   return {
