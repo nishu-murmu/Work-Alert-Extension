@@ -8,7 +8,7 @@ import useBgJobs from './use-bg-job'
 const useOpJobs = () => {
   const [allJobs, setAllJobs] = useRecoilState(allJobsState)
   const [keys, setKeywords] = useRecoilState(keywords)
-  const { getBgLocalJobs, getBgKeywords } = useBgJobs()
+  const { getBgLocalJobs, getBgKeywords, deleteLocalKeywordsCount } = useBgJobs()
 
   useEffect(() => {
     getLocalJobs()
@@ -39,6 +39,7 @@ const useOpJobs = () => {
         })
       })
     })
+    deleteLocalKeywordsCount(keyword)
   }
 
   const setLocalKeywords = async (keyword: string, rssLink: string) => {
