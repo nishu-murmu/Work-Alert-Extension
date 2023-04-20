@@ -15,7 +15,7 @@ const WorkCards: React.FC = () => {
 
   return (
     <div
-      className={`flex flex-col overflow-y-scroll ${isClick ? 'h-[620px]' : 'h-[440px]'} gap-y-4`}
+      className={`grid grid-cols-2 grid-flow-row w-full flex-col gap-y-4 overflow-y-scroll max-h-[780px] py-2 gap-4`}
     >
       {jobs &&
         jobs.map((item: jobsProps) => (

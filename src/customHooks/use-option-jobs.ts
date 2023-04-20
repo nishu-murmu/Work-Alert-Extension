@@ -12,6 +12,12 @@ const useOpJobs = () => {
 
   useEffect(() => {
     getLocalJobs()
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+      if (request.alert === 'Update State') {
+        setAllJobs(request.jobsByKeyword)
+        sendResponse({ success: true })
+      }
+    })
   }, [])
 
   const getLocalJobs = () => {
@@ -95,12 +101,6 @@ const useOpJobs = () => {
     chrome.storage.local.get('jobsByKeyword', (res) => {})
     getLocalJobs()
   }
-  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.alert === 'Update State') {
-      setAllJobs(request.jobsByKeyword)
-      sendResponse({ success: true })
-    }
-  })
 
   return { getLocalJobs, setLocalJobs, viewJobsHandler, allJobs, deleteLocalJobs, setLocalKeywords }
 }
