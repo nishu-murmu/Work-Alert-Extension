@@ -24,7 +24,7 @@ const KeyWordCards = () => {
   }, [])
 
   return (
-    <div className="grid grid-cols-2 grid-flow-row w-full flex-col gap-y-4 overflow-y-scroll max-h-[680px] py-2">
+    <div className=" w-full flex-col gap-y-4 overflow-y-scroll max-h-[680px] py-2">
       {keys &&
         keys.map((item: keywordProps) => (
           <div key={item.keyword} className="border border-green-400 rounded-md p-4 m-2">
