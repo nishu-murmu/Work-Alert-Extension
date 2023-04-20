@@ -13,16 +13,14 @@ const KeyWordCards = () => {
 
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
-  const [keywordsCount, setKeywordsCount] = useRecoilState(keywordCount)
+  const [keywordsCount, setKeywordsCount] = useRecoilState<any[]>(keywordCount)
   const [keys, setKeywords] = useRecoilState(keywords)
-
-
-  const {getBgKeywords, getLocalKeywordsCount} = useBgJobs()
 
   const clickHandler = (key: any) => {
     setIsClicked(!isClick)
     setClickKeyword(key)
     viewJobsHandler(key)
+    console.log(key,'key')
     deleteLocalKeywordsCount(key.keyword)
   }
 
@@ -79,7 +77,7 @@ const KeyWordCards = () => {
               </div>
               <div className="flex items-center justify-center">
                 <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
-                  {/* {item.jobs && item.jobs.length} */}0
+                  {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count || 0}
                 </span>
               </div>
             </div>
