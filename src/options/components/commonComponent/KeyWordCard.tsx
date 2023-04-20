@@ -8,24 +8,35 @@ import { keywordProps } from '../../../util/types'
 
 const KeyWordCards = () => {
   const { allJobs, setLocalJobs, viewJobsHandler, deleteLocalJobs} = useOpJobs()
+  const { getBgKeywords, getLocalKeywordsCount, deleteLocalKeywordsCount } = useBgJobs()
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
   const [keywordsCount, setKeywordsCount] = useRecoilState(keywordCount)
   const [keys, setKeywords] = useRecoilState(keywords)
 
-  const {getBgKeywords, getLocalKeywordsCount} = useBgJobs()
   const clickHandler = (key: any) => {
     setIsClicked(!isClick)
     setClickKeyword(key)
     viewJobsHandler(key)
+    deleteLocalKeywordsCount(key.keyword)
   }
 
   useEffect(() => {
     getBgKeywords().then((res: any) => setKeywords(res))
-    getLocalKeywordsCount().then((res:any) => {
-      setKeywordsCount(res)
+
+    chrome.runtime.onMessage.addListener((req) => {
+      if (req.type === 'addKeyCount') {
+        getLocalKeywordsCount().then((res: any) => {
+          setKeywordsCount(res)
+        })
+      }
+      if (req.type === 'deleteKeyCount') {
+        getLocalKeywordsCount().then((res: any) => {
+          setKeywordsCount(res)
+        })
+      }
     })
-  },[])
+  }, [])
 
   return (
     <div className="flex flex-col gap-y-4 overflow-y-scroll h-[540px] py-2">
@@ -56,8 +67,8 @@ const KeyWordCards = () => {
                   {item.keyword}
                 </span>
               </div>
-              <span className="text-lg text-black py-2 px-3 bg-green-500 rounded-full">
-                {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count}
+              <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
+                {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count || 0}
               </span>
             </div>
           </div>
