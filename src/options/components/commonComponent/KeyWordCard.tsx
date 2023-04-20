@@ -14,7 +14,7 @@ const KeyWordCards = () => {
 
   const {getBgKeywords} = useBgJobs()
   const clickHandler = (key: any) => {
-    setIsClicked((prev) => !prev)
+    setIsClicked(!isClick)
     setClickKeyword(key)
     viewJobsHandler(key)
   }
