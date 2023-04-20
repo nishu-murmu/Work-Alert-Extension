@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { timeRange, truncate } from '../../../util'
 import { jobsProps, keywordProps } from '../../../util/types'
-import { clickedKeyword, isJobs } from '../../atoms'
+import { clickedKeyword, isJobs, keywordCount } from '../../atoms'
 import { useRecoilState } from 'recoil'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 
@@ -11,6 +11,7 @@ const WorkCards: React.FC = () => {
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickedValue, setClickedValue] = useState<string | undefined>('')
+  const [keywordsCount, setKeywordsCount] = useRecoilState<any[]>(keywordCount)
   let jobs = allJobs.find((keyword: keywordProps) => keyword.keyword === clickKeyword.keyword)?.jobs
 
   return (
