@@ -563,6 +563,18 @@ video {
   height: 100vh;
 }
 
+.h-\[440px\] {
+  height: 440px;
+}
+
+.h-\[540px\] {
+  height: 540px;
+}
+
+.h-\[620px\] {
+  height: 620px;
+}
+
 .max-h-\[680px\] {
   max-height: 680px;
 }
@@ -713,6 +725,10 @@ video {
 
 .p-5 {
   padding: 1.25rem;
+}
+
+.p-8 {
+  padding: 2rem;
 }
 
 .px-2 {

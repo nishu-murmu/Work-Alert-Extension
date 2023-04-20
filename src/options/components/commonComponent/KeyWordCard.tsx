@@ -40,6 +40,7 @@ const KeyWordCards = () => {
         })
       }
     })
+    console.log(keywordsCount,'count')
   }, [])
 
   return (
