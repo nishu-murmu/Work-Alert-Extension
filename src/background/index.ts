@@ -1,5 +1,5 @@
 import useBgJobs from '../customHooks/use-bg-job'
-import { compareArrays, compareJobs, countJobsKeywords, getAllJobsData, notify } from '../util'
+import { compareArrays, compareJobs, countJobsKeywords, getAllJobsData, notify, separateCounts } from '../util'
 import { keywordProps } from '../util/types'
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -24,7 +24,7 @@ interface keywordsProps {
   rssLink?: string
 }
 
-const { setLocalJobsToStorage } = useBgJobs()
+const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
 
 chrome.alarms.onAlarm.addListener(async () => {
   const value = await chrome.storage.local.get('jobsByKeyword')
@@ -42,10 +42,14 @@ chrome.alarms.onAlarm.addListener(async () => {
 
   const allKeywordJobs = compareJobs(previousAllJobs, newAllJobs)
 
+
   // if have all keyword new jobs, show notification
   if (allKeywordJobs?.length > 0) {
     const keywordObj = countJobsKeywords(allKeywordJobs)
     notify(keywordObj) // send Notification
+
+    const result = separateCounts(allKeywordJobs)
+    setLocalKeywordsCount(result)
     setLocalJobsToStorage(newAllJobs)
   }
 })
