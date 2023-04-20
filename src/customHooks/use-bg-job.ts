@@ -18,6 +18,8 @@ const useBgJobs = () => {
 
   const setLocalJobsToStorage = (jobsByKeyword: any) => {
     chrome.storage.local.set({ jobsByKeyword })
+
+    chrome.runtime.sendMessage({ alert: 'Update State', jobsByKeyword }, (response) => {})
   }
 
   const getLocalKeywordsCount = async () => {

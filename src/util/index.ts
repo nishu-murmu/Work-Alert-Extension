@@ -95,6 +95,8 @@ export const timeRange = (time: string): { range: string | number; type: string 
   else return { range: hours.toFixed(0), type: 'hours' }
 }
 
+
+
 export function countJobsKeywords(arr: jobsProps[]): { [keyword: string]: number } {
   const counts: { [keyword: string]: number } = {}
   for (let i = 0; i < arr.length; i++) {

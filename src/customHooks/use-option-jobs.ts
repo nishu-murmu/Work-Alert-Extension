@@ -1,5 +1,5 @@
 import { useRecoilState } from 'recoil'
-import { getAllJobsData } from '../util'
+import { getAllJobsData, timeRange } from '../util'
 import { allJobsState, jobsState, keywords } from '../options/atoms'
 import { useEffect, useState } from 'react'
 import { jobsProps, keywordProps } from '../util/types'
@@ -12,11 +12,16 @@ const useOpJobs = () => {
 
   useEffect(() => {
     getLocalJobs()
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+      if (request.alert === 'Update State') {
+        setAllJobs(request.jobsByKeyword)
+        sendResponse({ success: true })
+      }
+    })
   }, [])
 
   const getLocalJobs = () => {
     chrome.storage.local.get('jobsByKeyword', (res) => {
-      // chrome.storage.local.set({jobsByKeyword:res})
       setAllJobs(res.jobsByKeyword)
     })
   }
@@ -94,8 +99,7 @@ const useOpJobs = () => {
         }
       }),
     })
-    chrome.storage.local.get('jobsByKeyword', (res) => {
-    })
+    chrome.storage.local.get('jobsByKeyword', (res) => {})
     getLocalJobs()
   }
 
