@@ -36,7 +36,7 @@ export const keywords = atom({
   default:[]
 })
 
-export const keywordCount = atom({
+export const keywordCount:any = atom({
   key: "keywordsCount",
   default:[]
 })
