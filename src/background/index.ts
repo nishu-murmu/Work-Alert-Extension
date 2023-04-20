@@ -46,7 +46,7 @@ chrome.alarms.onAlarm.addListener(async () => {
   if (allKeywordJobs?.length > 0) {
     const keywordObj = countJobsKeywords(allKeywordJobs)
     notify(keywordObj) // send Notification
+    setLocalJobsToStorage(newAllJobs)
   }
-  setLocalJobsToStorage(newAllJobs)
 })
 export {}
