@@ -27,6 +27,9 @@ const KeyWordCards = () => {
   useEffect(() => {
     getBgKeywords().then((res: any) => setKeywords(res))
 
+    getLocalKeywordsCount().then((res: any) => {
+      setKeywordsCount(res)
+    })
 
     chrome.runtime.onMessage.addListener((req) => {
       if (req.type === 'addKeyCount') {
@@ -77,9 +80,9 @@ const KeyWordCards = () => {
                 </div>
               </div>
               <div className="flex items-center justify-center">
-                <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
-                  {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count || 0}
-                </span>
+                {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count && <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
+                  {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count}
+                </span>}
               </div>
             </div>
           </div>
