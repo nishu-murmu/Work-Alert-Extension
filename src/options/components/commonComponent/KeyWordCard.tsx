@@ -50,7 +50,13 @@ const KeyWordCards = () => {
     <div className=" w-full flex-col gap-y-4 overflow-y-scroll max-h-[680px] py-2">
       {keys &&
         keys.map((item: keywordProps) => (
-          <div key={item.keyword} className="border border-green-400 rounded-md p-4 m-2">
+          <div
+            key={item.keyword}
+            className={`border ${
+              keywordsCount.find((key: any) => key.keyword === item.keyword)?.count ?
+              'border-green-400': "border-none"
+            } bg-custom-bg rounded-md p-4 m-2`}
+          >
             <div className="flex justify-between">
               <div>
                 <div className="text-sm pl-12 text-gray-400">Keyword</div>
@@ -80,9 +86,11 @@ const KeyWordCards = () => {
                 </div>
               </div>
               <div className="flex items-center justify-center">
-                {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count && <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
-                  {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count}
-                </span>}
+                {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count && (
+                  <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
+                    {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count}
+                  </span>
+                )}
               </div>
             </div>
           </div>
