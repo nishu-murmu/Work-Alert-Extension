@@ -18,6 +18,10 @@ const useBgJobs = () => {
 
   const setLocalJobsToStorage = (jobsByKeyword: any) => {
     chrome.storage.local.set({ jobsByKeyword })
+
+    chrome.runtime.sendMessage({ alert: 'Update State', jobsByKeyword }, (response) => {
+      console.log({ response })
+    })
   }
 
   return { getBgLocalJobs, setLocalJobs, setLocalJobsToStorage, getBgKeywords }
