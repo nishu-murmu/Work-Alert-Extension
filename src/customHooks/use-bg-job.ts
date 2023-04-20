@@ -40,7 +40,18 @@ const useBgJobs = () => {
             return acc
           }
         }, [])
-      chrome.storage.local.set({ keywordsCount: value })
+      chrome.storage.local.set({ keywordsCount: value }, () => {
+        chrome.runtime.sendMessage({type: "addKeyCount"})
+      })
+    })
+  }
+
+  const deleteLocalKeywordsCount = (keyword: string) => {
+    getLocalKeywordsCount().then((keywordsCount:any) => {
+      const filteredCounts = keywordsCount.filter((key:any) => key.keyword!== keyword)
+      chrome.storage.local.set({keywordsCount: filteredCounts})
+    }, () => {
+      chrome.runtime.sendMessage({key: "deleteKeyCount"})
     })
   }
 
@@ -51,6 +62,7 @@ const useBgJobs = () => {
     getBgKeywords,
     getLocalKeywordsCount,
     setLocalKeywordsCount,
+    deleteLocalKeywordsCount,
   }
 }
 

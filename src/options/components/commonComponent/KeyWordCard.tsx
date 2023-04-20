@@ -7,26 +7,42 @@ import { useEffect } from 'react'
 import { keywordProps } from '../../../util/types'
 
 const KeyWordCards = () => {
-  const { allJobs, setLocalJobs, viewJobsHandler, deleteLocalJobs } = useOpJobs()
+
+  const { allJobs, setLocalJobs, viewJobsHandler, deleteLocalJobs} = useOpJobs()
+  const { getBgKeywords, getLocalKeywordsCount, deleteLocalKeywordsCount } = useBgJobs()
+
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
   const [keywordsCount, setKeywordsCount] = useRecoilState(keywordCount)
   const [keys, setKeywords] = useRecoilState(keywords)
 
- 
+
   const {getBgKeywords, getLocalKeywordsCount} = useBgJobs()
- 
+
   const clickHandler = (key: any) => {
     setIsClicked(!isClick)
     setClickKeyword(key)
     viewJobsHandler(key)
+    deleteLocalKeywordsCount(key.keyword)
   }
 
   useEffect(() => {
     getBgKeywords().then((res: any) => setKeywords(res))
- 
+
+
+    chrome.runtime.onMessage.addListener((req) => {
+      if (req.type === 'addKeyCount') {
+        getLocalKeywordsCount().then((res: any) => {
+          setKeywordsCount(res)
+        })
+      }
+      if (req.type === 'deleteKeyCount') {
+        getLocalKeywordsCount().then((res: any) => {
+          setKeywordsCount(res)
+        })
+      }
+    })
   }, [])
- 
 
   return (
     <div className=" w-full flex-col gap-y-4 overflow-y-scroll max-h-[680px] py-2">
@@ -66,7 +82,6 @@ const KeyWordCards = () => {
                   {/* {item.jobs && item.jobs.length} */}0
                 </span>
               </div>
- 
             </div>
           </div>
         ))}
