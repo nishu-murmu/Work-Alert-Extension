@@ -1,7 +1,7 @@
 import { BinIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { useRecoilState } from 'recoil'
-import { clickedKeyword, isJobs, keywords } from '../../atoms'
+import { clickedKeyword, isJobs, keywordCount, keywords } from '../../atoms'
 import useBgJobs from '../../../customHooks/use-bg-job'
 import { useEffect } from 'react'
 import { keywordProps } from '../../../util/types'
@@ -10,9 +10,12 @@ const KeyWordCards = () => {
   const { allJobs, setLocalJobs, viewJobsHandler, deleteLocalJobs } = useOpJobs()
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
+  const [keywordsCount, setKeywordsCount] = useRecoilState(keywordCount)
   const [keys, setKeywords] = useRecoilState(keywords)
 
-  const { getBgKeywords } = useBgJobs()
+ 
+  const {getBgKeywords, getLocalKeywordsCount} = useBgJobs()
+ 
   const clickHandler = (key: any) => {
     setIsClicked(!isClick)
     setClickKeyword(key)
@@ -21,7 +24,9 @@ const KeyWordCards = () => {
 
   useEffect(() => {
     getBgKeywords().then((res: any) => setKeywords(res))
+ 
   }, [])
+ 
 
   return (
     <div className=" w-full flex-col gap-y-4 overflow-y-scroll max-h-[680px] py-2">
@@ -61,6 +66,7 @@ const KeyWordCards = () => {
                   {/* {item.jobs && item.jobs.length} */}0
                 </span>
               </div>
+ 
             </div>
           </div>
         ))}

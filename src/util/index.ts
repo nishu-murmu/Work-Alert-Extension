@@ -139,3 +139,24 @@ export const notify = (keywordObject: { [keyword: string]: number }) => {
     () => {},
   )
 }
+
+
+export const separateCounts = (arr: any) => {
+  const dict: any = {}
+  for (let i = 0; i < arr.length; i++) {
+    const keyword = arr[i].keyword
+    if (dict.hasOwnProperty(keyword)) {
+      dict[keyword]++
+    } else {
+      dict[keyword] = 1
+    }
+  }
+
+  const result = []
+
+  for (let keyword in dict) {
+    const count = dict[keyword]
+    result.push({ keyword, count })
+  }
+  return result
+}
