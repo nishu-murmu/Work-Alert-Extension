@@ -95,6 +95,8 @@ export const timeRange = (time: string): { range: string | number; type: string 
   else return { range: hours.toFixed(0), type: 'hours' }
 }
 
+
+
 export function countJobsKeywords(arr: jobsProps[]): { [keyword: string]: number } {
   const counts: { [keyword: string]: number } = {}
   for (let i = 0; i < arr.length; i++) {
@@ -111,15 +113,16 @@ export const compareJobs = (
   newAllJobs: any,
 ) => {
   const allKeywordJobs: any[] = []
-  previousAllJobs?.jobsByKeyword?.map((keyword: keywordProps) => {
-    let jobs = newAllJobs.find((key: any) => key.keyword === keyword.keyword)
-    const newJobs = compareArrays(keyword.jobs, jobs?.jobs ? jobs.jobs : [])
-    if (newJobs.length > 0) {
-      newJobs.forEach((element) => {
-        allKeywordJobs.push(element)
-      })
-    }
-  })
+  previousAllJobs?.jobsByKeyword &&
+    previousAllJobs?.jobsByKeyword?.map((keyword: keywordProps) => {
+      let jobs = newAllJobs.find((key: any) => key.keyword === keyword.keyword)
+      const newJobs = compareArrays(keyword.jobs, jobs?.jobs ? jobs.jobs : [])
+      if (newJobs.length > 0) {
+        newJobs.forEach((element) => {
+          allKeywordJobs.push(element)
+        })
+      }
+    })
   return allKeywordJobs
 }
 
@@ -135,4 +138,25 @@ export const notify = (keywordObject: { [keyword: string]: number }) => {
     },
     () => {},
   )
+}
+
+
+export const separateCounts = (arr: any) => {
+  const dict: any = {}
+  for (let i = 0; i < arr.length; i++) {
+    const keyword = arr[i].keyword
+    if (dict.hasOwnProperty(keyword)) {
+      dict[keyword]++
+    } else {
+      dict[keyword] = 1
+    }
+  }
+
+  const result = []
+
+  for (let keyword in dict) {
+    const count = dict[keyword]
+    result.push({ keyword, count })
+  }
+  return result
 }

@@ -7,7 +7,7 @@ const AddKeyWordSection: React.FC = () => {
   const [keyword, setKeyword] = useState<string>('')
   const [rssLink, setRssLink] = useState<string>('')
   const [jobs, setJobs] = useRecoilState(jobsState)
-  const [allJobs, setallJobs] = useRecoilState(allJobsState)
+  const [allJobs, setAllJobs] = useRecoilState(allJobsState)
   const [isEmptyFields, setIsEmptyFields] = useRecoilState(isEmpty)
   const { setLocalJobs, getLocalJobs, setLocalKeywords } = useOpJobs()
 
@@ -17,13 +17,13 @@ const AddKeyWordSection: React.FC = () => {
     } else {
       setKeyword('')
       setRssLink('')
-      setLocalKeywords(keyword, rssLink)
+      await setLocalKeywords(keyword, rssLink)
       await setLocalJobs(keyword, rssLink)
     }
   }
 
   const submitOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if(e.key === 'Enter') {
+    if (e.key === 'Enter') {
       submitHandler(keyword, rssLink)
     }
   }
