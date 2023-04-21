@@ -607,6 +607,10 @@ video {
   max-width: 1000px;
 }
 
+.max-w-\[1300px\] {
+  max-width: 1300px;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -875,6 +879,11 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-green-700 {
+  --tw-text-opacity: 1;
+  color: rgb(21 128 61 / var(--tw-text-opacity));
 }
 
 .filter {

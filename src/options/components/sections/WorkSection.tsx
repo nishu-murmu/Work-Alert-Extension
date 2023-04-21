@@ -7,7 +7,7 @@ const WorkSection = () => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
   return (
-    <div>
+    <div className="max-w-[1300px]">
       <div className="text-2xl flex items-center justify-between">
         <div
           className="flex gap-x-4 hover:cursor-pointer group"
@@ -22,7 +22,7 @@ const WorkSection = () => {
           <span className="p-1">{clickKeyword.keyword}</span>
         </div>
       </div>
-      <div id="keywords" className="flex items-center justify-center">
+      <div id="keywords" className="flex items-center mt-3 justify-center">
         <WordCards />
       </div>
     </div>
