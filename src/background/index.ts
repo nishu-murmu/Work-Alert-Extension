@@ -31,6 +31,7 @@ chrome.alarms.create({
   when: 1,
 })
 
+console.log("first")
 interface keywordsProps {
   keyword: string
   rssLink?: string
