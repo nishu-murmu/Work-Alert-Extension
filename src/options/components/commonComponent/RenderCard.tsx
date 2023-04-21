@@ -10,9 +10,7 @@ const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
   const [isJobNew, setIsJobNew] = useState(false)
 
   useEffect(() => {
-    console.log({ newCurrentJobs }, 'ms')
     const flag = newCurrentJobs.filter((elem: any) => elem.uid == item.uid)
-    console.log({ flag })
     if (flag.length > 0) {
       setIsJobNew(true)
     } else setIsJobNew(false)

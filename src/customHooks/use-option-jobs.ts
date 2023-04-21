@@ -16,28 +16,29 @@ const useOpJobs = () => {
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (request.alert === 'Update State') {
         setAllJobs(request.jobsByKeyword)
-        console.log({ newCurrentJobs, new: request.allKeywordJobs })
-        const newArr: any = removeDuplicates(newCurrentJobs)
-        console.log({ newArr }, 'Ddd')
-        setNewCurrentJobs(newArr)
+
+        setNewCurrentJobs((prev) => {
+          const arr = [...prev, ...request.newCurrentJobs]
+          const uniqueVal = removeDuplicates(arr)
+          return prev.concat(request.newCurrentJobs)
+        })
         sendResponse({ success: true })
       }
     })
   }, [])
 
   function removeDuplicates(arr: any) {
-    const uniqueArr = []
-    const map = new Map()
-
-    for (const obj of arr) {
-      const str = JSON.stringify(obj)
-      if (!map.has(str)) {
-        map.set(str, true)
-        uniqueArr.push(obj)
-      }
+    if (arr.length > 0) {
+      return arr.filter((obj: any, index: any) => {
+        return (
+          index ===
+          arr.findIndex((elem: any) => {
+            return JSON.stringify(elem) === JSON.stringify(obj)
+          })
+        )
+      })
     }
-
-    return uniqueArr
+    return []
   }
 
   const getLocalJobs = () => {

@@ -13,11 +13,8 @@ const WorkSection = () => {
   const [newCurrentJobs, setNewCurrentJobs] = useRecoilState(newJobs)
   let jobs = allJobs.find((keyword: keywordProps) => keyword.keyword === clickKeyword.keyword)?.jobs
   const removeSeen = () => {
-    console.log("I'm called")
-    console.log({ jobs, newCurrentJobs })
     const newJobs: any = compareArrays(jobs, newCurrentJobs, true)
     setNewCurrentJobs(newJobs)
-    console.log({ newJobs })
   }
   return (
     <div className="max-w-[1300px]">
