@@ -43,6 +43,13 @@ const updateBadge = async () => {
   else chrome.action.setBadgeText({text: ""})
 }
 
+const redirectWindow = () => {
+  chrome.windows.getCurrent({populate: false}, (current) => {
+    let id = current.id
+    if(id) chrome.windows.update(id, {focused: true})
+  })
+}
+
 chrome.alarms.create({
   periodInMinutes: 0.05,
   when: 1,
@@ -78,8 +85,12 @@ chrome.alarms.onAlarm.addListener(async () => {
 })
 
 chrome.runtime.onMessage.addListener((req) => {
-  if (req.key === 'deleteKeyCount' || req.key === 'addKeyCount') {
-    console.log('check count badge')
+  if (req.key === 'addKeyCount') {
+    console.log('add badge')
+    updateBadge()
+  }
+  if (req.key === 'deleteKeyCount') {
+    console.log('delete badge')
     updateBadge()
   }
 })

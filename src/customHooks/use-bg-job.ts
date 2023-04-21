@@ -42,7 +42,7 @@ const useBgJobs = () => {
         }, [])
       chrome.storage.local.set({ keywordsCount: value }, () => {
         console.log('realtime update hua')
-        chrome.runtime.sendMessage({type: "addKeyCount"})
+        chrome.runtime.sendMessage({key: "addKeyCount"})
       })
     })
   }
