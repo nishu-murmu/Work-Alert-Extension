@@ -1,18 +1,30 @@
 import useBgJobs from '../customHooks/use-bg-job'
-import { compareArrays, compareJobs, countJobsKeywords, getAllJobsData, notify, separateCounts } from '../util'
-import { keywordProps } from '../util/types'
+import { compareJobs, countJobsKeywords, getAllJobsData, notify, separateCounts } from '../util'
 
+let OptionsUrl = `chrome-extension://${chrome.runtime.id}/options.html`
 chrome.runtime.onInstalled.addListener(() => {
   chrome.tabs.create({
-    url: `chrome-extension://${chrome.runtime.id}/options.html`,
+    url: OptionsUrl,
   })
 })
 
 chrome.action.onClicked.addListener(() => {
-  chrome.tabs.create({
-    url: `chrome-extension://${chrome.runtime.id}/options.html`,
-  })
+  tabChange()
 })
+
+const tabChange = () => {
+  chrome.tabs.query({}, (tabs) => {
+    if(!tabs.find(tab => tab.url === OptionsUrl)) {
+      chrome.tabs.create({
+        url: OptionsUrl
+      })
+    } else {
+      chrome.tabs.query({url: OptionsUrl}, (tabs:any) => {
+        chrome.tabs.update(tabs[0].id, { active: true })
+      })
+    }
+  })
+}
 
 chrome.alarms.create({
   periodInMinutes: 0.05,
