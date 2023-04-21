@@ -526,10 +526,6 @@ video {
   }
 }
 
-.absolute {
-  position: absolute;
-}
-
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
