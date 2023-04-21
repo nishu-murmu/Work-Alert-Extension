@@ -31,12 +31,12 @@ const KeyWordCards = () => {
     })
 
     chrome.runtime.onMessage.addListener((req) => {
-      if (req.type === 'addKeyCount') {
+      if (req.key === 'addKeyCount') {
         getLocalKeywordsCount().then((res: any) => {
           setKeywordsCount(res)
         })
       }
-      if (req.type === 'deleteKeyCount') {
+      if (req.key === 'deleteKeyCount') {
         getLocalKeywordsCount().then((res: any) => {
           setKeywordsCount(res)
         })
