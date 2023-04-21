@@ -7,8 +7,7 @@ import { useEffect } from 'react'
 import { keywordProps } from '../../../util/types'
 
 const KeyWordCards = () => {
-
-  const { allJobs, setLocalJobs, viewJobsHandler, deleteLocalJobs} = useOpJobs()
+  const { allJobs, setLocalJobs, viewJobsHandler, deleteLocalJobs } = useOpJobs()
   const { getBgKeywords, getLocalKeywordsCount, deleteLocalKeywordsCount } = useBgJobs()
 
   const [isClick, setIsClicked] = useRecoilState(isJobs)
@@ -46,13 +45,22 @@ const KeyWordCards = () => {
 
   return (
     <div className=" w-full flex-col gap-y-4 overflow-y-scroll max-h-[560px] py-2">
-      {keys &&
+      {keys?.length > 0 ? (
         keys.map((item: keywordProps) => (
           <div
+            onClick={() =>
+              clickHandler({
+                keyword: item.keyword,
+                jobs: item.jobs,
+                isClicked: true,
+                rssLink: item.rssLink,
+              })
+            }
             key={item.keyword}
-            className={`border ${
-              keywordsCount.find((key: any) => key.keyword === item.keyword)?.count ?
-              'border-green-400': "border-none"
+            className={`border cursor-pointer ${
+              keywordsCount.find((key: any) => key.keyword === item.keyword)?.count
+                ? 'border-green-400'
+                : 'border-none'
             } bg-custom-bg rounded-md p-4 m-2`}
           >
             <div className="flex justify-between">
@@ -67,19 +75,7 @@ const KeyWordCards = () => {
                         strokeColor="gray"
                       />
                     </span>
-                    <span
-                      className="text-lg hover:underline hover:cursor-pointer"
-                      onClick={() =>
-                        clickHandler({
-                          keyword: item.keyword,
-                          jobs: item.jobs,
-                          isClicked: true,
-                          rssLink: item.rssLink,
-                        })
-                      }
-                    >
-                      {item.keyword}
-                    </span>
+                    <span className="text-lg hover:underline">{item.keyword}</span>
                   </div>
                 </div>
               </div>
@@ -92,7 +88,12 @@ const KeyWordCards = () => {
               </div>
             </div>
           </div>
-        ))}
+        ))
+      ) : (
+        <div className="text-2xl   mt-6 flex items-center justify-center">
+          You haven't added any keywords yet.{' '}
+        </div>
+      )}
     </div>
   )
 }
