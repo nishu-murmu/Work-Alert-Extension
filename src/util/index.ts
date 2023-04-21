@@ -140,8 +140,7 @@ export const notify = (keywordObject: { [keyword: string]: number }) => {
       type: 'basic',
       title: 'New jobs have been added🛎️',
       message: message,
-      iconUrl:
-        'https://png.pngtree.com/png-vector/20201028/ourmid/pngtree-phone-icon-in-solid-circle-png-image_2380227.jpg',
+      iconUrl:chrome.runtime.getURL("/img/enacton.png"),
       requireInteraction: true,
     },
     () => {},

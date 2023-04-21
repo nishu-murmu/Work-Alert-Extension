@@ -539,6 +539,10 @@ video {
   margin-top: 0.25rem;
 }
 
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
 .mt-3 {
   margin-top: 0.75rem;
 }
@@ -549,10 +553,6 @@ video {
 
 .mt-6 {
   margin-top: 1.5rem;
-}
-
-.mt-2 {
-  margin-top: 0.5rem;
 }
 
 .flex {
@@ -571,24 +571,12 @@ video {
   height: auto;
 }
 
-.max-h-\[660px\] {
-  max-height: 660px;
+.max-h-\[650px\] {
+  max-height: 650px;
 }
 
 .max-h-\[780px\] {
   max-height: 780px;
-}
-
-.max-h-\[560px\] {
-  max-height: 560px;
-}
-
-.max-h-\[600px\] {
-  max-height: 600px;
-}
-
-.max-h-\[650px\] {
-  max-height: 650px;
 }
 
 .min-h-screen {
@@ -806,10 +794,6 @@ video {
 
 .pt-4 {
   padding-top: 1rem;
-}
-
-.pb-2 {
-  padding-bottom: 0.5rem;
 }
 
 .text-center {
