@@ -61,14 +61,20 @@ export const getAllJobsData = async (keywords: keywordProps) => {
   return filtered
 }
 
-export function compareArrays(previousJob: any, newJob: any) {
+export function compareArrays(previousJob: any, newJob: any, compareCommon?: any) {
   let uniqueJobs = []
 
   for (let i = 0; i < newJob.length; i++) {
     let flag = false
     for (let j = 0; j < previousJob.length; ++j) {
-      if (newJob[i]['uid'] === previousJob[j]['uid']) {
-        flag = true
+      if (compareCommon) {
+        if (newJob[i]['uid'] != previousJob[j]['uid']) {
+          flag = true
+        }
+      } else {
+        if (newJob[i]['uid'] === previousJob[j]['uid']) {
+          flag = true
+        }
       }
     }
     if (!flag) {
@@ -94,8 +100,6 @@ export const timeRange = (time: string): { range: string | number; type: string 
   if (hours === 0) return { range: Math.floor(range / (60 * 1000)), type: 'minutes' }
   else return { range: hours.toFixed(0), type: 'hours' }
 }
-
-
 
 export function countJobsKeywords(arr: jobsProps[]): { [keyword: string]: number } {
   const counts: { [keyword: string]: number } = {}
@@ -127,19 +131,21 @@ export const compareJobs = (
 }
 
 export const notify = (keywordObject: { [keyword: string]: number }) => {
+  let message = ''
+  for (const [keyword, value] of Object.entries(keywordObject)) {
+    message += `${keyword} - ${value} \n`
+  }
   chrome.notifications.create(
     {
       type: 'basic',
-      title: 'New Job Alert',
-      message: JSON.stringify(keywordObject),
-      iconUrl:
-        'https://png.pngtree.com/png-vector/20201028/ourmid/pngtree-phone-icon-in-solid-circle-png-image_2380227.jpg',
+      title: 'New jobs have been added🛎️',
+      message: message,
+      iconUrl:chrome.runtime.getURL("/img/enacton.png"),
       requireInteraction: true,
     },
     () => {},
   )
 }
-
 
 export const separateCounts = (arr: any) => {
   const dict: any = {}

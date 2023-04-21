@@ -16,10 +16,13 @@ const useBgJobs = () => {
     getAllJobsData({ keyword, rssLink }).then((data) => {})
   }
 
-  const setLocalJobsToStorage = (jobsByKeyword: any) => {
+  const setLocalJobsToStorage = (jobsByKeyword: any, allKeywordJobs: any) => {
     chrome.storage.local.set({ jobsByKeyword })
 
-    chrome.runtime.sendMessage({ alert: 'Update State', jobsByKeyword }, (response) => {})
+    chrome.runtime.sendMessage(
+      { alert: 'Update State', jobsByKeyword, allKeywordJobs },
+      (response) => {},
+    )
   }
 
   const getLocalKeywordsCount = async () => {
@@ -28,36 +31,32 @@ const useBgJobs = () => {
   }
 
   const setLocalKeywordsCount = (newKeywords: any) => {
-
     getLocalKeywordsCount().then((prevKeywords) => {
       prevKeywords = prevKeywords || []
-      let value = [...prevKeywords,...newKeywords].reduce((acc: any, curr: any) => {
-          const index = acc.findIndex((item: any) => item.keyword === curr.keyword)
-          if (index === -1) {
-            return [...acc, curr]
-          } else {
-            acc[index].count += curr.count
-            return acc
-          }
-        }, [])
+      let value = [...prevKeywords, ...newKeywords].reduce((acc: any, curr: any) => {
+        const index = acc.findIndex((item: any) => item.keyword === curr.keyword)
+        if (index === -1) {
+          return [...acc, curr]
+        } else {
+          acc[index].count += curr.count
+          return acc
+        }
+      }, [])
       chrome.storage.local.set({ keywordsCount: value }, () => {
-        chrome.runtime.sendMessage({type: "addKeyCount"})
+        chrome.runtime.sendMessage({ type: 'addKeyCount' })
       })
     })
   }
 
   const deleteLocalKeywordsCount = (keyword: string) => {
-    console.log(keyword, 'keyword in delete')
     getLocalKeywordsCount().then(
       (keywordsCount: any) => {
         if (keywordsCount) {
           const filteredCounts = keywordsCount.filter((key: any) => key.keyword !== keyword)
-          console.log(filteredCounts, 'counts')
-          chrome.storage.local.set({ keywordsCount: filteredCounts })
+          chrome.storage.local.set({ keywordsCount: filteredCounts }, () => {
+            chrome.runtime.sendMessage({ key: 'deleteKeyCount' })
+          })
         }
-      },
-      () => {
-        chrome.runtime.sendMessage({ key: 'deleteKeyCount' })
       },
     )
   }

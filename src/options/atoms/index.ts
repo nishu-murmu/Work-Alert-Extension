@@ -16,6 +16,10 @@ export const isJobs = atom({
   default: false,
 })
 
+export const newJobs = atom({
+  key: 'newJobs',
+  default: [],
+})
 export const clickedKeyword = atom({
   key: 'clickedKeyword',
   default: { keyword: '', jobs: [] },
@@ -33,10 +37,10 @@ export const isEmpty = atom({
 
 export const keywords = atom({
   key: 'keywords',
-  default:[]
+  default: [],
 })
 
-export const keywordCount:any = atom({
-  key: "keywordsCount",
-  default:[]
+export const keywordCount: any = atom({
+  key: 'keywordsCount',
+  default: [],
 })

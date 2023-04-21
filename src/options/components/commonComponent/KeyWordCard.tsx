@@ -7,8 +7,7 @@ import { useEffect } from 'react'
 import { keywordProps } from '../../../util/types'
 
 const KeyWordCards = () => {
-
-  const { allJobs, setLocalJobs, viewJobsHandler, deleteLocalJobs} = useOpJobs()
+  const { viewJobsHandler, deleteLocalJobs } = useOpJobs()
   const { getBgKeywords, getLocalKeywordsCount, deleteLocalKeywordsCount } = useBgJobs()
 
   const [isClick, setIsClicked] = useRecoilState(isJobs)
@@ -20,34 +19,50 @@ const KeyWordCards = () => {
     setIsClicked(!isClick)
     setClickKeyword(key)
     viewJobsHandler(key)
-    console.log(key,'key')
     deleteLocalKeywordsCount(key.keyword)
   }
 
   useEffect(() => {
     getBgKeywords().then((res: any) => setKeywords(res))
 
+    getLocalKeywordsCount().then((res: any) => {
+      setKeywordsCount(res)
+    })
 
     chrome.runtime.onMessage.addListener((req) => {
-      if (req.type === 'addKeyCount') {
+      if (req.key === 'addKeyCount') {
         getLocalKeywordsCount().then((res: any) => {
           setKeywordsCount(res)
         })
       }
-      if (req.type === 'deleteKeyCount') {
+      if (req.key === 'deleteKeyCount') {
         getLocalKeywordsCount().then((res: any) => {
           setKeywordsCount(res)
         })
       }
     })
-    console.log(keywordsCount,'count')
   }, [])
 
   return (
-    <div className=" w-full flex-col gap-y-4 overflow-y-scroll max-h-[680px] py-2">
-      {keys &&
+    <div className="container mt-2 w-full space-y-4 flex-col overflow-y-scroll max-h-[650px]">
+      {keys?.length > 0 ? (
         keys.map((item: keywordProps) => (
-          <div key={item.keyword} className="border border-green-400 rounded-md p-4 m-2">
+          <div
+            onClick={() =>
+              clickHandler({
+                keyword: item.keyword,
+                jobs: item.jobs,
+                isClicked: true,
+                rssLink: item.rssLink,
+              })
+            }
+            key={item.keyword}
+            className={`border cursor-pointer ${
+              keywordsCount && keywordsCount.find((key: any) => key.keyword === item.keyword)?.count
+                ? 'border-green-400'
+                : 'border-none'
+            } bg-custom-bg rounded-md p-4`}
+          >
             <div className="flex justify-between">
               <div>
                 <div className="text-sm pl-12 text-gray-400">Keyword</div>
@@ -60,30 +75,27 @@ const KeyWordCards = () => {
                         strokeColor="gray"
                       />
                     </span>
-                    <span
-                      className="text-lg hover:underline hover:cursor-pointer"
-                      onClick={() =>
-                        clickHandler({
-                          keyword: item.keyword,
-                          jobs: item.jobs,
-                          isClicked: true,
-                          rssLink: item.rssLink,
-                        })
-                      }
-                    >
-                      {item.keyword}
-                    </span>
+                    <span className="text-lg hover:underline">{item.keyword}</span>
                   </div>
                 </div>
               </div>
               <div className="flex items-center justify-center">
-                <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
-                  {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count || 0}
-                </span>
+                {keywordsCount &&
+                  keywordsCount.find((key: any) => key.keyword === item.keyword)?.count && (
+                    <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
+                      {keywordsCount &&
+                        keywordsCount.find((key: any) => key.keyword === item.keyword)?.count}
+                    </span>
+                  )}
               </div>
             </div>
           </div>
-        ))}
+        ))
+      ) : (
+        <div className="text-2xl   mt-6 flex items-center justify-center">
+          You haven't added any keywords yet.{' '}
+        </div>
+      )}
     </div>
   )
 }

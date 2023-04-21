@@ -1,13 +1,14 @@
 import { useRecoilState } from 'recoil'
-import { getAllJobsData, timeRange } from '../util'
-import { allJobsState, jobsState, keywords } from '../options/atoms'
-import { useEffect, useState } from 'react'
-import { jobsProps, keywordProps } from '../util/types'
+import { getAllJobsData } from '../util'
+import { allJobsState, keywords, newJobs } from '../options/atoms'
+import { useEffect } from 'react'
+import { keywordProps } from '../util/types'
 import useBgJobs from './use-bg-job'
 
 const useOpJobs = () => {
   const [allJobs, setAllJobs] = useRecoilState(allJobsState)
   const [keys, setKeywords] = useRecoilState(keywords)
+  const [newCurrentJobs, setNewCurrentJobs] = useRecoilState(newJobs)
   const { getBgLocalJobs, getBgKeywords, deleteLocalKeywordsCount } = useBgJobs()
 
   useEffect(() => {
@@ -15,10 +16,30 @@ const useOpJobs = () => {
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (request.alert === 'Update State') {
         setAllJobs(request.jobsByKeyword)
+
+        setNewCurrentJobs((prev) => {
+          const arr = [...prev, ...request.newCurrentJobs]
+          const uniqueVal = removeDuplicates(arr)
+          return prev.concat(request.newCurrentJobs)
+        })
         sendResponse({ success: true })
       }
     })
   }, [])
+
+  function removeDuplicates(arr: any) {
+    if (arr.length > 0) {
+      return arr.filter((obj: any, index: any) => {
+        return (
+          index ===
+          arr.findIndex((elem: any) => {
+            return JSON.stringify(elem) === JSON.stringify(obj)
+          })
+        )
+      })
+    }
+    return []
+  }
 
   const getLocalJobs = () => {
     chrome.storage.local.get('jobsByKeyword', (res) => {
