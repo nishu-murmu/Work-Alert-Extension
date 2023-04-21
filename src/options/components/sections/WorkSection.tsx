@@ -19,9 +19,6 @@ const WorkSection = () => {
           <span className="group-hover:text-gray-400">Go Back</span>
         </div>
         <div className="flex gap-x-2">
-          <span className="p-1 bg-green-600 text-black rounded-lg">
-            {clickKeyword?.jobs?.length}
-          </span>
           <span className="p-1">{clickKeyword.keyword}</span>
         </div>
       </div>
