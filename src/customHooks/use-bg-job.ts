@@ -41,6 +41,7 @@ const useBgJobs = () => {
           }
         }, [])
       chrome.storage.local.set({ keywordsCount: value }, () => {
+        console.log('realtime update hua')
         chrome.runtime.sendMessage({type: "addKeyCount"})
       })
     })
@@ -51,11 +52,10 @@ const useBgJobs = () => {
       (keywordsCount: any) => {
         if (keywordsCount) {
           const filteredCounts = keywordsCount.filter((key: any) => key.keyword !== keyword)
-          chrome.storage.local.set({ keywordsCount: filteredCounts })
+          chrome.storage.local.set({ keywordsCount: filteredCounts }, () => {
+            chrome.runtime.sendMessage({ key: 'deleteKeyCount' })
+          })
         }
-      },
-      () => {
-        chrome.runtime.sendMessage({ key: 'deleteKeyCount' })
       },
     )
   }

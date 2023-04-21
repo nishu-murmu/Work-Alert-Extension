@@ -7,14 +7,14 @@ export default defineManifest({
   version: '0.1.0',
   manifest_version: 3,
   icons: {
-    '16': 'img/logo-16.png',
-    '32': 'img/logo-34.png',
-    '48': 'img/logo-48.png',
-    '128': 'img/logo-128.png',
+    '16': 'img/enacton.png',
+    '32': 'img/enacton.png',
+    '48': 'img/enacton.png',
+    '128': 'img/enacton.png',
   },
   action: {
     default_title: 'Work Alert Extension',
-    default_icon: 'img/logo-48.png',
+    default_icon: 'img/enacton.png',
   },
   options_page: 'options.html',
   background: {
