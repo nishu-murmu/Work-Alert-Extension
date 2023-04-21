@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { keywordProps } from '../../../util/types'
 
 const KeyWordCards = () => {
-  const { allJobs, setLocalJobs, viewJobsHandler, deleteLocalJobs } = useOpJobs()
+  const {  viewJobsHandler, deleteLocalJobs } = useOpJobs()
   const { getBgKeywords, getLocalKeywordsCount, deleteLocalKeywordsCount } = useBgJobs()
 
   const [isClick, setIsClicked] = useRecoilState(isJobs)
@@ -44,7 +44,7 @@ const KeyWordCards = () => {
   }, [])
 
   return (
-    <div className=" w-full flex-col gap-y-4 overflow-y-scroll max-h-[560px] py-2">
+    <div className="container w-full space-y-4 flex-col overflow-y-scroll max-h-[560px] py-2">
       {keys?.length > 0 ? (
         keys.map((item: keywordProps) => (
           <div
@@ -61,7 +61,7 @@ const KeyWordCards = () => {
               keywordsCount.find((key: any) => key.keyword === item.keyword)?.count
                 ? 'border-green-400'
                 : 'border-none'
-            } bg-custom-bg rounded-md p-4 m-2`}
+            } bg-custom-bg rounded-md p-4`}
           >
             <div className="flex justify-between">
               <div>
