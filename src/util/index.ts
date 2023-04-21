@@ -61,14 +61,20 @@ export const getAllJobsData = async (keywords: keywordProps) => {
   return filtered
 }
 
-export function compareArrays(previousJob: any, newJob: any) {
+export function compareArrays(previousJob: any, newJob: any, compareCommon?: any) {
   let uniqueJobs = []
 
   for (let i = 0; i < newJob.length; i++) {
     let flag = false
     for (let j = 0; j < previousJob.length; ++j) {
-      if (newJob[i]['uid'] === previousJob[j]['uid']) {
-        flag = true
+      if (compareCommon) {
+        if (newJob[i]['uid'] != previousJob[j]['uid']) {
+          flag = true
+        }
+      } else {
+        if (newJob[i]['uid'] === previousJob[j]['uid']) {
+          flag = true
+        }
       }
     }
     if (!flag) {
