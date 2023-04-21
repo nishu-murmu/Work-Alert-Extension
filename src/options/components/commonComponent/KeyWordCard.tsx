@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { keywordProps } from '../../../util/types'
 
 const KeyWordCards = () => {
-  const {  viewJobsHandler, deleteLocalJobs } = useOpJobs()
+  const { viewJobsHandler, deleteLocalJobs } = useOpJobs()
   const { getBgKeywords, getLocalKeywordsCount, deleteLocalKeywordsCount } = useBgJobs()
 
   const [isClick, setIsClicked] = useRecoilState(isJobs)
@@ -58,7 +58,7 @@ const KeyWordCards = () => {
             }
             key={item.keyword}
             className={`border cursor-pointer ${
-              keywordsCount.find((key: any) => key.keyword === item.keyword)?.count
+              keywordsCount && keywordsCount.find((key: any) => key.keyword === item.keyword)?.count
                 ? 'border-green-400'
                 : 'border-none'
             } bg-custom-bg rounded-md p-4`}
@@ -80,11 +80,13 @@ const KeyWordCards = () => {
                 </div>
               </div>
               <div className="flex items-center justify-center">
-                {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count && (
-                  <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
-                    {keywordsCount.find((key: any) => key.keyword === item.keyword)?.count}
-                  </span>
-                )}
+                {keywordsCount &&
+                  keywordsCount.find((key: any) => key.keyword === item.keyword)?.count && (
+                    <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
+                      {keywordsCount &&
+                        keywordsCount.find((key: any) => key.keyword === item.keyword)?.count}
+                    </span>
+                  )}
               </div>
             </div>
           </div>

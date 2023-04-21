@@ -1,37 +1,53 @@
 import useBgJobs from '../customHooks/use-bg-job'
-import {
-  compareArrays,
-  compareJobs,
-  countJobsKeywords,
-  getAllJobsData,
-  notify,
-  separateCounts,
-} from '../util'
-import { keywordProps } from '../util/types'
+import { compareJobs, countJobsKeywords, getAllJobsData, notify, separateCounts } from '../util'
+const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
+interface keywordsProps {
+  keyword: string
+  rssLink?: string
+}
+let OptionsUrl = `chrome-extension://${chrome.runtime.id}/options.html`
 
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener(async () => {
   chrome.tabs.create({
-    url: `chrome-extension://${chrome.runtime.id}/options.html`,
+    url: OptionsUrl,
+  }, () => {
+    updateBadge()
   })
 })
 
 chrome.action.onClicked.addListener(() => {
-  chrome.tabs.create({
-    url: `chrome-extension://${chrome.runtime.id}/options.html`,
-  })
+  tabChange()
 })
+
+const tabChange = () => {
+  chrome.tabs.query({}, (tabs) => {
+    if(!tabs.find(tab => tab.url === OptionsUrl)) {
+      chrome.tabs.create({
+        url: OptionsUrl
+      })
+    } else {
+      chrome.tabs.query({url: OptionsUrl}, (tabs:any) => {
+        chrome.tabs.update(tabs[0].id, { active: true })
+      })
+    }
+  })
+}
+
+const updateBadge = async () => {
+  const result = await chrome.storage.local.get('keywordsCount')
+  const total = result.keywordsCount.reduce((acc: any, item: any) => {
+    return acc + item.count
+  }, 0)
+  console.log(total, 'total')
+  if (total !== 0) chrome.action.setBadgeText({ text: total.toString() })
+  else chrome.action.setBadgeText({text: ""})
+}
 
 chrome.alarms.create({
   periodInMinutes: 0.05,
   when: 1,
 })
 
-interface keywordsProps {
-  keyword: string
-  rssLink?: string
-}
-
-const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
 
 chrome.alarms.onAlarm.addListener(async () => {
   const value = await chrome.storage.local.get('jobsByKeyword')
@@ -59,5 +75,16 @@ chrome.alarms.onAlarm.addListener(async () => {
     setLocalKeywordsCount(result)
     setLocalJobsToStorage(newAllJobs, allKeywordJobs)
   }
+})
+
+chrome.runtime.onMessage.addListener((req) => {
+  if (req.key === 'deleteKeyCount' || req.key === 'addKeyCount') {
+    console.log('check count badge')
+    updateBadge()
+  }
+})
+
+chrome.notifications.onClicked.addListener(() => {
+  tabChange()
 })
 export {}

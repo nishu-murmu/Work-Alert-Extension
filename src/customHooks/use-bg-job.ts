@@ -53,11 +53,10 @@ const useBgJobs = () => {
       (keywordsCount: any) => {
         if (keywordsCount) {
           const filteredCounts = keywordsCount.filter((key: any) => key.keyword !== keyword)
-          chrome.storage.local.set({ keywordsCount: filteredCounts })
+          chrome.storage.local.set({ keywordsCount: filteredCounts }, () => {
+            chrome.runtime.sendMessage({ key: 'deleteKeyCount' })
+          })
         }
-      },
-      () => {
-        chrome.runtime.sendMessage({ key: 'deleteKeyCount' })
       },
     )
   }
