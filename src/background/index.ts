@@ -77,18 +77,14 @@ chrome.alarms.onAlarm.addListener(async () => {
   if (allKeywordJobs?.length > 0) {
     const keywordObj = countJobsKeywords(allKeywordJobs)
     notify(keywordObj) // send Notification
-
     const result = separateCounts(allKeywordJobs)
     setLocalKeywordsCount(result)
     setLocalJobsToStorage(newAllJobs)
+    updateBadge()
   }
 })
 
 chrome.runtime.onMessage.addListener((req) => {
-  if (req.key === 'addKeyCount') {
-    console.log('add badge')
-    updateBadge()
-  }
   if (req.key === 'deleteKeyCount') {
     console.log('delete badge')
     updateBadge()
@@ -97,5 +93,6 @@ chrome.runtime.onMessage.addListener((req) => {
 
 chrome.notifications.onClicked.addListener(() => {
   tabChange()
+  redirectWindow()
 })
 export {}
