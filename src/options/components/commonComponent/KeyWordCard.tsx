@@ -20,7 +20,6 @@ const KeyWordCards = () => {
     setIsClicked(!isClick)
     setClickKeyword(key)
     viewJobsHandler(key)
-    console.log(key,'key')
     deleteLocalKeywordsCount(key.keyword)
   }
 
@@ -43,7 +42,6 @@ const KeyWordCards = () => {
         })
       }
     })
-    console.log(keywordsCount,'count')
   }, [])
 
   return (

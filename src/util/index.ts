@@ -95,8 +95,6 @@ export const timeRange = (time: string): { range: string | number; type: string 
   else return { range: hours.toFixed(0), type: 'hours' }
 }
 
-
-
 export function countJobsKeywords(arr: jobsProps[]): { [keyword: string]: number } {
   const counts: { [keyword: string]: number } = {}
   for (let i = 0; i < arr.length; i++) {
@@ -127,11 +125,15 @@ export const compareJobs = (
 }
 
 export const notify = (keywordObject: { [keyword: string]: number }) => {
+  let message = ''
+  for (const [keyword, value] of Object.entries(keywordObject)) {
+    message += `${keyword} - ${value} \n`
+  }
   chrome.notifications.create(
     {
       type: 'basic',
-      title: 'New Job Alert',
-      message: JSON.stringify(keywordObject),
+      title: 'New jobs have been added🛎️',
+      message: message,
       iconUrl:
         'https://png.pngtree.com/png-vector/20201028/ourmid/pngtree-phone-icon-in-solid-circle-png-image_2380227.jpg',
       requireInteraction: true,
@@ -139,7 +141,6 @@ export const notify = (keywordObject: { [keyword: string]: number }) => {
     () => {},
   )
 }
-
 
 export const separateCounts = (arr: any) => {
   const dict: any = {}

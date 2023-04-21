@@ -15,7 +15,6 @@ const AddKeyWordSection: React.FC = () => {
   const submitHandler = async (keyword: string, rssLink: string) => {
     const regex = new RegExp('^https://www.upwork.com/ab/feed/jobs/rss?')
     if (!keyword || !rssLink) {
-      console.log('check')
       setIsEmptyFields((prevState) => !prevState)
     } else if (!regex.test(rssLink)) {
       setIsValid(false)
