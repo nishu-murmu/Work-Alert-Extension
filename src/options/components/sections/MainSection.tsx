@@ -1,7 +1,7 @@
 import { useRecoilState } from 'recoil'
 import AddKeyWordSection from '../commonComponent/AddKeyWord'
 import KeyWordsSection from './KeyWordsSection'
-import { clickedKeyword, isJobs } from '../../atoms'
+import {  isJobs } from '../../atoms'
 import WorkSection from './WorkSection'
 
 const MainSection: React.FC = () => {
