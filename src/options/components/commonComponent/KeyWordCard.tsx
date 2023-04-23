@@ -42,42 +42,39 @@ const KeyWordCards = () => {
       }
     })
   }, [])
-
   return (
-    <div className="container mt-2 w-full space-y-4 flex-col overflow-y-scroll max-h-[650px]">
+    <div className="container mt-2 rounded-xl w-full space-y-4 flex-col overflow-y-scroll max-h-[calc(100vh-290px)]">
       {keys?.length > 0 ? (
         keys.map((item: keywordProps) => (
           <div
-            onClick={() =>
-              clickHandler({
-                keyword: item.keyword,
-                jobs: item.jobs,
-                isClicked: true,
-                rssLink: item.rssLink,
-              })
-            }
             key={item.keyword}
-            className={`border cursor-pointer ${
+            className={`flex justify-between items-center gap-x-3 text-lg border cursor-pointer ${
               keywordsCount && keywordsCount.find((key: any) => key.keyword === item.keyword)?.count
                 ? 'border-green-400'
                 : 'border-none'
             } bg-custom-bg rounded-md p-4`}
           >
-            <div className="flex justify-between">
-              <div>
-                <div className="text-sm pl-12 text-gray-400">Keyword</div>
-                <div className="flex justify-between text-lg">
-                  <div className="flex gap-x-6">
-                    <span onClick={() => deleteLocalJobs(item.keyword)}>
-                      <BinIcon
-                        fillColor="black"
-                        className={'hover:cursor-pointer'}
-                        strokeColor="gray"
-                      />
-                    </span>
-                    <span className="text-lg hover:underline">{item.keyword}</span>
-                  </div>
-                </div>
+            <button onClick={() => deleteLocalJobs(item.keyword)}>
+              <BinIcon
+                fillColor="black"
+                className={'hover:cursor-pointer z-50'}
+                strokeColor="gray"
+              />
+            </button>
+            <div
+              onClick={() =>
+                clickHandler({
+                  keyword: item.keyword,
+                  jobs: item.jobs,
+                  isClicked: true,
+                  rssLink: item.rssLink,
+                })
+              }
+              className="flex items-center justify-between w-full"
+            >
+              <div className="flex flex-col items-start justify-center">
+                <div className="text-sm text-gray-400">Keyword</div>
+                <span className="text-lg hover:underline">{item.keyword}</span>
               </div>
               <div className="flex items-center justify-center">
                 {keywordsCount &&
@@ -93,7 +90,7 @@ const KeyWordCards = () => {
         ))
       ) : (
         <div className="text-2xl   mt-6 flex items-center justify-center">
-          You haven't added any keywords yet.{' '}
+          You haven't added any keywords yet.
         </div>
       )}
     </div>
