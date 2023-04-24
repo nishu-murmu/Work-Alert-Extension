@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import useBgJobs from '../../../customHooks/use-bg-job'
 import { keywordProps } from '../../../util/types'
@@ -8,6 +8,7 @@ const AddKeyWordSection: React.FC = () => {
   const [rssLink, setRssLink] = useState<string>('')
   const [valid, setIsValid] = useState<boolean>(true)
   const [included, setIncluded] = useState<boolean>(false)
+  const inputRef = useRef<HTMLInputElement>(null)
   const [emptyFields, setEmptyFields] = useState<{
     emptyKeyword: boolean
     emptyRsl: boolean
@@ -40,6 +41,7 @@ const AddKeyWordSection: React.FC = () => {
     else {
       setKeyword('')
       setRssLink('')
+      inputRef.current?.focus()
       setIsValid(true)
       setEmptyFields((prevState) => ({ ...prevState, emptyRsl: false }))
       setEmptyFields((prevState) => ({ ...prevState, emptyKeyword: false }))
@@ -68,6 +70,7 @@ const AddKeyWordSection: React.FC = () => {
         <div id="btn-group" className="gap-x-4 flex place-content-center">
           <input
             type="text"
+            ref={inputRef}
             placeholder="Keyword"
             onFocus={() => clearState()}
             value={keyword}
