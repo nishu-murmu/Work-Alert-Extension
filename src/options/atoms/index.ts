@@ -16,13 +16,14 @@ export const isJobs = atom({
   default: false,
 })
 
-export const newJobs = atom({
-  key: 'newJobs',
-  default: [],
-})
 export const clickedKeyword = atom({
   key: 'clickedKeyword',
   default: { keyword: '', jobs: [] },
+})
+
+export const proposals = atom({
+  key: 'proposals',
+  default: [],
 })
 
 export const clickedValue = atom({

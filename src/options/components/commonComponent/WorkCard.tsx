@@ -8,6 +8,7 @@ const WorkCards: React.FC = () => {
   const { allJobs } = useOpJobs()
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
   let jobs = allJobs.find((keyword: keywordProps) => keyword.keyword === clickKeyword.keyword)?.jobs
+  
   return (
     <div
       className={`grid grid-cols-3 grid-flow-row w-full flex-col gap-y-4 overflow-y-scroll max-h-[780px] py-2 gap-4`}

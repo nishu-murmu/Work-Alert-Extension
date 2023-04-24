@@ -43,7 +43,7 @@ const KeyWordCards = () => {
     })
   }, [])
   return (
-    <div className="container mt-2 rounded-xl w-full space-y-4 flex-col overflow-y-scroll max-h-[calc(100vh-290px)]">
+    <div className="container py-2 mt-2 rounded-xl w-full space-y-4 flex-col overflow-y-scroll max-h-[calc(100vh-290px)]">
       {keys?.length > 0 ? (
         keys.map((item: keywordProps) => (
           <div

@@ -1,6 +1,6 @@
 import { useRecoilState } from 'recoil'
 import WordCards from '../commonComponent/WorkCard'
-import { clickedKeyword, isJobs, newJobs } from '../../atoms'
+import { clickedKeyword, isJobs } from '../../atoms'
 import { ArrowLeftIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { keywordProps } from '../../../util/types'
@@ -9,13 +9,19 @@ import { compareArrays } from '../../../util'
 const WorkSection = () => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
-  const { allJobs } = useOpJobs()
-  const [newCurrentJobs, setNewCurrentJobs] = useRecoilState(newJobs)
+  const { allJobs, getNewComingJobs, removeSeenJobs } = useOpJobs()
   let jobs = allJobs.find((keyword: keywordProps) => keyword.keyword === clickKeyword.keyword)?.jobs
-  const removeSeen = () => {
-    const newJobs: any = compareArrays(jobs, newCurrentJobs, true)
-    setNewCurrentJobs(newJobs)
+
+  const removeSeen = async () => {
+    const newCurrentJobs: any = await getNewComingJobs()
+    if (newCurrentJobs) {
+
+      const newJobs: any = compareArrays(jobs, newCurrentJobs)
+
+      removeSeenJobs(newJobs)
+    }
   }
+
   return (
     <div className="max-w-[1300px]">
       <div className="text-2xl flex items-center justify-between">
