@@ -33,8 +33,9 @@ const useOpJobs = () => {
           } else {
             arr = request.allKeywordJobs
           }
-
+          // console.log({ prev: res.newComingJobs, new: request.allKeywordJobs })
           const uniqueVal = removeDuplicates(arr)
+          // console.log({ uniqueVal })
           chrome.storage.local.set({ newComingJobs: uniqueVal }).then(() => {})
         })
 
@@ -49,12 +50,12 @@ const useOpJobs = () => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError)
         } else {
-          resolve(res.newComingJobs)
+          // console.log({ res })
+          resolve(res.newComingJobs || [])
         }
       })
     })
   }
-
 
   const removeSeenJobs = (jobs: any) => {
     chrome.storage.local.set({ newComingJobs: jobs }).then(() => {})

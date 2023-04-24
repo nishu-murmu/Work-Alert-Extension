@@ -74,6 +74,7 @@ chrome.alarms.onAlarm.addListener(async () => {
   const previousAllJobs = await chrome.storage.local.get('jobsByKeyword')
 
   const allKeywordJobs = compareJobs(previousAllJobs, newAllJobs)
+  // console.log({ allKeywordJobs })
   // if have all keyword new jobs, show notification
   if (allKeywordJobs?.length > 0) {
     const keywordObj = countJobsKeywords(allKeywordJobs)
