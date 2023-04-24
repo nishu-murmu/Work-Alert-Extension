@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useRecoilState } from 'recoil'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { timeRange, truncate } from '../../../util'
 import { jobsProps } from '../../../util/types'
-import { newJobs } from '../../atoms'
 
 const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
   const [showMore, setShowMore] = useState(false)
-  // const [newCurrentJobs, setNewCurrentJobs] = useState([])
   const [isJobNew, setIsJobNew] = useState(false)
   const { getNewComingJobs } = useOpJobs()
 
@@ -19,7 +16,6 @@ const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
       } else setIsJobNew(false)
     })
   }, [])
-
 
   return (
     <div
