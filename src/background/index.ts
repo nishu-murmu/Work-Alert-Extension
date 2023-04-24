@@ -43,7 +43,7 @@ const updateBadge = async () => {
     result.keywordsCount.reduce((acc: any, item: any) => {
       return acc + item.count
     }, 0)
-  if (total !== 0) chrome.action.setBadgeText({ text: total.toString() })
+  if (total !== 0) chrome.action.setBadgeText({ text: total && total.toString() })
   else chrome.action.setBadgeText({ text: '' })
 }
 
@@ -74,7 +74,6 @@ chrome.alarms.onAlarm.addListener(async () => {
   const previousAllJobs = await chrome.storage.local.get('jobsByKeyword')
 
   const allKeywordJobs = compareJobs(previousAllJobs, newAllJobs)
-  // console.log({ allKeywordJobs })
   // if have all keyword new jobs, show notification
   if (allKeywordJobs?.length > 0) {
     const keywordObj = countJobsKeywords(allKeywordJobs)
@@ -98,4 +97,4 @@ chrome.notifications.onClicked.addListener(() => {
   tabChange()
   redirectWindow()
 })
-export {}
+export { }

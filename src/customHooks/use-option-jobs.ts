@@ -13,7 +13,7 @@ const useOpJobs = () => {
 
   useEffect(() => {
     getLocalJobs()
-    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       if (request.alert === 'Update State') {
         setAllJobs(request.jobsByKeyword)
 
@@ -33,10 +33,8 @@ const useOpJobs = () => {
           } else {
             arr = request.allKeywordJobs
           }
-          // console.log({ prev: res.newComingJobs, new: request.allKeywordJobs })
           const uniqueVal = removeDuplicates(arr)
-          // console.log({ uniqueVal })
-          chrome.storage.local.set({ newComingJobs: uniqueVal }).then(() => {})
+          chrome.storage.local.set({ newComingJobs: uniqueVal }).then(() => { })
         })
 
         sendResponse({ success: true })
@@ -50,7 +48,6 @@ const useOpJobs = () => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError)
         } else {
-          // console.log({ res })
           resolve(res.newComingJobs || [])
         }
       })
@@ -58,7 +55,7 @@ const useOpJobs = () => {
   }
 
   const removeSeenJobs = (jobs: any) => {
-    chrome.storage.local.set({ newComingJobs: jobs }).then(() => {})
+    chrome.storage.local.set({ newComingJobs: jobs }).then(() => { })
   }
 
   function removeDuplicates(arr: any) {
@@ -138,7 +135,7 @@ const useOpJobs = () => {
   }
 
   const viewJobsHandler = (keyword: keywordProps) => {
-    chrome.storage.local.get('jobsByKeyword', (res) => {})
+    chrome.storage.local.get('jobsByKeyword', (res) => { })
     chrome.storage.local.set({
       jobsByKeyword: allJobs.map((a) => {
         if (a.jobs) {
@@ -154,7 +151,7 @@ const useOpJobs = () => {
         }
       }),
     })
-    chrome.storage.local.get('jobsByKeyword', (res) => {})
+    chrome.storage.local.get('jobsByKeyword', (res) => { })
     getLocalJobs()
   }
 
