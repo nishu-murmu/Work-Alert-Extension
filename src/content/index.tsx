@@ -1,15 +1,23 @@
-import ProposalButton from './components/ProposalButton'
+import RenderedApp from './RenderedApp'
 import ReactDOM from 'react-dom/client'
+import { RecoilRoot } from 'recoil'
+import '../styles/main-compiled.css'
 
 let div = document.createElement('div')
+div.classList.add('custom-script')
 div.style.position = 'absolute'
-div.style.bottom = '100px'
-div.style.right = '100px'
-div.style.zIndex = '9999999'
-div.style.backgroundColor = 'green'
-div.style.padding = '10px 15px'
+div.style.width = '100%'
+div.style.height = '100%'
 div.style.color = '#ffffff'
-div.style.cursor = 'pointer'
 
-ReactDOM.createRoot(div).render(<ProposalButton />)
+ReactDOM.createRoot(div).render(
+  <RecoilRoot>
+    <RenderedApp />
+  </RecoilRoot>,
+)
+
 document.body.prepend(div)
+//
+
+//
+// document.querySelector('.up-card.card-job-search.my-0.py-0')?.prepend(injectedDiv)
