@@ -9,13 +9,20 @@ import { compareArrays } from '../../../util'
 const WorkSection = () => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
-  const { allJobs } = useOpJobs()
-  const [newCurrentJobs, setNewCurrentJobs] = useRecoilState(newJobs)
+  const { allJobs, getNewComingJobs, removeSeenJobs } = useOpJobs()
+  //  const [newCurrentJobs, setNewCurrentJobs] = useRecoilState(newJobs)
   let jobs = allJobs.find((keyword: keywordProps) => keyword.keyword === clickKeyword.keyword)?.jobs
-  const removeSeen = () => {
-    const newJobs: any = compareArrays(jobs, newCurrentJobs, true)
-    setNewCurrentJobs(newJobs)
+
+  const removeSeen = async () => {
+    const newCurrentJobs: any = await getNewComingJobs()
+    // console.log({ jobs, newCurrentJobs })
+    if (newCurrentJobs) {
+      const newJobs: any = compareArrays(jobs, newCurrentJobs, true)
+      // console.log({ newJobs }, 'gg')
+      removeSeenJobs(newJobs)
+    }
   }
+
   return (
     <div className="max-w-[1300px]">
       <div className="text-2xl flex items-center justify-between">

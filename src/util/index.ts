@@ -63,19 +63,21 @@ export const getAllJobsData = async (keywords: keywordProps) => {
 
 export function compareArrays(previousJob: any, newJob: any, compareCommon?: any) {
   let uniqueJobs = []
-
   for (let i = 0; i < newJob.length; i++) {
     let flag = false
     for (let j = 0; j < previousJob.length; ++j) {
-      if (compareCommon) {
-        if (newJob[i]['uid'] != previousJob[j]['uid']) {
+      // if (compareCommon) {
+      //   if (newJob[i]['uid'] != previousJob[j]['uid']) {
+      //     flag = true
+      //   }
+      // } else {
+        if (
+          newJob[i]['uid'] == previousJob[j]['uid'] &&
+          newJob[i]['keyword'] == previousJob[j]['keyword']
+        ) {
           flag = true
         }
-      } else {
-        if (newJob[i]['uid'] === previousJob[j]['uid']) {
-          flag = true
-        }
-      }
+      // }
     }
     if (!flag) {
       uniqueJobs.push(newJob[i])
@@ -140,7 +142,7 @@ export const notify = (keywordObject: { [keyword: string]: number }) => {
       type: 'basic',
       title: 'New jobs have been added🛎️',
       message: message,
-      iconUrl:chrome.runtime.getURL("/img/enacton.png"),
+      iconUrl: chrome.runtime.getURL('/img/enacton.png'),
       requireInteraction: true,
     },
     () => {},

@@ -43,7 +43,6 @@ const useBgJobs = () => {
                 }
             }, [])
             chrome.storage.local.set({ keywordsCount: value }, () => {
-                console.log("check add")
                 chrome.runtime.sendMessage({ key: 'addKeyCount' })
             })
         })
