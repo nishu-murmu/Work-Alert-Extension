@@ -17,6 +17,7 @@ const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
     })
   }, [])
 
+
   return (
     <div
       key={item.uid}
@@ -31,7 +32,7 @@ const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
               ? `${timeRange(item.date.toString()).range} days ago`
               : `${timeRange(item.date.toString()).range} hours ago`}
         </div>
-        <div>{item.budget}</div>
+        <div>{item.budget ? item.budget : item.hourly && `${item.hourly.trim()}`}</div>
       </div>
       <div className="text-white text-2xl pt-4 pl-4 font-extrabold">{item.title}</div>
       <div className="text-gray-400">
