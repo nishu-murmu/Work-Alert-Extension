@@ -81,14 +81,12 @@ chrome.alarms.onAlarm.addListener(async () => {
     const result = separateCounts(allKeywordJobs)
     setLocalKeywordsCount(result)
     setLocalJobsToStorage(newAllJobs, allKeywordJobs)
+    updateBadge()
   }
 })
 
 chrome.runtime.onMessage.addListener((req) => {
-  if (req.key === 'addKeyCount') {
-    updateBadge()
-  }
-  if (req.key === 'deleteKeyCount') {
+  if (req.key === 'deleteKeyCount' || req.key === 'addKeyCount') {
     updateBadge()
   }
 })
