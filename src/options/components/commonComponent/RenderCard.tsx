@@ -20,17 +20,16 @@ const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
   return (
     <div
       key={item.uid}
-      className={`text-green-500 bg-custom-bg  rounded-md p-5 h-auto ${
-        isJobNew ? 'border border-green-500' : ''
-      }`}
+      className={`text-green-500 bg-custom-bg overflow-hidden  rounded-md p-5 h-auto ${isJobNew ? 'border border-green-500' : ''
+        }`}
     >
       <div className="flex text-lg justify-between px-2 w-full text-gray-500">
         <div>
           {item.date && timeRange(item.date.toString()).type === 'minutes'
             ? `${timeRange(item.date.toString()).range} minutes ago`
             : timeRange(item.date.toString()).type === 'days'
-            ? `${timeRange(item.date.toString()).range} days ago`
-            : `${timeRange(item.date.toString()).range} hours ago`}
+              ? `${timeRange(item.date.toString()).range} days ago`
+              : `${timeRange(item.date.toString()).range} hours ago`}
         </div>
         <div>{item.budget}</div>
       </div>

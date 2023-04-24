@@ -43,7 +43,7 @@ const updateBadge = async () => {
     result.keywordsCount.reduce((acc: any, item: any) => {
       return acc + item.count
     }, 0)
-  if (total !== 0) chrome.action.setBadgeText({ text: total.toString() })
+  if (total !== 0) chrome.action.setBadgeText({ text: total && total.toString() })
   else chrome.action.setBadgeText({ text: '' })
 }
 
@@ -97,4 +97,4 @@ chrome.notifications.onClicked.addListener(() => {
   tabChange()
   redirectWindow()
 })
-export {}
+export { }

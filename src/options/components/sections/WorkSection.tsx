@@ -15,7 +15,9 @@ const WorkSection = () => {
   const removeSeen = async () => {
     const newCurrentJobs: any = await getNewComingJobs()
     if (newCurrentJobs) {
+
       const newJobs: any = compareArrays(jobs, newCurrentJobs)
+
       removeSeenJobs(newJobs)
     }
   }
