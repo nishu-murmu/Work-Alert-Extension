@@ -15,3 +15,12 @@
 ::-webkit-scrollbar-track {
   background-color: rgba(0, 0, 0, 0);
 }
+
+input[type='checkbox'] {
+  appearance: auto;
+  -webkit-appearance: auto;
+}
+
+label {
+  color: white!important;
+}

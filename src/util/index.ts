@@ -139,7 +139,7 @@ export const notify = (keywordObject: { [keyword: string]: number }) => {
       iconUrl: chrome.runtime.getURL('/img/enacton.png'),
       requireInteraction: true,
     },
-    () => {},
+    () => { },
   )
 }
 
