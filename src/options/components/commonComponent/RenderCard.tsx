@@ -15,6 +15,7 @@ const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
         setIsJobNew(true)
       } else setIsJobNew(false)
     })
+
   }, [])
 
 

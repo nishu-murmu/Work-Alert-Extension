@@ -3,7 +3,7 @@ import useOpJobs from '../../../customHooks/use-option-jobs'
 import { useRecoilState } from 'recoil'
 import { clickedKeyword, isJobs, keywordCount, keywords } from '../../atoms'
 import useBgJobs from '../../../customHooks/use-bg-job'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { keywordProps } from '../../../util/types'
 
 const KeyWordCards = () => {
@@ -14,6 +14,7 @@ const KeyWordCards = () => {
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
   const [keywordsCount, setKeywordsCount] = useRecoilState<any[]>(keywordCount)
   const [keys, setKeywords] = useRecoilState(keywords)
+  const divRef = useRef<HTMLDivElement>(null)
 
   const clickHandler = (key: any) => {
     setIsClicked(!isClick)
@@ -41,18 +42,44 @@ const KeyWordCards = () => {
         })
       }
     })
+    document.addEventListener("keydown", onKeyDownPress)
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDownPress)
+    }
   }, [])
+
+  const onKeyDownPress = (e: KeyboardEvent) => {
+    console.log("check click")
+    if (e.key === 'Enter') {
+      console.log(e.key, 'key')
+      divRef.current?.click()
+    }
+  }
+
+  document.querySelectorAll(".flex.justify-between.items-center.gap-x-3.text-lg.border.cursor-pointer").forEach((card) => {
+    card.setAttribute("tabIndex", "0")
+  })
+
   return (
     <div className="container py-2 mt-2 rounded-xl w-full space-y-4 flex-col overflow-y-scroll max-h-[calc(100vh-290px)]">
       {keys?.length > 0 ? (
         keys.map((item: keywordProps) => (
           <div
             key={item.keyword}
-            className={`flex justify-between items-center gap-x-3 text-lg border cursor-pointer ${
-              keywordsCount && keywordsCount.find((key: any) => key.keyword === item.keyword)?.count
-                ? 'border-green-400'
-                : 'border-none'
-            } bg-custom-bg rounded-md p-4`}
+            ref={divRef}
+            onClick={() =>
+              clickHandler({
+                keyword: item.keyword,
+                jobs: item.jobs,
+                isClicked: true,
+                rssLink: item.rssLink,
+              })
+            }
+            className={`flex justify-between items-center gap-x-3 text-lg border cursor-pointer ${keywordsCount && keywordsCount.find((key: any) => key.keyword === item.keyword)?.count
+              ? 'border-green-400'
+              : 'border-none'
+              } bg-custom-bg rounded-md p-4`}
           >
             <button onClick={() => deleteLocalJobs(item.keyword)}>
               <BinIcon
