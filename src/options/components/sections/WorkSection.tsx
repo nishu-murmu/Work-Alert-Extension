@@ -1,6 +1,6 @@
 import { useRecoilState } from 'recoil'
 import WordCards from '../commonComponent/WorkCard'
-import { clickedKeyword, isJobs, newJobs } from '../../atoms'
+import { clickedKeyword, isJobs } from '../../atoms'
 import { ArrowLeftIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { keywordProps } from '../../../util/types'
@@ -10,15 +10,12 @@ const WorkSection = () => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
   const { allJobs, getNewComingJobs, removeSeenJobs } = useOpJobs()
-  //  const [newCurrentJobs, setNewCurrentJobs] = useRecoilState(newJobs)
   let jobs = allJobs.find((keyword: keywordProps) => keyword.keyword === clickKeyword.keyword)?.jobs
 
   const removeSeen = async () => {
     const newCurrentJobs: any = await getNewComingJobs()
-    // console.log({ jobs, newCurrentJobs })
     if (newCurrentJobs) {
-      const newJobs: any = compareArrays(jobs, newCurrentJobs, true)
-      // console.log({ newJobs }, 'gg')
+      const newJobs: any = compareArrays(jobs, newCurrentJobs)
       removeSeenJobs(newJobs)
     }
   }
