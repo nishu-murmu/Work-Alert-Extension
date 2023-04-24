@@ -21,6 +21,11 @@ export const clickedKeyword = atom({
   default: { keyword: '', jobs: [] },
 })
 
+export const proposals = atom({
+  key: 'proposals',
+  default: [],
+})
+
 export const clickedValue = atom({
   key: 'clickedValue',
   default: '',

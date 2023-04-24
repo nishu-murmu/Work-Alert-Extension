@@ -1,6 +1,6 @@
 import { useRecoilState } from 'recoil'
 import { getAllJobsData } from '../util'
-import { allJobsState, keywords } from '../options/atoms'
+import { allJobsState, keywords, proposals } from '../options/atoms'
 import { useEffect } from 'react'
 import { keywordProps } from '../util/types'
 import useBgJobs from './use-bg-job'
@@ -8,6 +8,7 @@ import useBgJobs from './use-bg-job'
 const useOpJobs = () => {
   const [allJobs, setAllJobs] = useRecoilState(allJobsState)
   const [keys, setKeywords] = useRecoilState(keywords)
+  const [allProposals, setAllProposals] = useRecoilState(proposals)
   const { getBgLocalJobs, getBgKeywords, deleteLocalKeywordsCount } = useBgJobs()
 
   useEffect(() => {
@@ -90,6 +91,29 @@ const useOpJobs = () => {
     deleteLocalKeywordsCount(keyword)
   }
 
+  const setProposal = async (proposal: any) => {
+    let newProposals: any
+    chrome.storage.local.get(['proposals'], (res) => {
+      if (res?.proposals?.length > 0) {
+        newProposals = [...proposal, ...res.proposals]
+      } else newProposals = proposal
+      chrome.storage.local.set({ proposals: newProposals }).then(() => {
+        setAllProposals(newProposals)
+      })
+    })
+  }
+  const getProposals = async () => {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get(['proposals'], (res) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve(res.proposals || [])
+        }
+      })
+    })
+  }
+
   const setLocalKeywords = async (keyword: string, rssLink: string) => {
     getBgKeywords().then((keywords: any) => {
       let arr = keywords || []
@@ -155,6 +179,8 @@ const useOpJobs = () => {
     allJobs,
     deleteLocalJobs,
     setLocalKeywords,
+    setProposal,
+    getProposals,
   }
 }
 
