@@ -7,7 +7,7 @@ import { KeyboardEventHandler, useEffect, useRef } from 'react'
 import { keywordProps } from '../../../util/types'
 
 const KeyWordCards = () => {
-  const { viewJobsHandler, deleteLocalJobs } = useOpJobs()
+  const { deleteLocalJobs } = useOpJobs()
   const { getBgKeywords, getLocalKeywordsCount, deleteLocalKeywordsCount } = useBgJobs()
 
   const [isClick, setIsClicked] = useRecoilState(isJobs)
@@ -19,7 +19,6 @@ const KeyWordCards = () => {
   const clickHandler = (key: any) => {
     setIsClicked(!isClick)
     setClickKeyword(key)
-    viewJobsHandler(key)
     deleteLocalKeywordsCount(key.keyword)
   }
 
