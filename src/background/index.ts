@@ -1,5 +1,6 @@
 import useBgJobs from '../customHooks/use-bg-job'
-import { compareJobs, countJobsKeywords, getAllJobsData, notify, separateCounts } from '../util'
+import { compareJobs, countJobsKeywords, getAllJobsData, notify, separateCounts, timeRange } from '../util'
+import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
 interface keywordsProps {
   keyword: string
@@ -55,7 +56,7 @@ const redirectWindow = () => {
 }
 
 chrome.alarms.create({
-  periodInMinutes: 0.05,
+  periodInMinutes: 0.1,
   when: 1,
 })
 
@@ -73,9 +74,12 @@ chrome.alarms.onAlarm.addListener(async () => {
   // Get previous all jobs
   const previousAllJobs = await chrome.storage.local.get('jobsByKeyword')
 
-  const allKeywordJobs = compareJobs(previousAllJobs, newAllJobs)
+  let allKeywordJobs = compareJobs(previousAllJobs, newAllJobs)
+  allKeywordJobs = allKeywordJobs.slice().filter((job: jobsProps) => {
+    if (timeRange(job.date).type === 'minutes' && timeRange(job.date).range <= "30") return job
+  })
   // if have all keyword new jobs, show notification
-  if (allKeywordJobs?.length > 0) {
+  if (allKeywordJobs?.length) {
     const keywordObj = countJobsKeywords(allKeywordJobs)
     notify(keywordObj) // send Notification
     const result = separateCounts(allKeywordJobs)
@@ -95,4 +99,4 @@ chrome.notifications.onClicked.addListener(() => {
   tabChange()
   redirectWindow()
 })
-export { }
+export {}

@@ -39,7 +39,7 @@ export default function ProfileSection() {
         <form className="flex flex-col space-y-9 mt-8 items-center">
           <input
             type="text"
-            placeholder="Enter skill"
+            placeholder="Enter Profile"
             value={values.skill}
             onBlur={() =>
               setEmptyFields({

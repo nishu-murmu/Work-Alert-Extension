@@ -1,5 +1,5 @@
 import React from 'react'
-import { toggleSliderState } from './atom'
+import { toggleSliderState } from '../atom'
 import { useRecoilState } from 'recoil'
 
 const ProprosalButton: React.FC = () => {
@@ -7,9 +7,7 @@ const ProprosalButton: React.FC = () => {
 
   const toggleHandler = () => {
     const customScriptElement = document.querySelector('.custom-script')
-    console.log('check clicked')
     setToggleSlider((prevState) => !prevState)
-    console.log(toggleSlider, 'state')
   }
 
   return (
