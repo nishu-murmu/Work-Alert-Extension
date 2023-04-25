@@ -9,52 +9,55 @@ export const getAllJobsData = async (keywords: keywordProps) => {
   const { getBgLocalJobs } = useBgJobs()
 
   const url = keywords.rssLink
-  if (url) {
-    await fetch(`${url}&random=${Math.random()}`, {
-      method: 'GET',
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-    })
-      .then((response) => response.text())
-      .then((response) => {
-        const original = response
-        let xmlJobList = parser.parse(original)
+  try {
+    if (url) {
+      await fetch(`${url}&random=${Math.random()}`, {
+        method: 'GET',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      })
+        .then((response) => response.text())
+        .then((response) => {
+          const original = response
+          let xmlJobList = parser.parse(original)
 
-        xmlJobList.rss.channel.item.map((item: jobsProps) =>
-          filtered.push({
-            title: item.title.replace(' - Upwork', ''),
-            link: item.link,
-            date: new Date(
-              (item.description.match(/<b>Posted On<\/b>: ([^<]+)/) || [
-                null,
-                new Date().toUTCString(),
-              ])[1],
-            ).toJSON(),
-            budget: (item.description.match(/<b>Budget<\/b>: ([^<]+)/) || [null, null])[1],
-            hourly: (item.description.match(/<b>Hourly Range<\/b>: ([^<]+)/) || [null, null])[1],
-            description: item.description
-              .replace(/< b>Posted On<\/b>: [^<]+<br \/>/, '')
-              .replace(/<b>Budget<\/b>: [^<]+<br \/>/, '')
-              .replace(/<b>Hourly Range<\/b>: [^<]+<br \/>/, '')
-              .replace(/<b>Hourly Range<\/b>: [^<]+<br \/>/, '')
-              .replace(/<b>Skills<\/b>:([^<]+)/, '')
-              .replace(/<b>Country<\/b>:([^<]+)/, '')
-              .replace(/<b>Category<\/b>:([^<]+)/, '')
-              .replace(/<b>posted on<\/b>:([^<]+)/i, '')
-              .replace(/<a href="([^]+)/, '')
-              .replace(/(<br \/>)+/g, '')
-              .replace(/(&nbsp;)+/g, ''),
-            uid: item.guid && item.guid,
-            keyword: keywords.keyword,
-            __seen: false,
-            notification_triggered: false,
-          }),
-        )
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+          xmlJobList.rss.channel.item.map((item: jobsProps) =>
+            filtered.push({
+              title: item.title.replace(' - Upwork', ''),
+              link: item.link,
+              date: new Date(
+                (item.description.match(/<b>Posted On<\/b>: ([^<]+)/) || [
+                  null,
+                  new Date().toUTCString(),
+                ])[1],
+              ).toJSON(),
+              budget: (item.description.match(/<b>Budget<\/b>: ([^<]+)/) || [null, null])[1],
+              hourly: (item.description.match(/<b>Hourly Range<\/b>: ([^<]+)/) || [null, null])[1],
+              description: item.description
+                .replace(/< b>Posted On<\/b>: [^<]+<br \/>/, '')
+                .replace(/<b>Budget<\/b>: [^<]+<br \/>/, '')
+                .replace(/<b>Hourly Range<\/b>: [^<]+<br \/>/, '')
+                .replace(/<b>Hourly Range<\/b>: [^<]+<br \/>/, '')
+                .replace(/<b>Skills<\/b>:([^<]+)/, '')
+                .replace(/<b>Country<\/b>:([^<]+)/, '')
+                .replace(/<b>Category<\/b>:([^<]+)/, '')
+                .replace(/<b>posted on<\/b>:([^<]+)/i, '')
+                .replace(/<a href="([^]+)/, '')
+                .replace(/(<br \/>)+/g, '')
+                .replace(/(&nbsp;)+/g, ''),
+              uid: item.guid && item.guid,
+              keyword: keywords.keyword,
+              notification_triggered: false,
+            }),
+          )
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+  } catch (err) {
+    console.error(err)
   }
 
   return filtered
