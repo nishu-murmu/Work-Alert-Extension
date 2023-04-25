@@ -5,7 +5,7 @@ import { ArrowLeftIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { keywordProps } from '../../../util/types'
 import { compareArrays } from '../../../util'
-import { KeyboardEvent, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 const WorkSection = () => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
@@ -26,7 +26,6 @@ const WorkSection = () => {
   }
 
   const clickToGoBack = (e: any) => {
-    console.log("check")
     if (e.key === "Backspace") {
       backRef.current?.click()
     }

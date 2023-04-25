@@ -2,7 +2,7 @@ import Slider from './components/Slider'
 import { toggleSliderState } from './atom'
 import { useRecoilState } from 'recoil'
 
-import ProprosalButton from './ProposalButton'
+import ProprosalButton from './components/ProposalButton'
 
 const RenderedApp = () => {
   const [toggleSlider, setToggleSlider] = useRecoilState(toggleSliderState)
