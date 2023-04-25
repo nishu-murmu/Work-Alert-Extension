@@ -47,7 +47,6 @@ export const getAllJobsData = async (keywords: keywordProps) => {
               .replace(/(&nbsp;)+/g, ''),
             uid: item.guid && item.guid,
             keyword: keywords.keyword,
-            __seen: false,
             notification_triggered: false,
           }),
         )

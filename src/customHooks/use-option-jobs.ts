@@ -51,7 +51,7 @@ const useOpJobs = () => {
   }
 
   function removeDuplicates(arr: any) {
-    if (arr && arr.length > 0) {
+    if (arr?.length) {
       return arr.filter((obj: any, index: any) => {
         return (
           index ===
@@ -149,33 +149,11 @@ const useOpJobs = () => {
     }
   }
 
-  const viewJobsHandler = (keyword: keywordProps) => {
-    chrome.storage.local.get('jobsByKeyword', (res) => {})
-    chrome.storage.local.set({
-      jobsByKeyword: allJobs.map((a) => {
-        if (a.jobs) {
-          return {
-            ...a,
-            jobs: a.jobs.map((job) => ({
-              ...job,
-              __seen: true,
-            })),
-          }
-        } else {
-          return a
-        }
-      }),
-    })
-    chrome.storage.local.get('jobsByKeyword', (res) => {})
-    getLocalJobs()
-  }
-
   return {
     getLocalJobs,
     setLocalJobs,
     getNewComingJobs,
     removeSeenJobs,
-    viewJobsHandler,
     allJobs,
     deleteLocalJobs,
     setLocalKeywords,
