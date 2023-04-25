@@ -78,7 +78,6 @@ chrome.alarms.onAlarm.addListener(async () => {
   allKeywordJobs = allKeywordJobs.slice().filter((job: jobsProps) => {
     if (timeRange(job.date).type === 'minutes' && timeRange(job.date).range <= "30") return job
   })
-  console.log({allKeywordJobs})
   // if have all keyword new jobs, show notification
   if (allKeywordJobs?.length) {
     const keywordObj = countJobsKeywords(allKeywordJobs)
