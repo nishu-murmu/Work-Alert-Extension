@@ -11,7 +11,7 @@ const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
   useEffect(() => {
     getNewComingJobs().then((res: any) => {
       const flag = res.filter((elem: any) => elem.uid == item.uid)
-      if (flag.length > 0) {
+      if (flag?.length) {
         setIsJobNew(true)
       } else setIsJobNew(false)
     })

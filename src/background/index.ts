@@ -75,7 +75,7 @@ chrome.alarms.onAlarm.addListener(async () => {
 
   const allKeywordJobs = compareJobs(previousAllJobs, newAllJobs)
   // if have all keyword new jobs, show notification
-  if (allKeywordJobs?.length > 0) {
+  if (allKeywordJobs?.length) {
     const keywordObj = countJobsKeywords(allKeywordJobs)
     notify(keywordObj) // send Notification
     const result = separateCounts(allKeywordJobs)

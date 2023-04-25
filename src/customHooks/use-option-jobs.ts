@@ -20,7 +20,7 @@ const useOpJobs = () => {
         chrome.storage.local.get(['newComingJobs'], (res: any) => {
           let arr
 
-          if (res?.newComingJobs?.length > 0) {
+          if (res?.newComingJobs?.length) {
             arr = [...res.newComingJobs, ...request.allKeywordJobs]
           } else {
             arr = request.allKeywordJobs
@@ -51,7 +51,7 @@ const useOpJobs = () => {
   }
 
   function removeDuplicates(arr: any) {
-    if (arr.length > 0) {
+    if (arr && arr.length > 0) {
       return arr.filter((obj: any, index: any) => {
         return (
           index ===
@@ -94,7 +94,7 @@ const useOpJobs = () => {
   const setProposal = async (proposal: any) => {
     let newProposals: any
     chrome.storage.local.get(['proposals'], (res) => {
-      if (res?.proposals?.length > 0) {
+      if (res?.proposals && res?.proposals?.length > 0) {
         newProposals = [...proposal, ...res.proposals]
       } else newProposals = proposal
       chrome.storage.local.set({ proposals: newProposals }).then(() => {
