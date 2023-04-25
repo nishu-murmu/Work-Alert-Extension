@@ -10,10 +10,10 @@ div.style.width = '100%'
 div.style.height = '100%'
 div.style.color = '#ffffff'
 
-ReactDOM.createRoot(div).render(
-  <RecoilRoot>
-    <RenderedApp />
-  </RecoilRoot>,
-)
+// ReactDOM.createRoot(div).render(
+//   <RecoilRoot>
+//     <RenderedApp />
+//   </RecoilRoot>,
+// )
 
-document.body.prepend(div)
+// document.body.prepend(div)

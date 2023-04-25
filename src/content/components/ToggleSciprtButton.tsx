@@ -21,7 +21,7 @@ const ToggleScriptButton: React.FC = () => {
 
       await sleep()
       mostRecent.click()
-    }, 5000)
+    }, 10000)
   }
   function stopScriptHandler() {
     clearInterval(intervalIdRef.current)
