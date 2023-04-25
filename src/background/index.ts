@@ -55,7 +55,7 @@ const redirectWindow = () => {
 }
 
 chrome.alarms.create({
-  periodInMinutes: 0.05,
+  periodInMinutes: 0.1,
   when: 1,
 })
 
@@ -95,4 +95,4 @@ chrome.notifications.onClicked.addListener(() => {
   tabChange()
   redirectWindow()
 })
-export { }
+export {}
