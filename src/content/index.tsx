@@ -17,7 +17,3 @@ ReactDOM.createRoot(div).render(
 )
 
 document.body.prepend(div)
-//
-
-//
-// document.querySelector('.up-card.card-job-search.my-0.py-0')?.prepend(injectedDiv)
