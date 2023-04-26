@@ -34,7 +34,7 @@ const ToggleScriptButton: React.FC = () => {
   return (
     <button
       onClick={() => toggleHandler()}
-      className="text-black font-medium py-2 px-4 rounded-md hover:text-green-600"
+      className={`btn ${toggleScript ? 'enabled' : 'disabled'}`}
     >
       Most Recent {toggleScript ? 'Enabled' : 'Disabled'}
     </button>
