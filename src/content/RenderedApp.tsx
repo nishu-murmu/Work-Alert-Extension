@@ -1,16 +1,9 @@
 import Slider from './components/Slider'
-import { toggleSliderState } from './atom'
-import { useRecoilState } from 'recoil'
-
-import ProprosalButton from './components/ProposalButton'
 
 const RenderedApp = () => {
-  const [toggleSlider, setToggleSlider] = useRecoilState(toggleSliderState)
 
   return (
-    <div className="flex">
-      {/* <ProprosalButton/> */}
-      {/* {toggleSlider && <Slider />} */}
+    <div className="flex z-[9999999] relative">
       <Slider />
     </div>
   )

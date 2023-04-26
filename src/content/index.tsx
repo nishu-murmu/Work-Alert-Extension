@@ -1,10 +1,12 @@
 import RenderedApp from './RenderedApp'
 import ReactDOM from 'react-dom/client'
-import { RecoilRoot } from 'recoil'
 
 let rootElement = document.createElement('div')
 rootElement.id = 'root-id'
+
 const shadowDOM = rootElement.attachShadow({ mode: 'open' })
+document.body.prepend(rootElement)
+
 const renderElement = document.createElement('div')
 renderElement.id = 'render'
 
@@ -14,10 +16,7 @@ linkElem.type = 'text/css'
 linkElem.href = chrome.runtime.getURL('/src/styles/main-compiled.css')
 
 shadowDOM.append(linkElem)
-document.body.prepend(rootElement)
-ReactDOM.createRoot(renderElement).render(
-  <RecoilRoot>
-    <RenderedApp />
-  </RecoilRoot>,
-)
+
+ReactDOM.createRoot(renderElement).render(<RenderedApp />)
+
 shadowDOM.appendChild(renderElement)
