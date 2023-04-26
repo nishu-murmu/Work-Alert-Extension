@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { CrossIcon } from '../../util/Icons'
-import { toggleSliderState } from '../atom'
-import { useRecoilState } from 'recoil'
 import { useContent } from '../hooks/use-content'
 
 const Slider: React.FC = () => {
-  const [toggleSlider, setToggleSlider] = useRecoilState(toggleSliderState)
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
 
@@ -16,14 +13,12 @@ const Slider: React.FC = () => {
     getLocalProfile().then((res: any) => {
       setProposals(res)
     })
-    console.log(selectedProfile, 'profile')
-  }, [selectedProfile])
+  }, [])
+
   return (
     <div className="right-2 absolute px-4 py-2 h-screen w-2/6 bg-black text-white">
       <div className="header-section flex">
-        <span onClick={() => {
-          setToggleSlider((prev) => !prev)
-        }}>
+        <span>
           <CrossIcon className="mt-2 h-12 w-12 m-2 hover:cursor-pointer" strokeColor="green" />
         </span>
         <h2 className="text-3xl m-4 text-green-600 font-extrabold">Write a Proposal</h2>
@@ -38,9 +33,9 @@ const Slider: React.FC = () => {
             onChange={(e) => setSelectedProfile(e.target.value)}
           >
             <option value="select_profile">Select Profile</option>
-            {proposals.map((proposal: any) => (
+            {proposals && proposals.map((proposal: any) => (
               <option key={proposal.profile} value={proposal.profile}>
-                {proposal.skill}
+                {proposal.profile}
               </option>
             ))}
           </select>

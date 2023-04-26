@@ -30,7 +30,7 @@ export default defineManifest({
       js: ['src/content/index.tsx'],
     },
     {
-      matches: ['https://www.upwork.com/nx/find-work/*'],
+      matches: ['<all_urls>'],
       js: ['src/content/injects.tsx'],
     },
   ],
