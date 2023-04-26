@@ -1,19 +1,23 @@
 import RenderedApp from './RenderedApp'
 import ReactDOM from 'react-dom/client'
 import { RecoilRoot } from 'recoil'
-import '../styles/main-compiled.css'
 
-let div = document.createElement('div')
-div.classList.add('custom-script')
-div.style.position = 'absolute'
-div.style.width = '100%'
-div.style.height = '100%'
-div.style.color = '#ffffff'
+let rootElement = document.createElement('div')
+rootElement.id = 'root-id'
+const shadowDOM = rootElement.attachShadow({ mode: 'open' })
+const renderElement = document.createElement('div')
+renderElement.id = 'render'
 
-// ReactDOM.createRoot(div).render(
-//   <RecoilRoot>
-//     <RenderedApp />
-//   </RecoilRoot>,
-// )
+const linkElem = document.createElement("link")
+linkElem.rel = 'stylesheet'
+linkElem.type = 'text/css'
+linkElem.href = chrome.runtime.getURL('/src/styles/main-compiled.css')
 
-// document.body.prepend(div)
+shadowDOM.append(linkElem)
+document.body.prepend(rootElement)
+ReactDOM.createRoot(renderElement).render(
+  <RecoilRoot>
+    <RenderedApp />
+  </RecoilRoot>,
+)
+shadowDOM.appendChild(renderElement)
