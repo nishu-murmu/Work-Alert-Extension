@@ -13,6 +13,7 @@ const Slider: React.FC = () => {
     getProposals().then((res: any) => {
       setProposals(res)
     })
+    chrome.runtime.sendMessage({type: 'session_call' })
   }, [])
 
   function closeSlider() {
@@ -114,7 +115,7 @@ const Slider: React.FC = () => {
             rows={10}
             defaultValue={
               inbuilt
-                ? proposals.find((profile: any) => profile.profile === selectedProfile)?.proposal
+                ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
                 : ''
             }
           ></textarea>
