@@ -15,12 +15,17 @@ const Slider: React.FC = () => {
     })
   }, [])
 
+  function closeSlider() {
+    window.postMessage({toggleSlider: false})
+    window.postMessage({ from: 'FROM_SLIDER'})
+  }
+
   return (
     <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">
       <div className="header-section flex">
-        <span>
-          <CrossIcon className="mt-2 h-12 w-12 m-2 hover:cursor-pointer" strokeColor="green" />
-        </span>
+        <button onClick={() => closeSlider()}>
+          <CrossIcon className="mt-2 h-12 w-12 m-2" strokeColor="green" />
+        </button>
         <h2 className="text-3xl m-4 text-green-600 font-extrabold">Write a Proposal</h2>
       </div>
       <div className="main-section">
@@ -33,11 +38,12 @@ const Slider: React.FC = () => {
             onChange={(e) => setSelectedProfile(e.target.value)}
           >
             <option value="select_profile">Select Profile</option>
-            {proposals && proposals.map((proposal: any) => (
-              <option key={proposal.profile} value={proposal.profile}>
-                {proposal.profile}
-              </option>
-            ))}
+            {proposals &&
+              proposals.map((proposal: any) => (
+                <option key={proposal.profile} value={proposal.profile}>
+                  {proposal.profile}
+                </option>
+              ))}
           </select>
         </div>
         <div className="py-2 px-4 flex gap-x-4 group">
@@ -52,7 +58,11 @@ const Slider: React.FC = () => {
           </label>
         </div>
         <div className="grid w-full px-4 my-3 h-10 text-black grid-cols-2 gap-x-2">
-          <select name="tone" id="tone" className="py-3 px-2 rounded-lg hover:cursor-pointer">
+          <select
+            name="tone"
+            id="tone"
+            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt && 'disabled'}`}
+          >
             <option value="select">Select Tone</option>
             <option value="formal">Formal</option>
             <option value="formal">Formal</option>
@@ -60,7 +70,11 @@ const Slider: React.FC = () => {
             <option value="neutral">Neutral</option>
             <option value="friendly">Friendly</option>
           </select>
-          <select name="limit" id="limit" className="py-3 px-2 rounded-lg hover:cursor-pointer">
+          <select
+            name="limit"
+            id="limit"
+            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt && 'disabled'}`}
+          >
             <option value="default">Select Range of words</option>
             <option value="app_50">Approx 50</option>
             <option value="app_100">Approx 100</option>
@@ -69,11 +83,11 @@ const Slider: React.FC = () => {
           </select>
         </div>
         <div className="px-4 w-full py-2">
-          <label className=" text-white font-medium" htmlFor="proposal">
+          <label className={`${inbuilt && 'disabled'} text-white font-medium`} htmlFor="proposal">
             Optional Information:
           </label>
           <textarea
-            className="rounded-lg w-full text-black p-3"
+            className={`${inbuilt && 'disabled'} rounded-lg w-full text-black p-3`}
             name="additional"
             id="additional"
             cols={30}

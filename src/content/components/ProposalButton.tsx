@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 
 
 const ProprosalButton: React.FC = () => {
@@ -10,8 +10,16 @@ const ProprosalButton: React.FC = () => {
   }
   
   useEffect(() => {
-    window.postMessage({toggleSlider:toggleSlide}, 'https://www.upwork.com/*')
+    window.postMessage({toggleSlider:toggleSlide})
   }, [toggleSlide])
+
+  useEffect(()=> {
+    window.addEventListener("message", (event) => {
+      if(event.data.from === "FROM_SLIDER") {
+        setToggleSlide(prev => !prev)
+      }
+    })
+  }, [])
   return (
     <button onClick={() => toggleSlider()} className='bg-green-600 py-2 px-4 rounded-lg'>
       Write Proposal
