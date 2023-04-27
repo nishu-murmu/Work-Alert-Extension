@@ -42,4 +42,5 @@ export default defineManifest({
     },
   ],
   permissions: ['tabs', 'storage', 'activeTab', 'alarms', 'notifications'],
+  host_permissions: ['https://*.upwork.com/*', 'https://*.openai.com/'],
 })
