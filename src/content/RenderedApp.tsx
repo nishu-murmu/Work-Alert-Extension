@@ -6,7 +6,6 @@ const RenderedApp = () => {
 
   useLayoutEffect(() => {
     window.addEventListener('message', (event) => {
-      console.log(event, 'event')
       setToggleSlide(event?.data?.toggleSlider)
     })
   }, [])
