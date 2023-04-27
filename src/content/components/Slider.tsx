@@ -61,7 +61,9 @@ const Slider: React.FC = () => {
           <select
             name="tone"
             id="tone"
-            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt && 'disabled'}`}
+            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${
+              inbuilt ? 'disabled' : ''
+            }`}
           >
             <option value="select">Select Tone</option>
             <option value="formal">Formal</option>
@@ -73,7 +75,7 @@ const Slider: React.FC = () => {
           <select
             name="limit"
             id="limit"
-            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt && 'disabled'}`}
+            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt ? 'disabled' : ''}`}
           >
             <option value="default">Select Range of words</option>
             <option value="app_50">Approx 50</option>
@@ -83,11 +85,14 @@ const Slider: React.FC = () => {
           </select>
         </div>
         <div className="px-4 w-full py-2">
-          <label className={`${inbuilt && 'disabled'} text-white font-medium`} htmlFor="proposal">
+          <label
+            className={`${inbuilt ? 'disabled' : ''} text-white font-medium`}
+            htmlFor="proposal"
+          >
             Optional Information:
           </label>
           <textarea
-            className={`${inbuilt && 'disabled'} rounded-lg w-full text-black p-3`}
+            className={`${inbuilt ? 'disabled' : ''} rounded-lg w-full text-black p-3`}
             name="additional"
             id="additional"
             cols={30}
