@@ -4,6 +4,7 @@ import useOpJobs from '../../../customHooks/use-option-jobs'
 import { proposals } from '../../atoms'
 import { BinIcon, PenIcon } from '../../../util/Icons'
 import { proposalsProps } from '../../../util/types'
+import { useContent } from '../../../customHooks/use-content'
 
 export default function ProfileSection() {
   const [values, setValues] = useState<proposalsProps>({
@@ -22,9 +23,8 @@ export default function ProfileSection() {
     experience: false,
     skills: false,
   })
-  const { deleteProposal } = useOpJobs()
   const [expError, setExpError] = useState(false)
-  const { setProposal, getProposals } = useOpJobs()
+  const { setProposal, getProposals, deleteProposal } = useContent()
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const [editFlag, setEditFlag] = useState({ status: false, name: '' })
 

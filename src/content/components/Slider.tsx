@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { CrossIcon } from '../../util/Icons'
-import { useContent } from '../hooks/use-content'
+import { useContent } from '../../customHooks/use-content'
 
 const Slider: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
 
-  const [proposals, setProposals] = useState<{proposal: string, skill: string}[]>([])
-  const { getLocalProfile } = useContent()
+  const [proposals, setProposals] = useState<{ proposal: string; skill: string }[]>([])
+  const { getProposals } = useContent()
 
   useEffect(() => {
-    getLocalProfile().then((res: any) => {
+    getProposals().then((res: any) => {
       setProposals(res)
     })
   }, [])
 
   function closeSlider() {
-    window.postMessage({toggleSlider: false})
-    window.postMessage({ from: 'FROM_SLIDER'})
+    window.postMessage({ toggleSlider: false })
+    window.postMessage({ from: 'FROM_SLIDER' })
   }
 
   return (
@@ -61,9 +61,7 @@ const Slider: React.FC = () => {
           <select
             name="tone"
             id="tone"
-            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${
-              inbuilt ? 'disabled' : ''
-            }`}
+            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt ? 'disabled' : ''}`}
           >
             <option value="select">Select Tone</option>
             <option value="formal">Formal</option>
