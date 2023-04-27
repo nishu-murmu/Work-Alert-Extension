@@ -22,3 +22,13 @@ export interface jobsProps {
   guid?: string
   notification_triggered: boolean
 }
+
+export interface proposalsProps {
+  profile: string
+  proposal: string
+  name: string
+  experience: string
+  skills: string[]
+  portfolio?: string
+  clients?: string[]
+}

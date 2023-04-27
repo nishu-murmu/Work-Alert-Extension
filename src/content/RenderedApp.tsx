@@ -1,16 +1,18 @@
+import React, { useEffect, useState, useLayoutEffect } from 'react'
 import Slider from './components/Slider'
-import { toggleSliderState } from './atom'
-import { useRecoilState } from 'recoil'
-
-import ProprosalButton from './components/ProposalButton'
 
 const RenderedApp = () => {
-  const [toggleSlider, setToggleSlider] = useRecoilState(toggleSliderState)
+  const [toggleSlide, setToggleSlide] = useState<boolean>(false)
+
+  useLayoutEffect(() => {
+    window.addEventListener('message', (event) => {
+      setToggleSlide(event?.data?.toggleSlider)
+    })
+  }, [])
 
   return (
-    <div className='flex'>
-      <ProprosalButton/>
-      {toggleSlider && <Slider />}
+    <div className="flex z-[9999999] relative">
+      {toggleSlide && <Slider />}
     </div>
   )
 }

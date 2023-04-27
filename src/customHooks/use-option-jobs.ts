@@ -91,29 +91,6 @@ const useOpJobs = () => {
     deleteLocalKeywordsCount(keyword)
   }
 
-  const setProposal = async (proposal: any) => {
-    let newProposals: any
-    chrome.storage.local.get(['proposals'], (res) => {
-      if (res?.proposals && res?.proposals?.length > 0) {
-        newProposals = [...proposal, ...res.proposals]
-      } else newProposals = proposal
-      chrome.storage.local.set({ proposals: newProposals }).then(() => {
-        setAllProposals(newProposals)
-      })
-    })
-  }
-  const getProposals = async () => {
-    return new Promise((resolve, reject) => {
-      chrome.storage.local.get(['proposals'], (res) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve(res.proposals || [])
-        }
-      })
-    })
-  }
-
   const setLocalKeywords = async (keyword: string, rssLink: string) => {
     getBgKeywords().then((keywords: any) => {
       let arr = keywords || []
@@ -157,8 +134,6 @@ const useOpJobs = () => {
     allJobs,
     deleteLocalJobs,
     setLocalKeywords,
-    setProposal,
-    getProposals,
   }
 }
 

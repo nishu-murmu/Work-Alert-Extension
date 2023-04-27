@@ -34,6 +34,13 @@ export default defineManifest({
       js: ['src/content/injects.tsx'],
     },
   ],
-  web_accessible_resources: [],
+  web_accessible_resources: [
+    {
+      resources: ['src/styles/main-compiled.css'],
+      matches: ['https://www.upwork.com/*'],
+      use_dynamic_url: true,
+    },
+  ],
   permissions: ['tabs', 'storage', 'activeTab', 'alarms', 'notifications'],
+  host_permissions: ['https://*.upwork.com/*', 'https://*.openai.com/'],
 })

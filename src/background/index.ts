@@ -1,7 +1,9 @@
 import useBgJobs from '../customHooks/use-bg-job'
+import useGPT from '../customHooks/use-gpt'
 import { compareJobs, countJobsKeywords, getAllJobsData, notify, separateCounts, timeRange } from '../util'
 import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
+const {getSession} = useGPT()
 interface keywordsProps {
   keyword: string
   rssLink?: string
@@ -99,4 +101,11 @@ chrome.notifications.onClicked.addListener(() => {
   tabChange()
   redirectWindow()
 })
+
+chrome.runtime.onMessage.addListener((req) => {
+  if (req.type === 'session_call') {
+    getSession()
+  }
+})
+
 export {}

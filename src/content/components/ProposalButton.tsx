@@ -1,17 +1,27 @@
-import React from 'react'
-import { toggleSliderState } from '../atom'
-import { useRecoilState } from 'recoil'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
+
 
 const ProprosalButton: React.FC = () => {
-  const [toggleSlider, setToggleSlider] = useRecoilState(toggleSliderState)
 
-  const toggleHandler = () => {
-    const customScriptElement = document.querySelector('.custom-script')
-    setToggleSlider((prevState) => !prevState)
+  const [toggleSlide, setToggleSlide] = useState<boolean>(false)
+
+  function toggleSlider() {
+    setToggleSlide(prev => !prev)
   }
+  
+  useEffect(() => {
+    window.postMessage({toggleSlider:toggleSlide})
+  }, [toggleSlide])
 
+  useEffect(()=> {
+    window.addEventListener("message", (event) => {
+      if(event.data.from === "FROM_SLIDER") {
+        setToggleSlide(prev => !prev)
+      }
+    })
+  }, [])
   return (
-    <button onClick={() => toggleHandler()} className='bg-green-600 py-2 px-4 rounded-lg'>
+    <button onClick={() => toggleSlider()} className='bg-green-600 py-2 px-4 rounded-lg'>
       Write Proposal
     </button>
   )
