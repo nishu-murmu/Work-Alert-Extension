@@ -22,11 +22,18 @@ export default function ProfileSection() {
     experience: false,
     skills: false,
   })
+  const { deleteProposal } = useOpJobs()
   const [expError, setExpError] = useState(false)
   const { setProposal, getProposals } = useOpJobs()
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const [editFlag, setEditFlag] = useState({ status: false, name: '' })
 
+  const deleteHandler = async (proposal: any) => {
+    const res: any = await deleteProposal(proposal)
+    if (res) {
+      setAllProposals(res)
+    }
+  }
   const submitHandler = async (e: any) => {
     clearState()
     e.preventDefault()
@@ -234,31 +241,44 @@ export default function ProfileSection() {
         <div className="w-full font-bold flex flex-col space-y-9 mt-8 items-center">
           <div className="text-2xl">Created Profiles</div>
           <div className="w-10/12 gap-y-2 flex flex-col">
-            {allProposals?.map((proposal: any, index) => (
-              <div
-                key={index}
-                className="bg-custom-bg h-16 py-4 px-4 flex rounded-md justify-between"
-              >
-                <div className="text-lg">{proposal.profile}</div>
-                <div className="flex gap-x-4">
-                  <button
-                    onClick={() => {
-                      setValues(proposal)
-                      setEditFlag({
-                        name: proposal.profile,
-                        status: true,
-                      })
-                    }}
-                    className="p-1 bg-gray-700 rounded-md"
+            {allProposals.length > 0 ? (
+              <>
+                {allProposals?.map((proposal: any, index) => (
+                  <div
+                    key={index}
+                    className="bg-custom-bg h-16 py-4 px-4 flex rounded-md justify-between"
                   >
-                    <PenIcon />
-                  </button>
-                  <button className="p-1 bg-gray-700 rounded-md">
-                    <BinIcon fillColor="white" strokeColor="black" />
-                  </button>
-                </div>
+                    <div className="text-lg">{proposal.profile}</div>
+                    <div className="flex gap-x-4">
+                      <button
+                        onClick={() => {
+                          setValues(proposal)
+                          setEditFlag({
+                            name: proposal.profile,
+                            status: true,
+                          })
+                        }}
+                        className="p-1 bg-gray-700 rounded-md"
+                      >
+                        <PenIcon />
+                      </button>
+                      <button
+                        onClick={() => {
+                          deleteHandler(proposal)
+                        }}
+                        className="p-1 bg-gray-700 rounded-md"
+                      >
+                        <BinIcon fillColor="white" strokeColor="black" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div className="text-xl text-green-500 flex items-center justify-center">
+                You haven't added any Proposals yet.
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

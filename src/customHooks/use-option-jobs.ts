@@ -133,6 +133,29 @@ const useOpJobs = () => {
       })
     })
   }
+  const deleteProposal = async (proposal: any) => {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get(['proposals'], (res) => {
+        let newProposals
+
+        if (res?.proposals) {
+          const filteredProposal = res?.proposals.filter((a: any) => a.profile !== proposal.profile)
+          chrome.storage.local.set({ proposals: filteredProposal }).then(() => {
+            newProposals = getProposals().then((res: any) => {
+              if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError)
+              } else {
+                if (Array.isArray(res)) resolve(res || [])
+                else {
+                  resolve([])
+                }
+              }
+            })
+          })
+        }
+      })
+    })
+  }
 
   const setLocalKeywords = async (keyword: string, rssLink: string) => {
     getBgKeywords().then((keywords: any) => {
@@ -179,6 +202,7 @@ const useOpJobs = () => {
     setLocalKeywords,
     setProposal,
     getProposals,
+    deleteProposal,
   }
 }
 
