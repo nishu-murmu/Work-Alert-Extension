@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { proposals } from '../../atoms'
@@ -15,44 +15,65 @@ export default function ProfileSection() {
     portfolio: '',
     clients: [],
   })
-  const [emptyFields, setEmptyFields] = useState({ profile: false, proposal: false })
+  const [emptyFields, setEmptyFields] = useState({
+    profile: false,
+    proposal: false,
+    name: false,
+    experience: false,
+    skills: false,
+  })
   const { setProposal, getProposals } = useOpJobs()
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const [editFlag, setEditFlag] = useState({ status: false, name: '' })
 
   const submitHandler = async (e: any) => {
+    clearState()
     e.preventDefault()
-    if (!values.profile && !values.proposal && values.profile.trim() === '') {
-      setEmptyFields((prevState) => ({
-        profile: !prevState.profile,
-        proposal: !prevState.proposal,
-      }))
+    const { profile, proposal, name, experience, skills } = values
+    if (!profile || !proposal || !name || skills.length === 0 || !experience) {
+      experience === 0
+        ? setEmptyFields((prevState) => ({
+            ...prevState,
+            profile: !profile,
+            proposal: !proposal,
+            name: !name,
+            skills: !skills.length,
+          }))
+        : setEmptyFields((prevState) => ({
+            ...prevState,
+            profile: !profile,
+            proposal: !proposal,
+            name: !name,
+            experience: !experience,
+            skills: !skills.length,
+          }))
       return
-    } else if (!values.profile || values.profile.trim() === '') {
-      setEmptyFields((prevState) => ({ ...prevState, profile: !prevState.profile }))
-      return
-    } else if (!values.proposal) {
-      setEmptyFields((prevState) => ({ ...prevState, proposal: !prevState.proposal }))
-      return
-    } else {
-      setValues({ profile: '', proposal: '', skills: [], name: '', experience: 0, portfolio: '' })
-      document.querySelectorAll('input').forEach((ele: any) => {
-        ele.value = ''
-      })
-
-      const res: any = await setProposal([values], editFlag.name)
-
-      if (res) {
-        setEditFlag({
-          name: '',
-          status: false,
-        })
-
-        getProposals().then((data: any) => {
-          setAllProposals(data)
-        })
-      }
     }
+
+    setValues({ profile: '', proposal: '', skills: [], name: '', experience: 0, portfolio: '' })
+    document.querySelectorAll('input').forEach((ele: any) => {
+      ele.value = ''
+    })
+
+    const res: any = await setProposal([values], editFlag.name)
+
+    if (res) {
+      setEditFlag({ name: '', status: false })
+
+      getProposals().then((data: any) => {
+        setAllProposals(data)
+      })
+    }
+  }
+
+  const clearState = () => {
+    setEmptyFields({
+      profile: false,
+      proposal: false,
+      name: false,
+      experience: false,
+      skills: false,
+    })
   }
 
   useEffect(() => {
@@ -78,14 +99,20 @@ export default function ProfileSection() {
               } rounded-md px-3 py-2 text-lg`}
               onChange={(e) => setValues((prev: any) => ({ ...prev, profile: e.target.value }))}
               pattern="[a-zA-Z]+"
+              onBlur={() => clearState()}
+              onClickCapture={() => clearState()}
             />
             <input
               type="text"
               placeholder="Enter Name"
               value={values.name}
               onChange={(e) => setValues((prev: any) => ({ ...prev, name: e.target.value }))}
-              className={`bg-transparent border rounded-md px-3 py-2 text-lg`}
+              className={`bg-transparent border ${
+                !emptyFields?.name ? 'border-white' : 'border-red-600'
+              } rounded-md px-3 py-2 text-lg`}
               pattern="[a-zA-Z]+"
+              onBlur={() => clearState()}
+              onClickCapture={() => clearState()}
             />
           </div>
           <div className="flex gap-x-4">
@@ -93,8 +120,12 @@ export default function ProfileSection() {
               type="number"
               value={values.experience}
               placeholder="Enter Experience"
+              onBlur={() => clearState()}
               onChange={(e) => setValues((prev: any) => ({ ...prev, experience: e.target.value }))}
-              className={`bg-transparent border rounded-md px-3 py-2 text-lg`}
+              className={`bg-transparent border ${
+                !emptyFields?.experience ? 'border-white' : 'border-red-600'
+              } rounded-md px-3 py-2 text-lg`}
+              onClickCapture={() => clearState()}
             />
             <input
               type="text"
@@ -106,8 +137,12 @@ export default function ProfileSection() {
                   skills: e.target.value.trim().split(/[ ,]+/g),
                 }))
               }
-              className={`bg-transparent border rounded-md px-3 py-2 text-lg`}
+              onBlur={() => clearState()}
+              className={`bg-transparent border ${
+                !emptyFields?.skills ? 'border-white' : 'border-red-600'
+              } rounded-md px-3 py-2 text-lg`}
               pattern="[a-zA-Z]+"
+              onClickCapture={() => clearState()}
             />
           </div>
           <div className="flex gap-x-4">
@@ -118,6 +153,8 @@ export default function ProfileSection() {
               onChange={(e) => setValues((prev: any) => ({ ...prev, portfolio: e.target.value }))}
               className={`bg-transparent border rounded-md px-3 py-2 text-lg`}
               pattern="[a-zA-Z]+"
+              onBlur={() => clearState()}
+              onClickCapture={() => clearState()}
             />
             <input
               type="text"
@@ -129,8 +166,10 @@ export default function ProfileSection() {
                   clients: e.target.value.trim().split(/[ ,]+/g),
                 }))
               }
+              onBlur={() => clearState()}
               className={`bg-transparent border rounded-md px-3 py-2 text-lg`}
               pattern="[a-zA-Z]+"
+              onClickCapture={() => clearState()}
             />
           </div>
           <textarea
@@ -140,8 +179,19 @@ export default function ProfileSection() {
             className={`bg-transparent border ${
               !emptyFields?.proposal ? 'border-white' : 'border-red-600'
             } rounded-md px-4 py-2 text-lg w-[33rem]`}
-            onChange={(e) => setValues((prev: any) => ({ ...prev, proposal: e.target.value }))}
+            onBlur={() => clearState()}
+            onChange={(e) => {
+              setValues((prev: any) => ({ ...prev, proposal: e.target.value }))
+            }}
+            onClickCapture={() => clearState()}
           />
+          {(emptyFields?.profile ||
+            emptyFields?.proposal ||
+            emptyFields?.name ||
+            emptyFields?.experience ||
+            emptyFields?.skills) && (
+            <div className="text-red-600 text-md text-center">Please fill all the fields</div>
+          )}
           <button
             type="submit"
             onClick={(e) => submitHandler(e)}
