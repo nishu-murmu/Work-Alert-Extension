@@ -15,7 +15,7 @@ const shadowDOM = rootElement.attachShadow({ mode: 'open' })
 console.log(linkElement)
 shadowDOM.append(linkElement)
 
-const renderElement = document.createElement('div')
+const renderElement = document.createElement('div') as HTMLElement
 renderElement.id = 'render'
 
 ReactDOM.createRoot(renderElement).render(<RenderedApp />)
@@ -29,12 +29,16 @@ window.onload = () => {
   // Attaching ProposalButton component to shadowDOM
   let div = document.createElement('div') as HTMLElement
   div.id = 'injected-button'
+  div.style.position = "relative"
   const shadow = div.attachShadow({ mode: 'open' })
   
   const coverLetterDiv = document.querySelector('.cover-letter-area')
   coverLetterDiv?.prepend(div)
   const renderElem = document.createElement('div')
-  renderElem.id = 'render'
+  renderElem.id = 'render-button'
+  renderElem.style.right = '2px'
+  renderElem.style.bottom = '-20px'
+  renderElem.style.position = 'absolute'
   
   console.log(linkElem)
   shadow.append(linkElem)
