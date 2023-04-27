@@ -91,17 +91,34 @@ const useOpJobs = () => {
     deleteLocalKeywordsCount(keyword)
   }
 
-  const setProposal = async (proposal: any) => {
-    let newProposals: any
-    chrome.storage.local.get(['proposals'], (res) => {
-      if (res?.proposals && res?.proposals?.length > 0) {
-        newProposals = [...proposal, ...res.proposals]
-      } else newProposals = proposal
-      chrome.storage.local.set({ proposals: newProposals }).then(() => {
-        setAllProposals(newProposals)
+  const setProposal = async (proposal: any, name: any) => {
+    return new Promise<boolean>((resolve) => {
+      let newProposals: any
+      chrome.storage.local.get(['proposals'], (res) => {
+        if (name) {
+          const allProposals = res.proposals
+          let index = allProposals.findIndex((obj: any) => obj.profile == name)
+
+          if (index != -1) {
+            allProposals[index] = proposal[0]
+          }
+          chrome.storage.local.set({ proposals: allProposals }).then(() => {
+            setAllProposals(newProposals)
+            resolve(true)
+          })
+        } else {
+          if (res?.proposals && res?.proposals?.length > 0) {
+            newProposals = [...proposal, ...res.proposals]
+          } else newProposals = proposal
+          chrome.storage.local.set({ proposals: newProposals }).then(() => {
+            setAllProposals(newProposals)
+            resolve(true)
+          })
+        }
       })
     })
   }
+
   const getProposals = async () => {
     return new Promise((resolve, reject) => {
       chrome.storage.local.get(['proposals'], (res) => {
