@@ -16,7 +16,7 @@ const Slider: React.FC = () => {
   }, [])
 
   return (
-    <div className="right-2 absolute px-4 py-2 h-screen w-2/6 bg-black text-white">
+    <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">
       <div className="header-section flex">
         <span>
           <CrossIcon className="mt-2 h-12 w-12 m-2 hover:cursor-pointer" strokeColor="green" />

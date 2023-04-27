@@ -9,24 +9,28 @@ document.querySelector('.nav-messages')?.insertAdjacentElement('afterend', listE
 
 ReactDOM.createRoot(listElem).render(<ToggleScriptButton />)
 
-let div = document.createElement("div") as HTMLElement
-div.id = 'injected-button'
+window.onload = () => {
+  let div = document.createElement('div') as HTMLElement
+  div.id = 'injected-button'
 
-const shadowDOM = div.attachShadow({mode: 'open'})
-const coverLetterDiv = document.querySelector('.cover-letter-area')
-coverLetterDiv?.prepend(div)
+  const shadowDOM = div.attachShadow({ mode: 'open' })
 
-const renderElement = document.createElement('div')
-renderElement.id = 'render'
+  const coverLetterDiv = document.querySelector('.cover-letter-area')
 
-const linkElem = document.createElement('link')
-linkElem.rel = 'stylesheet'
-linkElem.type = 'text/css'
-linkElem.href = chrome.runtime.getURL('/src/styles/main-compiled.css')
+  console.log(coverLetterDiv, 'letter')
+  coverLetterDiv?.prepend(div)
 
-shadowDOM.append(linkElem)
+  const renderElement = document.createElement('div')
+  renderElement.id = 'render'
 
+  const linkElem = document.createElement('link')
+  linkElem.rel = 'stylesheet'
+  linkElem.type = 'text/css'
+  linkElem.href = chrome.runtime.getURL('/src/styles/main-compiled.css')
 
-ReactDOM.createRoot(renderElement).render(<ProprosalButton/>)
+  shadowDOM.append(linkElem)
 
-shadowDOM.appendChild(renderElement)
+  ReactDOM.createRoot(renderElement).render(<ProprosalButton />)
+
+  shadowDOM.appendChild(renderElement)
+}
