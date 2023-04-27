@@ -10,7 +10,7 @@ export default function ProfileSection() {
     profile: '',
     proposal: '',
     name: '',
-    experience: 0,
+    experience: '0',
     skills: [],
     portfolio: '',
     clients: [],
@@ -22,6 +22,7 @@ export default function ProfileSection() {
     experience: false,
     skills: false,
   })
+  const [expError, setExpError] = useState(false)
   const { setProposal, getProposals } = useOpJobs()
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const [editFlag, setEditFlag] = useState({ status: false, name: '' })
@@ -30,13 +31,15 @@ export default function ProfileSection() {
     clearState()
     e.preventDefault()
     const { profile, proposal, name, experience, skills } = values
-    if (!profile || !proposal || !name || skills.length === 0 || !experience) {
-      experience === 0
+
+    if (!profile || !proposal || !name || skills.length === 0 || expError || !experience) {
+      expError
         ? setEmptyFields((prevState) => ({
             ...prevState,
             profile: !profile,
             proposal: !proposal,
             name: !name,
+            experience: true,
             skills: !skills.length,
           }))
         : setEmptyFields((prevState) => ({
@@ -48,21 +51,20 @@ export default function ProfileSection() {
             skills: !skills.length,
           }))
       return
-    }
-
-    setValues({ profile: '', proposal: '', skills: [], name: '', experience: 0, portfolio: '' })
-    document.querySelectorAll('input').forEach((ele: any) => {
-      ele.value = ''
-    })
-
-    const res: any = await setProposal([values], editFlag.name)
-
-    if (res) {
-      setEditFlag({ name: '', status: false })
-
-      getProposals().then((data: any) => {
-        setAllProposals(data)
+    } else {
+      setValues({ profile: '', proposal: '', skills: [], name: '', experience: '', portfolio: '' })
+      document.querySelectorAll('input').forEach((ele: any) => {
+        ele.value = ''
       })
+
+      const res: any = await setProposal([values], editFlag.name)
+      if (res) {
+        setEditFlag({ name: '', status: false })
+
+        getProposals().then((data: any) => {
+          setAllProposals(data)
+        })
+      }
     }
   }
 
@@ -74,6 +76,7 @@ export default function ProfileSection() {
       experience: false,
       skills: false,
     })
+    // setExpError(false)
   }
 
   useEffect(() => {
@@ -85,11 +88,11 @@ export default function ProfileSection() {
   return (
     <div className="flex items-center justify-center">
       <div className="container flex">
-        <form className="flex flex-col space-y-9 mt-8 items-center">
+        <form className="flex flex-col mt-8 items-center">
           <div className="text-2xl font-bold">
             {editFlag.status ? `Edit ${editFlag.name} Profile` : 'Create New Profile'}
           </div>
-          <div className="flex gap-x-4">
+          <div className="flex gap-x-4 mt-9">
             <input
               type="text"
               placeholder="Enter Profile"
@@ -115,18 +118,31 @@ export default function ProfileSection() {
               onClickCapture={() => clearState()}
             />
           </div>
-          <div className="flex gap-x-4">
+          <div className="flex gap-x-4 mt-9">
             <input
-              type="number"
+              type="text"
+              id="experience-input"
               value={values.experience}
+              pattern="[0-9]+"
               placeholder="Enter Experience"
               onBlur={() => clearState()}
-              onChange={(e) => setValues((prev: any) => ({ ...prev, experience: e.target.value }))}
+              onChange={(e) => {
+                const input = e.target.value
+                const value = parseInt(input)
+                if (isNaN(value)) {
+                  setExpError(true)
+                  setValues((prev: any) => ({ ...prev, experience: e.target.value }))
+                } else {
+                  setExpError(false)
+                  setValues((prev: any) => ({ ...prev, experience: value }))
+                }
+              }}
               className={`bg-transparent border ${
                 !emptyFields?.experience ? 'border-white' : 'border-red-600'
               } rounded-md px-3 py-2 text-lg`}
               onClickCapture={() => clearState()}
             />
+
             <input
               type="text"
               placeholder="Enter Skills"
@@ -145,7 +161,14 @@ export default function ProfileSection() {
               onClickCapture={() => clearState()}
             />
           </div>
-          <div className="flex gap-x-4">
+          {expError && (
+            <div className="flex items-center justify-between w-full rounded-md px-7 text-red-600 py-2 text-md">
+              <div> Enter valid experience </div>
+              <div></div>
+            </div>
+          )}
+
+          <div className={`flex gap-x-4 ${expError ? ' mt-2' : 'mt-9'}`}>
             <input
               type="text"
               placeholder="Porfolio Link"
@@ -176,7 +199,7 @@ export default function ProfileSection() {
             rows={4}
             value={values.proposal}
             placeholder="Enter proposal description"
-            className={`bg-transparent border ${
+            className={`bg-transparent border mt-9 ${
               !emptyFields?.proposal ? 'border-white' : 'border-red-600'
             } rounded-md px-4 py-2 text-lg w-[33rem]`}
             onBlur={() => clearState()}
@@ -188,14 +211,22 @@ export default function ProfileSection() {
           {(emptyFields?.profile ||
             emptyFields?.proposal ||
             emptyFields?.name ||
-            emptyFields?.experience ||
+            (emptyFields?.experience && !expError) ||
             emptyFields?.skills) && (
-            <div className="text-red-600 text-md text-center">Please fill all the fields</div>
+            <div className="text-red-600 text-md mt-3 text-center">Please fill all the fields</div>
           )}
           <button
             type="submit"
             onClick={(e) => submitHandler(e)}
-            className=" hover:text-gray-400 border w-2/5 mx-auto bg-transparent place-content-center border-white text-lg px-5 py-2 rounded-md"
+            className={`${
+              emptyFields?.profile ||
+              emptyFields?.proposal ||
+              emptyFields?.name ||
+              (emptyFields?.experience && !expError) ||
+              emptyFields?.skills
+                ? 'mt-7'
+                : 'mt-9'
+            } hover:text-gray-400 border w-2/5 mx-auto bg-transparent place-content-center border-white text-lg px-5 py-2 rounded-md`}
           >
             {editFlag.status ? `Edit Profile` : 'Create Profile'}
           </button>

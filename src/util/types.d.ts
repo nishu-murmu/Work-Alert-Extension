@@ -27,7 +27,7 @@ export interface proposalsProps {
   profile: string
   proposal: string
   name: string
-  experience: number
+  experience: string
   skills: string[]
   portfolio?: string
   clients?: string[]

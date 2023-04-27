@@ -96,24 +96,27 @@ const useOpJobs = () => {
       let newProposals: any
       chrome.storage.local.get(['proposals'], (res) => {
         if (name) {
-          const allProposals = res.proposals
-          let index = allProposals.findIndex((obj: any) => obj.profile == name)
+          const allProposals = res?.proposals
+          let index = allProposals?.findIndex((obj: any) => obj.profile == name)
 
           if (index != -1) {
             allProposals[index] = proposal[0]
           }
           chrome.storage.local.set({ proposals: allProposals }).then(() => {
-            setAllProposals(newProposals)
             resolve(true)
           })
         } else {
+          const allProposals = res?.proposals
+          let index = -1
           if (res?.proposals && res?.proposals?.length > 0) {
+            index = allProposals?.findIndex((obj: any) => obj.profile == proposal[0].profile)
             newProposals = [...proposal, ...res.proposals]
           } else newProposals = proposal
-          chrome.storage.local.set({ proposals: newProposals }).then(() => {
-            setAllProposals(newProposals)
-            resolve(true)
-          })
+          if (index == -1) {
+            chrome.storage.local.set({ proposals: newProposals }).then(() => {
+              resolve(true)
+            })
+          }
         }
       })
     })
