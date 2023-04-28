@@ -1,4 +1,3 @@
-
 const useGPT = () => {
   function getSession() {
     return new Promise((resolve) => {
@@ -7,19 +6,38 @@ const useGPT = () => {
         .then((data) => {
           if (data.accessToken) {
             chrome.storage.local.set({ gpt_access_token: data.accessToken })
+            resolve(true)
           } else {
             chrome.storage.local.set({ gpt_access_token: null })
+            resolve(false)
           }
         })
         .catch((err) => {
+          resolve(false)
           console.log(err)
-        })
-        .finally(() => {
-          resolve(true)
         })
     })
   }
-  return { getSession }
+
+  const getToken = async () => {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get('gpt_access_token', (res) => {
+        // console.log({ local: res })
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          if (typeof res === 'object') {
+            if (Object.keys(res).length > 0) {
+            } else {
+              resolve(false)
+            }
+          }
+          resolve(res ? true : false)
+        }
+      })
+    })
+  }
+  return { getSession, getToken }
 }
 
 export default useGPT

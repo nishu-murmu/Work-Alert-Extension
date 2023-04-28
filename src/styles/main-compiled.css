@@ -554,12 +554,9 @@ video {
   z-index: 9999999;
 }
 
-.m-2 {
-  margin: 0.5rem;
-}
-
-.m-4 {
-  margin: 1rem;
+.mx-3 {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
 }
 
 .mx-auto {
@@ -575,6 +572,11 @@ video {
 .my-3 {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
+}
+
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .mb-4 {
@@ -629,16 +631,16 @@ video {
   height: 2.5rem;
 }
 
-.h-12 {
-  height: 3rem;
-}
-
 .h-16 {
   height: 4rem;
 }
 
 .h-6 {
   height: 1.5rem;
+}
+
+.h-8 {
+  height: 2rem;
 }
 
 .h-auto {
@@ -665,10 +667,6 @@ video {
   width: 83.333333%;
 }
 
-.w-12 {
-  width: 3rem;
-}
-
 .w-2\/5 {
   width: 40%;
 }
@@ -683,6 +681,10 @@ video {
 
 .w-6 {
   width: 1.5rem;
+}
+
+.w-8 {
+  width: 2rem;
 }
 
 .w-\[33rem\] {
@@ -773,6 +775,12 @@ video {
   row-gap: 1rem;
 }
 
+.space-x-3 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.75rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
 .space-x-5 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(1.25rem * var(--tw-space-x-reverse));
@@ -829,6 +837,10 @@ video {
   border-width: 1px;
 }
 
+.border-0 {
+  border-width: 0px;
+}
+
 .border-none {
   border-style: none;
 }
@@ -876,11 +888,6 @@ video {
 .bg-green-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(22 163 74 / var(--tw-bg-opacity));
-}
-
-.bg-green-700 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(21 128 61 / var(--tw-bg-opacity));
 }
 
 .bg-transparent {
@@ -1050,8 +1057,22 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.outline-none {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.drop-shadow-md {
+  --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.duration-300 {
+  transition-duration: 300ms;
 }
 
 /* Hide right scrollbar */
