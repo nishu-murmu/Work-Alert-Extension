@@ -19,6 +19,7 @@ const Slider: React.FC = () => {
     optional_info: '',
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
+  const { fillProposal } = useContent()
 
   const { getProposals } = useContent()
 
@@ -160,7 +161,16 @@ const Slider: React.FC = () => {
             }
           ></textarea>
         </div>
-        <div className="px-4 mt-2 w-full">
+        <div
+          onClick={() => {
+            fillProposal(
+              inbuilt
+                ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
+                : '',
+            )
+          }}
+          className="px-4 mt-2 w-full"
+        >
           <button className="w-full bg-green-600 py-2 rounded-lg">Fill</button>
         </div>
       </div>
