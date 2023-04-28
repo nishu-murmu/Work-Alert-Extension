@@ -3,7 +3,7 @@ import useGPT from '../customHooks/use-gpt'
 import { compareJobs, countJobsKeywords, getAllJobsData, notify, separateCounts, timeRange } from '../util'
 import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
-const {getSession} = useGPT()
+const {getSession, generateAns} = useGPT()
 interface keywordsProps {
   keyword: string
   rssLink?: string
@@ -105,6 +105,11 @@ chrome.notifications.onClicked.addListener(() => {
 chrome.runtime.onMessage.addListener((req) => {
   if (req.type === 'session_call') {
     getSession()
+  }
+  if(req.type === "get_ans") {
+    generateAns(req.query).then((res: any) => {
+      console.log({res}, 'res')
+    })
   }
 })
 

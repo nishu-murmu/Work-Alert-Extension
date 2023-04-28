@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import { CrossIcon } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
+import useGPT from '../../customHooks/use-gpt'
 
 const Slider: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<string>('')
@@ -16,17 +17,21 @@ const Slider: React.FC = () => {
     clients: [],
     tone: "",
     range_of_words:"",
-    optional_info: ""
+    optional_info: "",
+    job_description:''
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
 
   const { getProposals } = useContent()
-
+  
   useEffect(() => {
+    //@ts-ignore
+    document.querySelector('.up-truncation-label') && document.querySelector('.up-truncation-label').click()
+
     getProposals().then((res: any) => {
       setProposals(res)
     })
-    chrome.runtime.sendMessage({type: 'session_call' })
+    chrome.runtime.sendMessage({ type: 'session_call' })
   }, [])
 
   function closeSlider() {
@@ -35,12 +40,22 @@ const Slider: React.FC = () => {
   }
 
   function sendQueryToGPT() {
-    setQuery((prev: QueryProps) => ({ ...prev, ...proposals?.find((profile: any) => profile.profile === selectedProfile)}))
+    chrome.runtime.sendMessage({type:"get_ans", query})
   }
 
   useEffect(() => {
-    console.log({query})
-  }, [query])
+    console.log({query, proposals})
+  }, [query, proposals])
+
+  useEffect(() => {
+    setQuery((prev: QueryProps) => ({
+      ...prev,
+      ...proposals?.find((profile: any) => profile.profile === selectedProfile),
+    }))
+
+    //@ts-ignore
+    setQuery((prev: QueryProps)=>({...prev,job_description:document.querySelector('#up-truncation-1')?.innerHTML as HTMLSpanElement}))
+  }, [selectedProfile])
 
   return (
     <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">

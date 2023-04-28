@@ -34,7 +34,8 @@ export interface proposalsProps {
 }
 
 export interface QueryProps extends proposalsProps {
-  tone?: string
-  range_of_words?: string
+  tone: string
+  range_of_words: string
   optional_info?: string
+  job_description: string
 }
