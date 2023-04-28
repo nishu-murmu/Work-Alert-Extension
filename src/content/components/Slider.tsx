@@ -14,9 +14,9 @@ const Slider: React.FC = () => {
     skills: [],
     portfolio: '',
     clients: [],
-    tone: "",
-    range_of_words:"",
-    optional_info: ""
+    tone: '',
+    range_of_words: '',
+    optional_info: '',
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
 
@@ -35,11 +35,14 @@ const Slider: React.FC = () => {
   }
 
   function sendQueryToGPT() {
-    setQuery((prev: QueryProps) => ({ ...prev, ...proposals?.find((profile: any) => profile.profile === selectedProfile)}))
+    setQuery((prev: QueryProps) => ({
+      ...prev,
+      ...proposals?.find((profile: any) => profile.profile === selectedProfile),
+    }))
   }
 
   useEffect(() => {
-    console.log({query})
+    console.log({ query })
   }, [query])
 
   return (
@@ -79,17 +82,18 @@ const Slider: React.FC = () => {
             Use the inbuilt proposal.
           </label>
         </div>
-<<<<<<< HEAD
         {!inbuilt ? (
           <>
             <div className="grid w-full px-4 my-3 h-10 text-black grid-cols-2 gap-x-2">
               <select
                 name="tone"
                 id="tone"
-                className={`py-3 px-2 rounded-lg hover:cursor-pointer  `}
+                className={`py-3 px-2 rounded-lg hover:cursor-pointer`}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                  setQuery((prev: QueryProps) => ({ ...prev, tone: e.target.value }))
+                }
               >
                 <option value="select">Select Tone</option>
-                <option value="formal">Formal</option>
                 <option value="formal">Formal</option>
                 <option value="informal">InFormal</option>
                 <option value="neutral">Neutral</option>
@@ -98,7 +102,10 @@ const Slider: React.FC = () => {
               <select
                 name="limit"
                 id="limit"
-                className={`py-3 px-2 rounded-lg hover:cursor-pointer `}
+                className={`py-3 px-2 rounded-lg hover:cursor-pointer`}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                  setQuery((prev: QueryProps) => ({ ...prev, range_of_words: e.target.value }))
+                }
               >
                 <option value="default">Select Range of words</option>
                 <option value="app_50">Approx 50</option>
@@ -108,19 +115,26 @@ const Slider: React.FC = () => {
               </select>
             </div>
             <div className="px-4 w-full py-2">
-              <label className={`  text-white font-medium`} htmlFor="proposal">
+              <label className={` text-white font-medium`} htmlFor="proposal">
                 Optional Information:
               </label>
               <textarea
-                className={`  rounded-lg w-full text-black p-3`}
-                name="additional"
-                id="additional"
+                className={`rounded-lg w-full text-black p-3`}
+                name="optional"
+                id="optional"
                 cols={30}
                 rows={2}
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                  setQuery((prev: QueryProps) => ({ ...prev, optional_info: e.target.value }))
+                }
               ></textarea>
             </div>
             <div className="px-4 w-full">
-              <button className="w-full rounded-lg bg-green-700 text-white py-2" id="submit">
+              <button
+                onClick={() => sendQueryToGPT()}
+                className="w-full rounded-lg bg-green-700 text-white py-2"
+                id="submit"
+              >
                 Submit to GPT
               </button>
             </div>
@@ -129,65 +143,6 @@ const Slider: React.FC = () => {
           <></>
         )}
 
-=======
-        <div className="grid w-full px-4 my-3 h-10 text-black grid-cols-2 gap-x-2">
-          <select
-            name="tone"
-            id="tone"
-            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt ? 'disabled' : ''}`}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setQuery((prev: QueryProps) => ({ ...prev, tone: e.target.value }))
-            }
-          >
-            <option value="select">Select Tone</option>
-            <option value="formal">Formal</option>
-            <option value="informal">InFormal</option>
-            <option value="neutral">Neutral</option>
-            <option value="friendly">Friendly</option>
-          </select>
-          <select
-            name="limit"
-            id="limit"
-            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt ? 'disabled' : ''}`}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setQuery((prev: QueryProps) => ({ ...prev, range_of_words: e.target.value }))
-            }
-          >
-            <option value="default">Select Range of words</option>
-            <option value="app_50">Approx 50</option>
-            <option value="app_100">Approx 100</option>
-            <option value="app_150">Approx 150</option>
-            <option value="app_200">Approx 200</option>
-          </select>
-        </div>
-        <div className="px-4 w-full py-2">
-          <label
-            className={`${inbuilt ? 'disabled' : ''} text-white font-medium`}
-            htmlFor="proposal"
-          >
-            Optional Information:
-          </label>
-          <textarea
-            className={`${inbuilt ? 'disabled' : ''} rounded-lg w-full text-black p-3`}
-            name="optional"
-            id="optional"
-            cols={30}
-            rows={2}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-              setQuery((prev: QueryProps) => ({ ...prev, optional_info: e.target.value }))
-            }
-          ></textarea>
-        </div>
-        <div className="px-4 w-full">
-          <button
-            onClick={() => sendQueryToGPT()}
-            className="w-full rounded-lg bg-green-700 text-white py-2"
-            id="submit"
-          >
-            Submit to GPT
-          </button>
-        </div>
->>>>>>> 3ccb50b400cec5211719deb496a48ccc34818534
         <div className="w-full px-4 my-2">
           <label className=" text-white font-semibold" htmlFor="proposal">
             Generated Proposal:
