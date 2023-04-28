@@ -13,7 +13,7 @@ const Slider: React.FC = () => {
     getProposals().then((res: any) => {
       setProposals(res)
     })
-    chrome.runtime.sendMessage({type: 'session_call' })
+    chrome.runtime.sendMessage({ type: 'session_call' })
   }, [])
 
   function closeSlider() {
@@ -58,51 +58,55 @@ const Slider: React.FC = () => {
             Use the inbuilt proposal.
           </label>
         </div>
-        <div className="grid w-full px-4 my-3 h-10 text-black grid-cols-2 gap-x-2">
-          <select
-            name="tone"
-            id="tone"
-            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt ? 'disabled' : ''}`}
-          >
-            <option value="select">Select Tone</option>
-            <option value="formal">Formal</option>
-            <option value="formal">Formal</option>
-            <option value="informal">InFormal</option>
-            <option value="neutral">Neutral</option>
-            <option value="friendly">Friendly</option>
-          </select>
-          <select
-            name="limit"
-            id="limit"
-            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt ? 'disabled' : ''}`}
-          >
-            <option value="default">Select Range of words</option>
-            <option value="app_50">Approx 50</option>
-            <option value="app_100">Approx 100</option>
-            <option value="app_150">Approx 150</option>
-            <option value="app_200">Approx 200</option>
-          </select>
-        </div>
-        <div className="px-4 w-full py-2">
-          <label
-            className={`${inbuilt ? 'disabled' : ''} text-white font-medium`}
-            htmlFor="proposal"
-          >
-            Optional Information:
-          </label>
-          <textarea
-            className={`${inbuilt ? 'disabled' : ''} rounded-lg w-full text-black p-3`}
-            name="additional"
-            id="additional"
-            cols={30}
-            rows={2}
-          ></textarea>
-        </div>
-        <div className="px-4 w-full">
-          <button className="w-full rounded-lg bg-green-700 text-white py-2" id="submit">
-            Submit to GPT
-          </button>
-        </div>
+        {!inbuilt ? (
+          <>
+            <div className="grid w-full px-4 my-3 h-10 text-black grid-cols-2 gap-x-2">
+              <select
+                name="tone"
+                id="tone"
+                className={`py-3 px-2 rounded-lg hover:cursor-pointer  `}
+              >
+                <option value="select">Select Tone</option>
+                <option value="formal">Formal</option>
+                <option value="formal">Formal</option>
+                <option value="informal">InFormal</option>
+                <option value="neutral">Neutral</option>
+                <option value="friendly">Friendly</option>
+              </select>
+              <select
+                name="limit"
+                id="limit"
+                className={`py-3 px-2 rounded-lg hover:cursor-pointer `}
+              >
+                <option value="default">Select Range of words</option>
+                <option value="app_50">Approx 50</option>
+                <option value="app_100">Approx 100</option>
+                <option value="app_150">Approx 150</option>
+                <option value="app_200">Approx 200</option>
+              </select>
+            </div>
+            <div className="px-4 w-full py-2">
+              <label className={`  text-white font-medium`} htmlFor="proposal">
+                Optional Information:
+              </label>
+              <textarea
+                className={`  rounded-lg w-full text-black p-3`}
+                name="additional"
+                id="additional"
+                cols={30}
+                rows={2}
+              ></textarea>
+            </div>
+            <div className="px-4 w-full">
+              <button className="w-full rounded-lg bg-green-700 text-white py-2" id="submit">
+                Submit to GPT
+              </button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
         <div className="w-full px-4 my-2">
           <label className=" text-white font-semibold" htmlFor="proposal">
             Generated Proposal:
