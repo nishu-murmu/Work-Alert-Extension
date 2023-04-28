@@ -32,3 +32,9 @@ export interface proposalsProps {
   portfolio?: string
   clients?: string[]
 }
+
+export interface QueryProps extends proposalsProps {
+  tone?: string
+  range_of_words?: string
+  optional_info?: string
+}

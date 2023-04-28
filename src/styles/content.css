@@ -10,3 +10,7 @@
 .disabled {
     color: red
 }
+
+.btn-primary {
+    padding: 14px 20px;
+}
