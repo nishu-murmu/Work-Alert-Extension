@@ -1,12 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { CrossIcon } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
+import { QueryProps, proposalsProps } from '../../util/types'
 
 const Slider: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
+  const [query, setQuery] = useState<QueryProps>({
+    profile: '',
+    proposal: '',
+    name: '',
+    experience: '0',
+    skills: [],
+    portfolio: '',
+    clients: [],
+    tone: "",
+    range_of_words:"",
+    optional_info: ""
+  })
+  const [proposals, setProposals] = useState<proposalsProps[]>([])
 
-  const [proposals, setProposals] = useState<{ proposal: string; skill: string }[]>([])
   const { getProposals } = useContent()
 
   useEffect(() => {
@@ -20,6 +33,14 @@ const Slider: React.FC = () => {
     window.postMessage({ toggleSlider: false })
     window.postMessage({ from: 'FROM_SLIDER' })
   }
+
+  function sendQueryToGPT() {
+    setQuery((prev: QueryProps) => ({ ...prev, ...proposals?.find((profile: any) => profile.profile === selectedProfile)}))
+  }
+
+  useEffect(() => {
+    console.log({query})
+  }, [query])
 
   return (
     <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">
@@ -63,9 +84,11 @@ const Slider: React.FC = () => {
             name="tone"
             id="tone"
             className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt ? 'disabled' : ''}`}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+              setQuery((prev: QueryProps) => ({ ...prev, tone: e.target.value }))
+            }
           >
             <option value="select">Select Tone</option>
-            <option value="formal">Formal</option>
             <option value="formal">Formal</option>
             <option value="informal">InFormal</option>
             <option value="neutral">Neutral</option>
@@ -75,6 +98,9 @@ const Slider: React.FC = () => {
             name="limit"
             id="limit"
             className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt ? 'disabled' : ''}`}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+              setQuery((prev: QueryProps) => ({ ...prev, range_of_words: e.target.value }))
+            }
           >
             <option value="default">Select Range of words</option>
             <option value="app_50">Approx 50</option>
@@ -92,14 +118,21 @@ const Slider: React.FC = () => {
           </label>
           <textarea
             className={`${inbuilt ? 'disabled' : ''} rounded-lg w-full text-black p-3`}
-            name="additional"
-            id="additional"
+            name="optional"
+            id="optional"
             cols={30}
             rows={2}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+              setQuery((prev: QueryProps) => ({ ...prev, optional_info: e.target.value }))
+            }
           ></textarea>
         </div>
         <div className="px-4 w-full">
-          <button className="w-full rounded-lg bg-green-700 text-white py-2" id="submit">
+          <button
+            onClick={() => sendQueryToGPT()}
+            className="w-full rounded-lg bg-green-700 text-white py-2"
+            id="submit"
+          >
             Submit to GPT
           </button>
         </div>
