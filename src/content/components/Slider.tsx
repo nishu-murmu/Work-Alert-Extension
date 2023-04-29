@@ -34,6 +34,14 @@ const Slider: React.FC = () => {
     callSession()
   }, [])
 
+  useEffect(() => {
+    window.postMessage({ toggleSlider: toggleSlide })
+  }, [toggleSlide])
+
+  function openSlider() {
+    setToggleSlide(true)
+  }
+
   const callSession = () => {
     chrome.runtime.sendMessage({ type: 'session_call' }, (res: any) => {
       if (res?.success == true) {
@@ -49,15 +57,8 @@ const Slider: React.FC = () => {
     window.postMessage({ from: 'FROM_SLIDER' })
   }
 
-  // useLayoutEffect(() => {
-  //   window.addEventListener('message', (event) => {
-  //     setToggleSlide(event?.data?.toggleSlider)
-  //   })
-  // }, [])
-
   const sendQueryToGPT = async () => {
     const res = await getToken()
-    // console.log({ gpt: res })
     if (res == true) {
       setQuery((prev: QueryProps) => ({
         ...prev,
@@ -67,18 +68,6 @@ const Slider: React.FC = () => {
       window.open('https://chat.openai.com/', '_blank')
       openSlider()
     }
-  }
-
-  useEffect(() => {
-    window.postMessage({ toggleSlider: toggleSlide })
-  }, [toggleSlide])
-
-  function openSlider() {
-    console.log('sdfdgdfgdfgdfgdfgfd')
-    // setRefresh(true)
-    setToggleSlide(true)
-    // window.postMessage({ toggleSlider: true })
-    // window.postMessage({ from: 'FROM_SLIDER' })
   }
 
   return (

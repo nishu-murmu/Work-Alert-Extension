@@ -22,7 +22,6 @@ const useGPT = () => {
   const getToken = async () => {
     return new Promise((resolve, reject) => {
       chrome.storage.local.get('gpt_access_token', (res) => {
-        console.log({ local: res })
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError)
         } else {
@@ -35,8 +34,6 @@ const useGPT = () => {
           if (res.get_access_token) {
             resolve(true)
           } else resolve(false)
-          // console.log(res.get_access_token)
-          // resolve(res?.gpt_access_token ? true : false)
         }
       })
     })
