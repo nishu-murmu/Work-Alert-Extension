@@ -54,7 +54,6 @@ export class StreamClient {
       }
 
       const chunk = new TextDecoder().decode(value)
-      console.log(chunk, 'chunk')
       if (this.readyState === this.OPEN) {
         this.onmessage({ data: chunk })
       }

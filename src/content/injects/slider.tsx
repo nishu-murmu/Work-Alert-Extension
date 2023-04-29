@@ -1,7 +1,6 @@
 import ReactDOM from 'react-dom/client'
 import App from '../components/app'
 
-
 let linkElement = document.createElement('link')
 linkElement.rel = 'stylesheet'
 linkElement.type = 'text/css'
@@ -12,7 +11,6 @@ rootElement.id = 'root-id'
 document.body.prepend(rootElement)
 const shadowDOM = rootElement.attachShadow({ mode: 'open' })
 
-console.log(linkElement)
 shadowDOM.append(linkElement)
 
 const renderElement = document.createElement('div') as HTMLElement
