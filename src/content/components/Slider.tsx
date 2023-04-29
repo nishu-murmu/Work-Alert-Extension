@@ -1,12 +1,12 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { CrossIcon } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
-import useGPT from '../../customHooks/use-gpt'
 
 const Slider: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [query, setQuery] = useState<QueryProps>({
     profile: '',
     proposal: '',
@@ -32,6 +32,14 @@ const Slider: React.FC = () => {
       setProposals(res)
     })
     chrome.runtime.sendMessage({ type: 'session_call' })
+
+    chrome.runtime.onMessage.addListener((req) => {
+      if (req.type === 'generated_ans') {
+        console.log((req.data).slice(7).trim(), "string")
+        //@ts-ignore
+        // textareaRef.current?.innerText = req.data.mesage
+      }
+    })
   }, [])
 
   function closeSlider() {
@@ -161,11 +169,7 @@ const Slider: React.FC = () => {
             className="rounded-lg w-full text-black p-3"
             cols={30}
             rows={10}
-            defaultValue={
-              inbuilt
-                ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
-                : ''
-            }
+            ref={textareaRef}
           ></textarea>
         </div>
         <div className="px-4 mt-2 w-full">

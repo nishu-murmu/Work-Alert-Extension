@@ -107,9 +107,7 @@ chrome.runtime.onMessage.addListener((req) => {
     getSession()
   }
   if(req.type === "get_ans") {
-    generateAns(req.query).then((res: any) => {
-      console.log({res}, 'res')
-    })
+    generateAns(req.query)
   }
 })
 
