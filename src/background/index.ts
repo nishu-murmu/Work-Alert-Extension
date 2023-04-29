@@ -1,9 +1,16 @@
 import useBgJobs from '../customHooks/use-bg-job'
 import useGPT from '../customHooks/use-gpt'
-import { compareJobs, countJobsKeywords, getAllJobsData, notify, separateCounts, timeRange } from '../util'
+import {
+  compareJobs,
+  countJobsKeywords,
+  getAllJobsData,
+  notify,
+  separateCounts,
+  timeRange,
+} from '../util'
 import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
-const {getSession, generateAns} = useGPT()
+const { getSession, generateAns } = useGPT()
 interface keywordsProps {
   keyword: string
   rssLink?: string
@@ -78,7 +85,7 @@ chrome.alarms.onAlarm.addListener(async () => {
 
   let allKeywordJobs = compareJobs(previousAllJobs, newAllJobs)
   allKeywordJobs = allKeywordJobs.slice().filter((job: jobsProps) => {
-    if (timeRange(job.date).type === 'minutes' && timeRange(job.date).range <= "30") return job
+    if (timeRange(job.date).type === 'minutes' && timeRange(job.date).range <= '30') return job
   })
   // if have all keyword new jobs, show notification
   if (allKeywordJobs?.length) {
@@ -102,13 +109,13 @@ chrome.notifications.onClicked.addListener(() => {
   redirectWindow()
 })
 
-chrome.runtime.onMessage.addListener((req) => {
-  if (req.type === 'session_call') {
-    getSession()
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'session_call') {
+    getSession().then((res) => {
+      sendResponse({ success: res })
+    })
   }
-  if(req.type === "get_ans") {
-    generateAns(req.query)
-  }
+  return true
 })
 
 export {}
