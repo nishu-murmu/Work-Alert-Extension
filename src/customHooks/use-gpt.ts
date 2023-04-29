@@ -72,13 +72,16 @@ const useGPT = () => {
       //@ts-ignore
       stream.onmessage = (event) => {
         console.log('Received message:', event.data)
-        chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
-          const tabId: number | undefined = tabs[0].id
-          if(tabId) chrome.tabs.sendMessage(tabId, {
-            type: 'generated_ans',
-            data: event.data,
+        if (event.data.trim() != 'data: [DONE]') {
+          chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+            const tabId: number | undefined = tabs[0].id
+            if (tabId)
+              chrome.tabs.sendMessage(tabId, {
+                type: 'generated_ans',
+                data: event.data,
+              })
           })
-        })
+        }
       }
     }
   }

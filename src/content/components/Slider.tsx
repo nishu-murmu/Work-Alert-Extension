@@ -7,6 +7,7 @@ const Slider: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [textarea, setTextArea] = useState<string>('')
   const [query, setQuery] = useState<QueryProps>({
     profile: '',
     proposal: '',
@@ -36,9 +37,10 @@ const Slider: React.FC = () => {
 
     chrome.runtime.onMessage.addListener((req) => {
       if (req.type === 'generated_ans') {
-        console.log((req.data).slice(7).trim(), "string")
-        //@ts-ignore
-        // textareaRef.current?.innerText = req.data.mesage
+
+        let result = req.data.slice(req.data.indexOf('['), req.data.lastIndexOf(']'))
+        result = result.slice(2, result.length - 1)
+        setTextArea(result)
       }
     })
   }, [])
@@ -51,10 +53,6 @@ const Slider: React.FC = () => {
   function sendQueryToGPT() {
     chrome.runtime.sendMessage({type:"get_ans", query})
   }
-
-  useEffect(() => {
-    console.log({query, proposals})
-  }, [query, proposals])
 
   useEffect(() => {
     setQuery((prev: QueryProps) => ({
@@ -174,7 +172,7 @@ const Slider: React.FC = () => {
             className="rounded-lg w-full text-black p-3"
             cols={30}
             rows={10}
-            ref={textareaRef}
+            defaultValue={textarea}
           ></textarea>
         </div>
         <div
