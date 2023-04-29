@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useLayoutEffect, useState } from 'react'
 import { CrossIcon } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
@@ -21,8 +21,9 @@ const Slider: React.FC = () => {
     optional_info: '',
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
-  const [refresh, setRefresh] = useState(false)
+  const [refresh, setRefresh] = useState(true)
   const { fillProposal } = useContent()
+  const [toggleSlide, setToggleSlide] = useState<boolean>(true)
 
   const { getProposals } = useContent()
 
@@ -48,6 +49,12 @@ const Slider: React.FC = () => {
     window.postMessage({ from: 'FROM_SLIDER' })
   }
 
+  // useLayoutEffect(() => {
+  //   window.addEventListener('message', (event) => {
+  //     setToggleSlide(event?.data?.toggleSlider)
+  //   })
+  // }, [])
+
   const sendQueryToGPT = async () => {
     const res = await getToken()
     // console.log({ gpt: res })
@@ -57,9 +64,21 @@ const Slider: React.FC = () => {
         ...proposals?.find((profile: any) => profile.profile === selectedProfile),
       }))
     } else {
-      window.location.href = 'https://chat.openai.com/'
-      setRefresh(true)
+      window.open('https://chat.openai.com/', '_blank')
+      openSlider()
     }
+  }
+
+  useEffect(() => {
+    window.postMessage({ toggleSlider: toggleSlide })
+  }, [toggleSlide])
+
+  function openSlider() {
+    console.log('sdfdgdfgdfgdfgdfgfd')
+    // setRefresh(true)
+    setToggleSlide(true)
+    // window.postMessage({ toggleSlider: true })
+    // window.postMessage({ from: 'FROM_SLIDER' })
   }
 
   return (
