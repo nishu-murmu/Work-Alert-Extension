@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { CrossIcon } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
@@ -6,6 +6,8 @@ import { QueryProps, proposalsProps } from '../../util/types'
 const Slider: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [textarea, setTextArea] = useState<string>('')
   const [query, setQuery] = useState<QueryProps>({
     profile: '',
     proposal: '',
@@ -14,20 +16,33 @@ const Slider: React.FC = () => {
     skills: [],
     portfolio: '',
     clients: [],
-    tone: '',
-    range_of_words: '',
-    optional_info: '',
+    tone: "",
+    range_of_words:"",
+    optional_info: "",
+    job_description:''
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
   const { fillProposal } = useContent()
 
   const { getProposals } = useContent()
-
+  
   useEffect(() => {
+    //@ts-ignore
+    document.querySelector('.up-truncation-label') && document.querySelector('.up-truncation-label').click()
+
     getProposals().then((res: any) => {
       setProposals(res)
     })
     chrome.runtime.sendMessage({ type: 'session_call' })
+
+    chrome.runtime.onMessage.addListener((req) => {
+      if (req.type === 'generated_ans') {
+
+        let result = req.data.slice(req.data.indexOf('['), req.data.lastIndexOf(']'))
+        result = result.slice(2, result.length - 1)
+        setTextArea(result)
+      }
+    })
   }, [])
 
   function closeSlider() {
@@ -36,15 +51,18 @@ const Slider: React.FC = () => {
   }
 
   function sendQueryToGPT() {
+    chrome.runtime.sendMessage({type:"get_ans", query})
+  }
+
+  useEffect(() => {
     setQuery((prev: QueryProps) => ({
       ...prev,
       ...proposals?.find((profile: any) => profile.profile === selectedProfile),
     }))
-  }
 
-  useEffect(() => {
-    console.log({ query })
-  }, [query])
+    //@ts-ignore
+    setQuery((prev: QueryProps)=>({...prev,job_description:document.querySelector('#up-truncation-1')?.innerHTML as HTMLSpanElement}))
+  }, [selectedProfile])
 
   return (
     <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">
@@ -154,11 +172,7 @@ const Slider: React.FC = () => {
             className="rounded-lg w-full text-black p-3"
             cols={30}
             rows={10}
-            defaultValue={
-              inbuilt
-                ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
-                : ''
-            }
+            defaultValue={textarea}
           ></textarea>
         </div>
         <div
