@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useLayoutEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { CrossIcon } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
@@ -8,6 +8,8 @@ const Slider: React.FC = () => {
   const { getToken } = useGPT()
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
+  const [isConnected, setIsConnected] = useState<boolean>(false)
+  const [textarea, setTextArea] = useState<string>('')
   const [query, setQuery] = useState<QueryProps>({
     profile: '',
     proposal: '',
@@ -28,16 +30,6 @@ const Slider: React.FC = () => {
 
   const { getProposals } = useContent()
 
-  useEffect(() => {
-    getProposals().then((res: any) => {
-      setProposals(res)
-    })
-    callSession()
-  }, [])
-
-  useEffect(() => {
-    window.postMessage({ toggleSlider: toggleSlide })
-  }, [toggleSlide])
 
   function openSlider() {
     setToggleSlide(true)
@@ -61,15 +53,60 @@ const Slider: React.FC = () => {
   const sendQueryToGPT = async () => {
     const res = await getToken()
     if (res == true) {
-      setQuery((prev: QueryProps) => ({
-        ...prev,
-        ...proposals?.find((profile: any) => profile.profile === selectedProfile),
-      }))
+      if (inbuilt) {
+        setQuery((prev: QueryProps) => ({
+          ...prev,
+          ...proposals?.find((profile: any) => profile.profile === selectedProfile),
+        }))
+      } else {
+        chrome.runtime.sendMessage({ type: 'get_ans', query })
+      }
     } else {
       window.open('https://chat.openai.com/', '_blank')
       openSlider()
     }
   }
+
+  function closeGPTAns() {
+    chrome.runtime.sendMessage({type: "close_ans"})
+    setIsConnected(false)
+  }
+
+  useEffect(() => {
+    //@ts-ignore
+    document.querySelector('.up-truncation-label') && document.querySelector('.up-truncation-label').click()
+
+    getProposals().then((res: any) => {
+      setProposals(res)
+    })
+    callSession()
+    chrome.runtime.onMessage.addListener((req) => {
+      if (req.type === 'generated_ans') {
+        setIsConnected(req.isClosed)
+        let result = req.data.slice(req.data.indexOf('['), req.data.indexOf(']'))
+        result = result?.slice(2, result.length - 1)
+        if (result != 'our Nam') setTextArea(result)
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    window.postMessage({ toggleSlider: toggleSlide })
+  }, [toggleSlide])
+
+  useEffect(() => {
+    setQuery((prev: QueryProps) => ({
+      ...prev,
+      ...proposals?.find((profile: any) => profile.profile === selectedProfile),
+    }))
+
+    //@ts-ignore
+    setQuery((prev: QueryProps)=>({...prev,job_description:document.querySelector('#up-truncation-1')?.innerHTML as HTMLSpanElement}))
+  }, [selectedProfile])
+
+  // useEffect(() => {
+  //   console.log(isConnected)
+  // }, [isConnected])
 
   return (
     <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">
@@ -161,13 +198,12 @@ const Slider: React.FC = () => {
                 }
               ></textarea>
             </div>
-            <div className="px-4 w-full flex space-x-3">
+            <div className="px-4 w-full flex gap-x-2">
               <button
                 onClick={() => sendQueryToGPT()}
                 className="w-full rounded-lg bg-green-600 text-white py-2"
                 id="submit"
-              >
-                Submit to GPT
+              >{isConnected?"generating answer ...":"Submit to GPT"}
               </button>
               {refresh ? (
                 <button
@@ -194,12 +230,10 @@ const Slider: React.FC = () => {
               ) : (
                 <></>
               )}
+              {isConnected && <button onClick={() => closeGPTAns()} className='bg-custom-bg rounded-lg py-2 px-3 text-white'>
+                Stop generating
+              </button>}
             </div>
-          </>
-        ) : (
-          <></>
-        )}
-
         <div className="w-full px-4 my-2">
           <label className=" text-white font-semibold" htmlFor="proposal">
             Generated Proposal:
@@ -217,12 +251,17 @@ const Slider: React.FC = () => {
             }
           ></textarea>
         </div>
+          </>
+        ) : (
+          <></>
+        )}
+
         <div
           onClick={() => {
             fillProposal(
               inbuilt
                 ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
-                : '',
+                : textarea != "" ? textarea: "",
             )
           }}
           className="px-4 mt-2 w-full"

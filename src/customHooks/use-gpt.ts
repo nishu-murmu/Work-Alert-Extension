@@ -1,6 +1,12 @@
 import { v4 as uuidv4 } from 'uuid'
 import { QueryProps } from '../util/types'
 import { StreamClient } from '../util/SSE'
+let accessToken: string =""
+let stream: any
+chrome.storage.local.get(['gpt_access_token']).then(res => {
+  accessToken = res.gpt_access_token
+})
+const message_id = uuidv4()
 
 const useGPT = () => {
   function getSession() {
@@ -29,7 +35,7 @@ const useGPT = () => {
         query.experience
       }\nPrevious Clients: Facebook`,
       `Client Job Description: ${query.job_description}`,
-      `Extract pain points from client job description and write a cover letter around it in a ${query.tone} tone and it should not exceed ${query.range_of_words} words.`,
+      `Extract pain points from client job description and write a cover letter around it in a ${query.tone} tone and it should not exceed ${query.range_of_words.split("_")[1]} words.`,
       `${query.optional_info ? `Additional Instructions: ${query.optional_info}` : ''}`,
     ].filter(Boolean)
 
@@ -38,15 +44,12 @@ const useGPT = () => {
 
   const generateAns = async (query: QueryProps) => {
     const queryParams: string[] = generateQueryParams(query)
-    let source: any
-    const accessToken = await chrome.storage.local.get(['gpt_access_token'])
-    const message_id = uuidv4()
     if (accessToken) {
-      const stream = new StreamClient('https://chat.openai.com/backend-api/conversation', {
+      stream = new StreamClient('https://chat.openai.com/backend-api/conversation', {
         headers: {
           accept: '*/*',
           'accept-language': 'en-US,en;q=0.9',
-          authorization: `Bearer ${accessToken.gpt_access_token}`,
+          authorization: `Bearer ${accessToken}`,
           'content-type': 'application/json',
         },
         body: JSON.stringify({
@@ -78,9 +81,25 @@ const useGPT = () => {
               chrome.tabs.sendMessage(tabId, {
                 type: 'generated_ans',
                 data: event.data,
+                isClosed: true
               })
           })
+        } else {
+          chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+            const tabId: number | undefined = tabs[0].id
+            if (tabId)
+              chrome.tabs.sendMessage(tabId, {
+                type: 'generated_ans',
+                isClosed: false,
+              })
+          })
+          stream.close()
         }
+      }
+
+      //@ts-ignore
+      stream._onStreamClosed = () => {
+        genTitle()
       }
     }
   }
@@ -103,7 +122,38 @@ const useGPT = () => {
       })
     })
   }
-  return { getSession, getToken, generateAns }
+  async function genTitle() {
+    await fetch('https://chat.openai.com/backend-api/conversations?offset=0&limit=20', {
+      headers: {
+        accept: '*/*',
+        'accept-language': 'en-US,en;q=0.9',
+        authorization: `Bearer ${accessToken}`,
+        'content-type': 'application/json',
+      },
+      method: 'GET',
+    })
+      .then((res) => res.json())
+      .then(async (data) => {
+        let id = data.items[0].id
+        await fetch(`https://chat.openai.com/backend-api/conversation/gen_title/${id}`, {
+          headers: {
+            accept: '*/*',
+            authorization: `Bearer ${accessToken}`,
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            message_id: message_id,
+          }),
+          method: 'POST',
+        })
+      })
+  }
+
+  function closeAns() {
+    //@ts-ignore
+    stream.close()
+  }
+  return { getSession, generateAns, genTitle, closeAns, getToken }
 }
 
 export default useGPT

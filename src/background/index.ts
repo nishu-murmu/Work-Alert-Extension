@@ -10,7 +10,7 @@ import {
 } from '../util'
 import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
-const { getSession, generateAns } = useGPT()
+const {getSession, generateAns, closeAns} = useGPT()
 interface keywordsProps {
   keyword: string
   rssLink?: string
@@ -110,12 +110,20 @@ chrome.notifications.onClicked.addListener(() => {
 })
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log(request,'req')
   if (request.type === 'session_call') {
+    console.log('check')
     getSession().then((res) => {
+      console.log(res,'res')
       sendResponse({ success: res })
     })
   }
-  return true
+  if(request.type === 'close_ans') {
+    closeAns()
+  }
+  if (request.type === 'get_ans') {
+    generateAns(request.query)
+  }
 })
 
 export {}

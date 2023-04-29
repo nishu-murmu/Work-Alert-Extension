@@ -47,6 +47,7 @@ export class StreamClient {
   }
 
   readStream(reader) {
+    this.reader = reader
     reader.read().then(({ done, value }) => {
       if (done) {
         this._onStreamClosed()
