@@ -21,6 +21,7 @@ const Slider: React.FC = () => {
     job_description:''
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
+  const { fillProposal } = useContent()
 
   const { getProposals } = useContent()
   
@@ -102,63 +103,67 @@ const Slider: React.FC = () => {
             Use the inbuilt proposal.
           </label>
         </div>
-        <div className="grid w-full px-4 my-3 h-10 text-black grid-cols-2 gap-x-2">
-          <select
-            name="tone"
-            id="tone"
-            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt ? 'disabled' : ''}`}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setQuery((prev: QueryProps) => ({ ...prev, tone: e.target.value }))
-            }
-          >
-            <option value="select">Select Tone</option>
-            <option value="formal">Formal</option>
-            <option value="informal">InFormal</option>
-            <option value="neutral">Neutral</option>
-            <option value="friendly">Friendly</option>
-          </select>
-          <select
-            name="limit"
-            id="limit"
-            className={`py-3 px-2 rounded-lg hover:cursor-pointer ${inbuilt ? 'disabled' : ''}`}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setQuery((prev: QueryProps) => ({ ...prev, range_of_words: e.target.value }))
-            }
-          >
-            <option value="default">Select Range of words</option>
-            <option value="app_50">Approx 50</option>
-            <option value="app_100">Approx 100</option>
-            <option value="app_150">Approx 150</option>
-            <option value="app_200">Approx 200</option>
-          </select>
-        </div>
-        <div className="px-4 w-full py-2">
-          <label
-            className={`${inbuilt ? 'disabled' : ''} text-white font-medium`}
-            htmlFor="proposal"
-          >
-            Optional Information:
-          </label>
-          <textarea
-            className={`${inbuilt ? 'disabled' : ''} rounded-lg w-full text-black p-3`}
-            name="optional"
-            id="optional"
-            cols={30}
-            rows={2}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-              setQuery((prev: QueryProps) => ({ ...prev, optional_info: e.target.value }))
-            }
-          ></textarea>
-        </div>
-        <div className="px-4 w-full">
-          <button
-            onClick={() => sendQueryToGPT()}
-            className="w-full rounded-lg bg-green-700 text-white py-2"
-            id="submit"
-          >
-            Submit to GPT
-          </button>
-        </div>
+        {!inbuilt ? (
+          <>
+            <div className="grid w-full px-4 my-3 h-10 text-black grid-cols-2 gap-x-2">
+              <select
+                name="tone"
+                id="tone"
+                className={`py-3 px-2 rounded-lg hover:cursor-pointer`}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                  setQuery((prev: QueryProps) => ({ ...prev, tone: e.target.value }))
+                }
+              >
+                <option value="select">Select Tone</option>
+                <option value="formal">Formal</option>
+                <option value="informal">InFormal</option>
+                <option value="neutral">Neutral</option>
+                <option value="friendly">Friendly</option>
+              </select>
+              <select
+                name="limit"
+                id="limit"
+                className={`py-3 px-2 rounded-lg hover:cursor-pointer`}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                  setQuery((prev: QueryProps) => ({ ...prev, range_of_words: e.target.value }))
+                }
+              >
+                <option value="default">Select Range of words</option>
+                <option value="app_50">Approx 50</option>
+                <option value="app_100">Approx 100</option>
+                <option value="app_150">Approx 150</option>
+                <option value="app_200">Approx 200</option>
+              </select>
+            </div>
+            <div className="px-4 w-full py-2">
+              <label className={` text-white font-medium`} htmlFor="proposal">
+                Optional Information:
+              </label>
+              <textarea
+                className={`rounded-lg w-full text-black p-3`}
+                name="optional"
+                id="optional"
+                cols={30}
+                rows={2}
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                  setQuery((prev: QueryProps) => ({ ...prev, optional_info: e.target.value }))
+                }
+              ></textarea>
+            </div>
+            <div className="px-4 w-full">
+              <button
+                onClick={() => sendQueryToGPT()}
+                className="w-full rounded-lg bg-green-700 text-white py-2"
+                id="submit"
+              >
+                Submit to GPT
+              </button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
         <div className="w-full px-4 my-2">
           <label className=" text-white font-semibold" htmlFor="proposal">
             Generated Proposal:
@@ -172,7 +177,16 @@ const Slider: React.FC = () => {
             ref={textareaRef}
           ></textarea>
         </div>
-        <div className="px-4 mt-2 w-full">
+        <div
+          onClick={() => {
+            fillProposal(
+              inbuilt
+                ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
+                : '',
+            )
+          }}
+          className="px-4 mt-2 w-full"
+        >
           <button className="w-full bg-green-600 py-2 rounded-lg">Fill</button>
         </div>
       </div>
