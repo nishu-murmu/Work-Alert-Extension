@@ -36,7 +36,6 @@ const Slider: React.FC = () => {
 
   const callSession = () => {
     chrome.runtime.sendMessage({ type: 'session_call' }, (res: any) => {
-      console.log({ res })
       if (res?.success == true) {
         setRefresh(false)
       } else {
@@ -51,16 +50,9 @@ const Slider: React.FC = () => {
   }
 
   const sendQueryToGPT = async () => {
-    const res = await getToken()
-    if (res == true) {
-      if (inbuilt) {
-        setQuery((prev: QueryProps) => ({
-          ...prev,
-          ...proposals?.find((profile: any) => profile.profile === selectedProfile),
-        }))
-      } else {
-        chrome.runtime.sendMessage({ type: 'get_ans', query })
-      }
+    const res: any = await getToken()
+    if (res && res?.gpt_access_token) {
+      chrome.runtime.sendMessage({ type: 'get_ans', query })
     } else {
       window.open('https://chat.openai.com/', '_blank')
       openSlider()
@@ -71,7 +63,6 @@ const Slider: React.FC = () => {
     chrome.runtime.sendMessage({ type: 'close_ans' })
     setIsConnected(false)
   }
-  console.log({ refresh })
   useEffect(() => {
     //@ts-ignore
     const label: any = document.querySelector('.up-truncation-label')
@@ -107,10 +98,6 @@ const Slider: React.FC = () => {
       job_description: up?.innerHTML as HTMLSpanElement,
     }))
   }, [selectedProfile])
-
-  // useEffect(() => {
-  //   console.log(isConnected)
-  // }, [isConnected])
 
   return (
     <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">

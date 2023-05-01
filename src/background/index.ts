@@ -110,10 +110,8 @@ chrome.notifications.onClicked.addListener(() => {
 })
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log(request, 'req')
   if (request.type === 'session_call') {
     getSession().then((res) => {
-      console.log(res, 'inres')
       sendResponse({ success: res })
     })
   }
@@ -123,6 +121,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'get_ans') {
     generateAns(request.query)
   }
+  return true
 })
 
 export {}

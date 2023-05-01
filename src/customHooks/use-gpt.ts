@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
 import { QueryProps } from '../util/types'
 import { StreamClient } from '../util/SSE'
-let accessToken: string =""
+let accessToken: string = ''
 let stream: any
-chrome.storage.local.get(['gpt_access_token']).then(res => {
+chrome.storage.local.get(['gpt_access_token']).then((res) => {
   accessToken = res.gpt_access_token
 })
 const message_id = uuidv4()
@@ -35,7 +35,9 @@ const useGPT = () => {
         query.experience
       }\nPrevious Clients: Facebook`,
       `Client Job Description: ${query.job_description}`,
-      `Extract pain points from client job description and write a cover letter around it in a ${query.tone} tone and it should not exceed ${query.range_of_words.split("_")[1]} words.`,
+      `Extract pain points from client job description and write a cover letter around it in a ${
+        query.tone
+      } tone and it should not exceed ${query.range_of_words.split('_')[1]} words.`,
       `${query.optional_info ? `Additional Instructions: ${query.optional_info}` : ''}`,
     ].filter(Boolean)
 
@@ -81,7 +83,7 @@ const useGPT = () => {
               chrome.tabs.sendMessage(tabId, {
                 type: 'generated_ans',
                 data: event.data,
-                isClosed: true
+                isClosed: true,
               })
           })
         } else {
@@ -109,15 +111,7 @@ const useGPT = () => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError)
         } else {
-          if (typeof res === 'object') {
-            if (Object.keys(res).length > 0) {
-            } else {
-              resolve(false)
-            }
-          }
-          if (res.get_access_token) {
-            resolve(true)
-          } else resolve(false)
+          resolve(res)
         }
       })
     })
