@@ -5,7 +5,7 @@ import { QueryProps, proposalsProps } from '../../util/types'
 import useGPT from '../../customHooks/use-gpt'
 
 const Slider: React.FC = () => {
-  const { getToken } = useGPT()
+  const { getToken, deleteToken } = useGPT()
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
   const [isConnected, setIsConnected] = useState<boolean>(false)
@@ -39,6 +39,7 @@ const Slider: React.FC = () => {
       if (res?.success == true) {
         setRefresh(false)
       } else {
+        deleteToken()
         setRefresh(true)
       }
     })
@@ -54,7 +55,7 @@ const Slider: React.FC = () => {
     if (res && res?.gpt_access_token) {
       chrome.runtime.sendMessage({ type: 'get_ans', query })
     } else {
-      window.open('https://chat.openai.com/', '_blank')
+      window.open('https://chat.openai.com/auth/login', '_blank')
       openSlider()
     }
   }

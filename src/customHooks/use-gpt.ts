@@ -116,6 +116,14 @@ const useGPT = () => {
       })
     })
   }
+
+  const deleteToken = async () => {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.remove('gpt_access_token').then(() => {
+        resolve(true)
+      })
+    })
+  }
   async function genTitle() {
     await fetch('https://chat.openai.com/backend-api/conversations?offset=0&limit=20', {
       headers: {
@@ -147,7 +155,7 @@ const useGPT = () => {
     //@ts-ignore
     stream.close()
   }
-  return { getSession, generateAns, genTitle, closeAns, getToken }
+  return { getSession, generateAns, genTitle, closeAns, getToken, deleteToken }
 }
 
 export default useGPT
