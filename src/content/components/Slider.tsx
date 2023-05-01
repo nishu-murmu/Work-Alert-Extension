@@ -24,12 +24,11 @@ const Slider: React.FC = () => {
     optional_info: '',
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
-  const [refresh, setRefresh] = useState(true)
+  const [refresh, setRefresh] = useState(false)
   const { fillProposal } = useContent()
   const [toggleSlide, setToggleSlide] = useState<boolean>(true)
 
   const { getProposals } = useContent()
-
 
   function openSlider() {
     setToggleSlide(true)
@@ -37,6 +36,7 @@ const Slider: React.FC = () => {
 
   const callSession = () => {
     chrome.runtime.sendMessage({ type: 'session_call' }, (res: any) => {
+      console.log({ res })
       if (res?.success == true) {
         setRefresh(false)
       } else {
@@ -68,13 +68,14 @@ const Slider: React.FC = () => {
   }
 
   function closeGPTAns() {
-    chrome.runtime.sendMessage({type: "close_ans"})
+    chrome.runtime.sendMessage({ type: 'close_ans' })
     setIsConnected(false)
   }
-
+  console.log({ refresh })
   useEffect(() => {
     //@ts-ignore
-    document.querySelector('.up-truncation-label') && document.querySelector('.up-truncation-label').click()
+    const label: any = document.querySelector('.up-truncation-label')
+    document.querySelector('.up-truncation-label') && label.click()
 
     getProposals().then((res: any) => {
       setProposals(res)
@@ -99,9 +100,12 @@ const Slider: React.FC = () => {
       ...prev,
       ...proposals?.find((profile: any) => profile.profile === selectedProfile),
     }))
-
+    const up: any = document.querySelector('#up-truncation-1')
     //@ts-ignore
-    setQuery((prev: QueryProps)=>({...prev,job_description:document.querySelector('#up-truncation-1')?.innerHTML as HTMLSpanElement}))
+    setQuery((prev: QueryProps) => ({
+      ...prev,
+      job_description: up?.innerHTML as HTMLSpanElement,
+    }))
   }, [selectedProfile])
 
   // useEffect(() => {
@@ -203,7 +207,8 @@ const Slider: React.FC = () => {
                 onClick={() => sendQueryToGPT()}
                 className="w-full rounded-lg bg-green-600 text-white py-2"
                 id="submit"
-              >{isConnected?"generating answer ...":"Submit to GPT"}
+              >
+                {isConnected ? 'generating answer ...' : 'Submit to GPT'}
               </button>
               {refresh ? (
                 <button
@@ -230,27 +235,33 @@ const Slider: React.FC = () => {
               ) : (
                 <></>
               )}
-              {isConnected && <button onClick={() => closeGPTAns()} className='bg-custom-bg rounded-lg py-2 px-3 text-white'>
-                Stop generating
-              </button>}
+              {isConnected && (
+                <button
+                  onClick={() => closeGPTAns()}
+                  className="bg-custom-bg rounded-lg py-2 px-3 text-white"
+                >
+                  Stop generating
+                </button>
+              )}
             </div>
-        <div className="w-full px-4 my-2">
-          <label className=" text-white font-semibold" htmlFor="proposal">
-            Generated Proposal:
-          </label>
-          <textarea
-            name="proposal"
-            id="proposal"
-            className="rounded-lg w-full text-black outline-none border-none p-3"
-            cols={30}
-            rows={10}
-            defaultValue={
-              inbuilt
-                ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
-                : ''
-            }
-          ></textarea>
-        </div>
+            <div className="w-full px-4 my-2">
+              <label className=" text-white font-semibold" htmlFor="proposal">
+                Generated Proposal:
+              </label>
+              <textarea
+                name="proposal"
+                id="proposal"
+                className="rounded-lg w-full text-black outline-none border-none p-3"
+                cols={30}
+                rows={10}
+                defaultValue={
+                  inbuilt
+                    ? proposals?.find((profile: any) => profile.profile === selectedProfile)
+                        ?.proposal
+                    : ''
+                }
+              ></textarea>
+            </div>
           </>
         ) : (
           <></>
@@ -261,7 +272,9 @@ const Slider: React.FC = () => {
             fillProposal(
               inbuilt
                 ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
-                : textarea != "" ? textarea: "",
+                : textarea != ''
+                ? textarea
+                : '',
             )
           }}
           className="px-4 mt-2 w-full"
