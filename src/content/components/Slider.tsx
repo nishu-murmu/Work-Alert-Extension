@@ -1,13 +1,15 @@
-import React, { ChangeEvent, useEffect, useLayoutEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { CrossIcon } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
 import useGPT from '../../customHooks/use-gpt'
 
 const Slider: React.FC = () => {
-  const { getToken } = useGPT()
+  const { getToken, deleteToken } = useGPT()
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
+  const [isConnected, setIsConnected] = useState<boolean>(false)
+  const [textarea, setTextArea] = useState<string>('')
   const [query, setQuery] = useState<QueryProps>({
     profile: '',
     proposal: '',
@@ -22,22 +24,11 @@ const Slider: React.FC = () => {
     optional_info: '',
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
-  const [refresh, setRefresh] = useState(true)
+  const [refresh, setRefresh] = useState(false)
   const { fillProposal } = useContent()
   const [toggleSlide, setToggleSlide] = useState<boolean>(true)
 
   const { getProposals } = useContent()
-
-  useEffect(() => {
-    getProposals().then((res: any) => {
-      setProposals(res)
-    })
-    callSession()
-  }, [])
-
-  useEffect(() => {
-    window.postMessage({ toggleSlider: toggleSlide })
-  }, [toggleSlide])
 
   function openSlider() {
     setToggleSlide(true)
@@ -48,6 +39,7 @@ const Slider: React.FC = () => {
       if (res?.success == true) {
         setRefresh(false)
       } else {
+        deleteToken()
         setRefresh(true)
       }
     })
@@ -59,17 +51,58 @@ const Slider: React.FC = () => {
   }
 
   const sendQueryToGPT = async () => {
-    const res = await getToken()
-    if (res == true) {
-      setQuery((prev: QueryProps) => ({
-        ...prev,
-        ...proposals?.find((profile: any) => profile.profile === selectedProfile),
-      }))
+    const res: any = await getToken()
+    if (res && res?.gpt_access_token) {
+      chrome.runtime.sendMessage({ type: 'get_ans', query })
     } else {
-      window.open('https://chat.openai.com/', '_blank')
+      window.open('https://chat.openai.com/auth/login', '_blank')
       openSlider()
     }
   }
+
+  function closeGPTAns() {
+    chrome.runtime.sendMessage({ type: 'close_ans' })
+    setIsConnected(false)
+  }
+  useEffect(() => {
+    //@ts-ignore
+    const label: any = document.querySelector('.up-truncation-label')
+    document.querySelector('.up-truncation-label') && label.click()
+
+    getProposals().then((res: any) => {
+      setProposals(res)
+    })
+    callSession()
+    chrome.runtime.onMessage.addListener((req) => {
+      if (req.type === 'generated_ans') {
+        setIsConnected(req.isClosed)
+        let result = req.data.slice(req.data.indexOf('['), req.data.indexOf(']'))
+        result = result?.slice(2, result.length - 1)
+        if (result != 'our Nam') setTextArea(result)
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    window.postMessage({ toggleSlider: toggleSlide })
+  }, [toggleSlide])
+
+  useEffect(() => {
+    setQuery((prev: QueryProps) => ({
+      ...prev,
+      ...proposals?.find((profile: any) => profile.profile === selectedProfile),
+    }))
+    const up: any = document.querySelector('#up-truncation-1')
+    //@ts-ignore
+    setQuery((prev: QueryProps) => ({
+      ...prev,
+      job_description: up?.innerHTML as HTMLSpanElement,
+    }))
+  }, [selectedProfile])
+
+  useEffect(() => {
+    console.log(textarea)
+  },[textarea])
 
   return (
     <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">
@@ -161,13 +194,13 @@ const Slider: React.FC = () => {
                 }
               ></textarea>
             </div>
-            <div className="px-4 w-full flex space-x-3">
+            <div className="px-4 w-full flex gap-x-2">
               <button
                 onClick={() => sendQueryToGPT()}
                 className="w-full rounded-lg bg-green-600 text-white py-2"
                 id="submit"
               >
-                Submit to GPT
+                {isConnected ? 'generating answer ...' : 'Submit to GPT'}
               </button>
               {refresh ? (
                 <button
@@ -194,34 +227,40 @@ const Slider: React.FC = () => {
               ) : (
                 <></>
               )}
+              {isConnected && (
+                <button
+                  onClick={() => closeGPTAns()}
+                  className="bg-custom-bg rounded-lg py-2 px-3 text-white"
+                >
+                  Stop generating
+                </button>
+              )}
+            </div>
+            <div className="w-full px-4 my-2">
+              <label className=" text-white font-semibold" htmlFor="proposal">
+                Generated Proposal:
+              </label>
+              <textarea
+                name="proposal"
+                id="proposal"
+                className="rounded-lg w-full text-black outline-none border-none p-3"
+                cols={30}
+                rows={10}
+                defaultValue={textarea}
+              ></textarea>
             </div>
           </>
         ) : (
           <></>
         )}
 
-        <div className="w-full px-4 my-2">
-          <label className=" text-white font-semibold" htmlFor="proposal">
-            Generated Proposal:
-          </label>
-          <textarea
-            name="proposal"
-            id="proposal"
-            className="rounded-lg w-full text-black outline-none border-none p-3"
-            cols={30}
-            rows={10}
-            defaultValue={
-              inbuilt
-                ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
-                : ''
-            }
-          ></textarea>
-        </div>
         <div
           onClick={() => {
             fillProposal(
               inbuilt
                 ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
+                : textarea != ''
+                ? textarea
                 : '',
             )
           }}

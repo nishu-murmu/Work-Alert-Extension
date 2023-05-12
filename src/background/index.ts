@@ -10,7 +10,7 @@ import {
 } from '../util'
 import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
-const { getSession, generateAns } = useGPT()
+const { getSession, generateAns, closeAns } = useGPT()
 interface keywordsProps {
   keyword: string
   rssLink?: string
@@ -53,7 +53,7 @@ const updateBadge = async () => {
     result.keywordsCount.reduce((acc: any, item: any) => {
       return acc + item.count
     }, 0)
-  if (total !== 0) chrome.action.setBadgeText({ text: total && total.toString() })
+  if (total !== 0) chrome.action.setBadgeText({ text: total ?total.toString(): '' })
   else chrome.action.setBadgeText({ text: '' })
 }
 
@@ -114,6 +114,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     getSession().then((res) => {
       sendResponse({ success: res })
     })
+  }
+  if (request.type === 'close_ans') {
+    closeAns()
+  }
+  if (request.type === 'get_ans') {
+    generateAns(request.query)
   }
   return true
 })
