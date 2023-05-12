@@ -100,6 +100,10 @@ const Slider: React.FC = () => {
     }))
   }, [selectedProfile])
 
+  useEffect(() => {
+    console.log(textarea)
+  },[textarea])
+
   return (
     <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">
       <div className="header-section flex w-full ">
@@ -242,12 +246,7 @@ const Slider: React.FC = () => {
                 className="rounded-lg w-full text-black outline-none border-none p-3"
                 cols={30}
                 rows={10}
-                defaultValue={
-                  inbuilt
-                    ? proposals?.find((profile: any) => profile.profile === selectedProfile)
-                        ?.proposal
-                    : ''
-                }
+                defaultValue={textarea}
               ></textarea>
             </div>
           </>
