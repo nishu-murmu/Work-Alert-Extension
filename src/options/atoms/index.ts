@@ -1,5 +1,5 @@
 import { RecoilState, atom } from 'recoil'
-import { jobsProps, keywordProps } from '../../util/types'
+import { jobsProps, keywordProps, proposalsProps } from '../../util/types'
 
 export const jobsState = atom({
   key: 'jobs',
@@ -23,7 +23,7 @@ export const clickedKeyword = atom({
 
 export const proposals = atom({
   key: 'proposals',
-  default: [],
+  default: [] as proposalsProps[],
 })
 
 export const clickedValue = atom({
