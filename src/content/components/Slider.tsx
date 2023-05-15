@@ -28,7 +28,6 @@ const Slider: React.FC = () => {
   const [proposals, setProposals] = useState<proposalsProps[]>([])
   const [refresh, setRefresh] = useState(false)
   const { fillProposal, getProposals } = useContent()
-  const { getLocalAnswer } = useBgJobs()
   const [toggleSlide, setToggleSlide] = useState<boolean>(true)
 
   function openSlider() {
@@ -74,12 +73,11 @@ const Slider: React.FC = () => {
       setProposals(res)
     })
     callSession()
-
     chrome.runtime.onMessage.addListener((req) => {
       if (req.type === 'generated_ans') {
         setIsConnected(req.isClosed)
-        let result = req.data.slice(req.data.indexOf('['), req.data.indexOf(']'))
-        result = result?.slice(2, result.length - 1)
+        let result = req.data.slice(req.data.indexOf('['), req.data.indexOf('end_turn'))
+        result = result?.slice(2, result.length - 6)
         if (result != 'our Nam') setTextArea(unescape(result))
       }
     })
