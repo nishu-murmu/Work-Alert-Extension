@@ -27,7 +27,7 @@ const Slider: React.FC = () => {
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
   const [refresh, setRefresh] = useState(false)
-  const { fillProposal, getProposals } = useContent()
+  const { getProposals } = useContent()
   const [toggleSlide, setToggleSlide] = useState<boolean>(true)
 
   function openSlider() {
@@ -64,6 +64,14 @@ const Slider: React.FC = () => {
     chrome.runtime.sendMessage({ type: 'close_ans' })
     setIsConnected(false)
   }
+
+  const fillProposal = (proposal: string | undefined) => {
+    const textarea = document.querySelector('.up-textarea') as HTMLTextAreaElement
+    if(proposal) textarea.value = proposal
+    const event = new Event('input', { bubbles: true })
+    textarea.dispatchEvent(event)
+  }
+
   useEffect(() => {
     //@ts-ignore
     const label: any = document.querySelector('.up-truncation-label')
@@ -255,15 +263,16 @@ const Slider: React.FC = () => {
           onClick={() => {
             fillProposal(
               inbuilt
-                ? proposals?.find((profile: any) => profile.profile === selectedProfile)?.proposal
+                ? proposals?.find((proposal: proposalsProps) => proposal.profile === selectedProfile)?.proposal
                 : textarea != ''
                 ? textarea
                 : '',
             )
+            closeSlider()
           }}
           className="px-4 mt-2 w-full"
         >
-          <button className="w-full bg-green-600 py-2 rounded-lg">Fill</button>
+         {!isConnected && <button className="w-full bg-green-600 py-2 rounded-lg">Fill</button>}
         </div>
       </div>
     </div>
