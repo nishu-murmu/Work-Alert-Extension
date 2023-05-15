@@ -10,7 +10,6 @@ chrome.storage.local.get(['gpt_access_token']).then((res) => {
 const message_id = uuidv4()
 
 const useGPT = () => {
-  const {setLocalAnswer, getLocalAnswer} = useBgJobs()
   
   function getSession() {
     return new Promise((resolve) => {
@@ -34,14 +33,14 @@ const useGPT = () => {
 
   function generateQueryParams(query: QueryProps) {
     const result: string[] = [
-      `Name: ${query.name}\nSkills: ${query.skills.join(' ')}\nExperience: ${
+      `Name: ${query?.name}\nSkills: ${query?.skills.join(' ')}\nExperience: ${
         query.experience
       }\nPrevious Clients: Facebook`,
-      `Client Job Description: ${query.job_description}`,
+      `Client Job Description: ${query?.job_description}`,
       `Extract pain points from client job description and write a cover letter around it in a ${
-        query.tone
-      } tone and it should not exceed ${query.range_of_words.split('_')[1]} words.`,
-      `${query.optional_info ? `Additional Instructions: ${query.optional_info}` : ''}`,
+        query?.tone
+      } tone and it should not exceed ${query?.range_of_words.split('_')[1]} words.`,
+      `${query?.optional_info ? `Additional Instructions: ${query?.optional_info}` : ''}`,
     ].filter(Boolean)
 
     return result
@@ -78,32 +77,24 @@ const useGPT = () => {
       })
 
       //@ts-ignore
-      stream.onmessage = (event) => {
-        if (event.data.trim() != 'data: [DONE]') {
-          const result: string = event.data.slice(event.data.indexOf('['), event.data.indexOf(']'))
-          setLocalAnswer(result)
-          chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-            const tabId: number | undefined = tabs[0].id
-            if (tabId) {
+      chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+        let tabId: any = tabs[0]?.id
+        stream.onmessage = (event: any) => {
+          if (event.data.trim() != 'data: [DONE]') {
               chrome.tabs.sendMessage(tabId, {
                 type: 'generated_ans',
                 data: event.data,
                 isClosed: true,
               })
-            }
-          })
-        } else {
-          chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-            const tabId: number | undefined = tabs[0].id
-            if (tabId)
+          } else {
               chrome.tabs.sendMessage(tabId, {
                 type: 'generated_ans',
                 isClosed: false,
               })
-          })
-          stream.close()
+            stream.close()
+          }
         }
-      }
+      })
 
       //@ts-ignore
       stream._onStreamClosed = () => {

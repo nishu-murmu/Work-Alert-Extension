@@ -1,12 +1,10 @@
 import XMLParser from 'fast-xml-parser'
 import { jobsProps, keywordProps } from './types'
 import he from 'he'
-import useBgJobs from '../customHooks/use-bg-job'
 const parser = new XMLParser.XMLParser()
 
 export const getAllJobsData = async (keywords: keywordProps) => {
   let filtered: jobsProps[] = []
-  const { getBgLocalJobs } = useBgJobs()
 
   const url = keywords.rssLink
   try {
