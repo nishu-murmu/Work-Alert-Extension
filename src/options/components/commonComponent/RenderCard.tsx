@@ -35,9 +35,9 @@ const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
               ? `${timeRange(item.date.toString()).range} days ago`
               : `${timeRange(item.date.toString()).range} hours ago`}
           </div>
-          <div>{item.budget ? item.budget : item.hourly && `${item.hourly.trim()}`}</div>
+          <div className='text-white'>{item.budget ? item.budget : item.hourly && `${item.hourly.trim()}`}</div>
         </div>
-        {item.hourly && <div className="right-4 absolute">hourly</div>}
+        {item.hourly && <div className="right-4 absolute text-white">hourly</div>}
       </div>
       <div className="text-white text-2xl pt-4 pl-4 font-extrabold">{item.title}</div>
       <div className="text-gray-400">

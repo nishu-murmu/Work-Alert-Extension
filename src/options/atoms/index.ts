@@ -45,3 +45,8 @@ export const keywordCount: any = atom({
   key: 'keywordsCount',
   default: [],
 })
+
+export const selectedFilter = atom({
+  key: 'selectedFilter',
+  default: 'default',
+})
