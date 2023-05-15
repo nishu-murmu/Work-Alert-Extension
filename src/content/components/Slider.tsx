@@ -4,6 +4,7 @@ import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
 import useGPT from '../../customHooks/use-gpt'
 import useBgJobs from '../../customHooks/use-bg-job'
+import unescape from 'unescape-js'
 
 const Slider: React.FC = () => {
   const { getToken, deleteToken } = useGPT()
@@ -27,7 +28,7 @@ const Slider: React.FC = () => {
   const [proposals, setProposals] = useState<proposalsProps[]>([])
   const [refresh, setRefresh] = useState(false)
   const { fillProposal, getProposals } = useContent()
-  const {getLocalAnswer} = useBgJobs()
+  const { getLocalAnswer } = useBgJobs()
   const [toggleSlide, setToggleSlide] = useState<boolean>(true)
 
   function openSlider() {
@@ -73,15 +74,13 @@ const Slider: React.FC = () => {
       setProposals(res)
     })
     callSession()
-    const answer = getLocalAnswer().then((res: any) => {
-      setTextArea(res)
-    })
+
     chrome.runtime.onMessage.addListener((req) => {
       if (req.type === 'generated_ans') {
         setIsConnected(req.isClosed)
         let result = req.data.slice(req.data.indexOf('['), req.data.indexOf(']'))
         result = result?.slice(2, result.length - 1)
-        if (result != 'our Nam') setTextArea(result)
+        if (result != 'our Nam') setTextArea(unescape(result))
       }
     })
   }, [])
@@ -113,6 +112,7 @@ const Slider: React.FC = () => {
           Write a Proposal
         </div>
       </div>
+
       <div className="main-section">
         <div className="flex w-full px-4">
           <select
