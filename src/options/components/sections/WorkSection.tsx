@@ -5,13 +5,13 @@ import { ArrowLeftIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { keywordProps } from '../../../util/types'
 import { compareArrays } from '../../../util'
-import { ChangeEvent, useEffect, useRef } from 'react'
+import { ChangeEvent, useEffect, useLayoutEffect, useRef } from 'react'
 
 const WorkSection = () => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setIsClickKeyword] = useRecoilState(clickedKeyword)
-  const [_, setSelectedFilter] = useRecoilState(selectedFilter)
-  const { allJobs, getNewComingJobs, removeSeenJobs } = useOpJobs()
+  const [filter, setSelectedFilter] = useRecoilState(selectedFilter)
+  const { allJobs, getNewComingJobs, removeSeenJobs, setFilter, getFilter } = useOpJobs()
   const backRef = useRef<HTMLButtonElement>(null)
 
   let jobs = allJobs.find((keyword: keywordProps) => keyword.keyword === clickKeyword.keyword)?.jobs
@@ -33,9 +33,13 @@ const WorkSection = () => {
   }
 
   const filterHandler = (e: ChangeEvent<HTMLSelectElement>) => {
-    chrome.storage.local.set({ filter: e.target.value }, () => {
-    setSelectedFilter(e.target.value)
+    setFilter(e.target.value).then(() => {
+      getfilters()
     })
+  }
+
+  async function getfilters() {
+    const filter = await getFilter()
   }
 
   useEffect(() => {
@@ -45,6 +49,13 @@ const WorkSection = () => {
       document.removeEventListener("keydown", clickToGoBack)
     }
   }, [])
+
+  useLayoutEffect(() => {
+    if (jobs && jobs.length > 0) {
+      getfilters()
+    }
+    return () => {}
+  },[])
 
   return (
     <div className="max-w-[1300px]">
@@ -65,7 +76,7 @@ const WorkSection = () => {
         </div>
         <div className='flex gap-x-2'>
         <div className='font-semibold text-lg pt-1'>Sort By:</div>
-        <select onChange={(e: ChangeEvent<HTMLSelectElement>) => filterHandler(e)} className='text-white text-lg cursor-pointer px-4 py-2 rounded-md bg-custom-bg' name="filters" id="filters">
+        <select defaultValue={filter} onChange={(e: ChangeEvent<HTMLSelectElement>) => filterHandler(e)} className='text-white text-lg cursor-pointer px-4 py-2 rounded-md bg-custom-bg' name="filters" id="filters">
         <option value="default">Select Filters</option>
           <option value="budget">Budget</option>
           <option value="time">Time</option>
