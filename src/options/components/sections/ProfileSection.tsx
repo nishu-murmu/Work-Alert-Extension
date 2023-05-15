@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
-import useOpJobs from '../../../customHooks/use-option-jobs'
 import { proposals } from '../../atoms'
 import { BinIcon, PenIcon } from '../../../util/Icons'
 import { proposalsProps } from '../../../util/types'
 import { useContent } from '../../../customHooks/use-content'
+import Modal from '../commonComponent/Modal'
 
 export default function ProfileSection() {
   const [values, setValues] = useState<proposalsProps>({
@@ -24,16 +24,11 @@ export default function ProfileSection() {
     skills: false,
   })
   const [expError, setExpError] = useState(false)
-  const { setProposal, getProposals, deleteProposal } = useContent()
+  const [toggleModal, setToggleModal] = useState<boolean>(false)
+  const { setProposal, getProposals } = useContent()
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const [editFlag, setEditFlag] = useState({ status: false, name: '' })
 
-  const deleteHandler = async (proposal: any) => {
-    const res: any = await deleteProposal(proposal)
-    if (res) {
-      setAllProposals(res)
-    }
-  }
   const submitHandler = async (e: any) => {
     clearState()
     e.preventDefault()
@@ -208,7 +203,7 @@ export default function ProfileSection() {
             placeholder="Enter proposal description"
             className={`bg-transparent border mt-9 ${
               !emptyFields?.proposal ? 'border-white' : 'border-red-600'
-            } rounded-md px-4 py-2 text-lg w-[33rem]`}
+            } rounded-md px-4 py-2 text-lg w-[30rem]`}
             onBlur={() => clearState()}
             onChange={(e) => {
               setValues((prev: any) => ({ ...prev, proposal: e.target.value }))
@@ -264,12 +259,13 @@ export default function ProfileSection() {
                       </button>
                       <button
                         onClick={() => {
-                          deleteHandler(proposal)
+                          setToggleModal(true)
                         }}
                         className="p-1 bg-gray-700 rounded-md"
                       >
                         <BinIcon fillColor="white" strokeColor="black" />
                       </button>
+                      <Modal toggleModal={toggleModal} setTogggleModal={setToggleModal} proposal={proposal} />
                     </div>
                   </div>
                 ))}

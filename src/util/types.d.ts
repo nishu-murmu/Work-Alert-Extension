@@ -39,3 +39,9 @@ export interface QueryProps extends proposalsProps {
   optional_info?: string
   job_description: string
 }
+
+export interface ModalProps {
+  toggleModal: boolean
+  setTogggleModal: (newValue: boolean | ((prevValue: boolean) => boolean)) => void
+  proposal: proposalsProps
+}
