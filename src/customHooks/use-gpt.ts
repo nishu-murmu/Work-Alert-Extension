@@ -79,12 +79,15 @@ const useGPT = () => {
         if (event.data.trim() != 'data: [DONE]') {
           chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
             const tabId: number | undefined = tabs[0].id
-            if (tabId)
+            if (tabId) {
               chrome.tabs.sendMessage(tabId, {
                 type: 'generated_ans',
                 data: event.data,
                 isClosed: true,
               })
+              const result = event.data.slice(event.data.indexOf('['), event.data.indexOf(']'))
+              chrome.storage.local.set({ generatedAns: result })
+            }
           })
         } else {
           chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
