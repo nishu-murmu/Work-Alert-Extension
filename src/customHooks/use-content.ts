@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 export const useContent = () => {
   const setProposal = async (proposal: any, name: any) => {
     return new Promise<boolean>((resolve) => {
@@ -66,5 +64,6 @@ export const useContent = () => {
       })
     })
   }
+
   return { setProposal, getProposals, deleteProposal }
 }

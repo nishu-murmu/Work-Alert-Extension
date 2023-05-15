@@ -1,9 +1,16 @@
 import useBgJobs from '../customHooks/use-bg-job'
 import useGPT from '../customHooks/use-gpt'
-import { compareJobs, countJobsKeywords, getAllJobsData, notify, separateCounts, timeRange } from '../util'
+import {
+  compareJobs,
+  countJobsKeywords,
+  getAllJobsData,
+  notify,
+  separateCounts,
+  timeRange,
+} from '../util'
 import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
-const {getSession} = useGPT()
+const { getSession, generateAns, closeAns } = useGPT()
 interface keywordsProps {
   keyword: string
   rssLink?: string
@@ -46,7 +53,7 @@ const updateBadge = async () => {
     result.keywordsCount.reduce((acc: any, item: any) => {
       return acc + item.count
     }, 0)
-  if (total !== 0) chrome.action.setBadgeText({ text: total && total.toString() })
+  if (total !== 0) chrome.action.setBadgeText({ text: total ?total.toString(): '' })
   else chrome.action.setBadgeText({ text: '' })
 }
 
@@ -58,7 +65,7 @@ const redirectWindow = () => {
 }
 
 chrome.alarms.create({
-  periodInMinutes: 0.1,
+  periodInMinutes: 1, 
   when: 1,
 })
 
@@ -78,7 +85,7 @@ chrome.alarms.onAlarm.addListener(async () => {
 
   let allKeywordJobs = compareJobs(previousAllJobs, newAllJobs)
   allKeywordJobs = allKeywordJobs.slice().filter((job: jobsProps) => {
-    if (timeRange(job.date).type === 'minutes' && timeRange(job.date).range <= "30") return job
+    if (timeRange(job.date).type === 'minutes' && timeRange(job.date).range <= '30') return job
   })
   // if have all keyword new jobs, show notification
   if (allKeywordJobs?.length) {
@@ -102,10 +109,19 @@ chrome.notifications.onClicked.addListener(() => {
   redirectWindow()
 })
 
-chrome.runtime.onMessage.addListener((req) => {
-  if (req.type === 'session_call') {
-    getSession()
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'session_call') {
+    getSession().then((res) => {
+      sendResponse({ success: res })
+    })
   }
+  if (request.type === 'close_ans') {
+    closeAns()
+  }
+  if (request.type === 'get_ans') {
+    generateAns(request.query)
+  }
+  return true
 })
 
 export {}

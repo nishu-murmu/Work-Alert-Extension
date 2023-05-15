@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react'
-import Slider from './components/Slider'
+import { useState, useLayoutEffect } from 'react'
+import Slider from './Slider'
 
 const RenderedApp = () => {
   const [toggleSlide, setToggleSlide] = useState<boolean>(false)

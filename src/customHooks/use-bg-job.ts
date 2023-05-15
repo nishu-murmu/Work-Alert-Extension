@@ -61,6 +61,14 @@ const useBgJobs = () => {
     )
   }
 
+  const setLocalAnswer = (answer: string) => {
+    chrome.storage.local.set({ answer })
+  }
+
+  const getLocalAnswer = async (): Promise<string> => {
+    const result = await chrome.storage.local.get('answer')
+    return result.answer
+  }
   return {
     getBgLocalJobs,
     setLocalJobs,
@@ -69,6 +77,8 @@ const useBgJobs = () => {
     getLocalKeywordsCount,
     setLocalKeywordsCount,
     deleteLocalKeywordsCount,
+    setLocalAnswer,
+    getLocalAnswer
   }
 }
 

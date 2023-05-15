@@ -1,12 +1,13 @@
 import { useRecoilState } from 'recoil'
 import { getAllJobsData } from '../util'
-import { allJobsState, keywords, proposals } from '../options/atoms'
+import { allJobsState, keywords, proposals, selectedFilter } from '../options/atoms'
 import { useEffect } from 'react'
 import { keywordProps } from '../util/types'
 import useBgJobs from './use-bg-job'
 
 const useOpJobs = () => {
   const [allJobs, setAllJobs] = useRecoilState(allJobsState)
+  const [filter, setSelectedFilter] = useRecoilState(selectedFilter)
   const [keys, setKeywords] = useRecoilState(keywords)
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const { getBgLocalJobs, getBgKeywords, deleteLocalKeywordsCount } = useBgJobs()
@@ -125,6 +126,23 @@ const useOpJobs = () => {
       })
     }
   }
+  
+  const getFilter = async(): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get('filter', (res) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          setSelectedFilter(res.filter || '')
+          // resolve(res.filter || '')
+        }
+      })
+    })
+  }
+
+  const setFilter = async (filter: string) => {
+    chrome.storage.local.set({ filter })
+  }
 
   return {
     getLocalJobs,
@@ -134,6 +152,8 @@ const useOpJobs = () => {
     allJobs,
     deleteLocalJobs,
     setLocalKeywords,
+    setFilter,
+    getFilter
   }
 }
 

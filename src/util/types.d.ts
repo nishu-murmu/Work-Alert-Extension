@@ -32,3 +32,16 @@ export interface proposalsProps {
   portfolio?: string
   clients?: string[]
 }
+
+export interface QueryProps extends proposalsProps {
+  tone: string
+  range_of_words: string
+  optional_info?: string
+  job_description: string
+}
+
+export interface ModalProps {
+  toggleModal: boolean
+  setTogggleModal: (newValue: boolean | ((prevValue: boolean) => boolean)) => void
+  proposal: proposalsProps
+}
