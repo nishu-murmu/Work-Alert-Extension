@@ -65,12 +65,5 @@ export const useContent = () => {
     })
   }
 
-  const fillProposal = (proposal: string | undefined) => {
-    const textarea = document.querySelector('.up-textarea') as HTMLTextAreaElement
-    if(proposal) textarea.value = proposal
-    const event = new Event('input', { bubbles: true })
-    textarea.dispatchEvent(event)
-  }
-
   return { setProposal, getProposals, deleteProposal }
 }
