@@ -3,6 +3,7 @@ import { CrossIcon } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
 import useGPT from '../../customHooks/use-gpt'
+import useBgJobs from '../../customHooks/use-bg-job'
 
 const Slider: React.FC = () => {
   const { getToken, deleteToken } = useGPT()
@@ -25,10 +26,9 @@ const Slider: React.FC = () => {
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
   const [refresh, setRefresh] = useState(false)
-  const { fillProposal } = useContent()
+  const { fillProposal, getProposals } = useContent()
+  const {getLocalAnswer} = useBgJobs()
   const [toggleSlide, setToggleSlide] = useState<boolean>(true)
-
-  const { getProposals } = useContent()
 
   function openSlider() {
     setToggleSlide(true)
@@ -73,6 +73,9 @@ const Slider: React.FC = () => {
       setProposals(res)
     })
     callSession()
+    const answer = getLocalAnswer().then((res: any) => {
+      setTextArea(res)
+    })
     chrome.runtime.onMessage.addListener((req) => {
       if (req.type === 'generated_ans') {
         setIsConnected(req.isClosed)
@@ -99,10 +102,6 @@ const Slider: React.FC = () => {
       job_description: up?.innerHTML as HTMLSpanElement,
     }))
   }, [selectedProfile])
-
-  useEffect(() => {
-    console.log(textarea)
-  },[textarea])
 
   return (
     <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">

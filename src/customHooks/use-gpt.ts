@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { QueryProps } from '../util/types'
 import { StreamClient } from '../util/SSE'
+import useBgJobs from './use-bg-job'
 let accessToken: string = ''
 let stream: any
 chrome.storage.local.get(['gpt_access_token']).then((res) => {
@@ -9,6 +10,8 @@ chrome.storage.local.get(['gpt_access_token']).then((res) => {
 const message_id = uuidv4()
 
 const useGPT = () => {
+  const {setLocalAnswer, getLocalAnswer} = useBgJobs()
+  
   function getSession() {
     return new Promise((resolve) => {
       fetch('https://chat.openai.com/api/auth/session')
@@ -77,6 +80,8 @@ const useGPT = () => {
       //@ts-ignore
       stream.onmessage = (event) => {
         if (event.data.trim() != 'data: [DONE]') {
+          const result: string = event.data.slice(event.data.indexOf('['), event.data.indexOf(']'))
+          setLocalAnswer(result)
           chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
             const tabId: number | undefined = tabs[0].id
             if (tabId) {
@@ -85,8 +90,6 @@ const useGPT = () => {
                 data: event.data,
                 isClosed: true,
               })
-              const result = event.data.slice(event.data.indexOf('['), event.data.indexOf(']'))
-              chrome.storage.local.set({ generatedAns: result })
             }
           })
         } else {
