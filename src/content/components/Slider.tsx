@@ -53,7 +53,11 @@ const Slider: React.FC = () => {
   const sendQueryToGPT = async () => {
     const res: any = await getToken()
     if (res && res?.gpt_access_token) {
-      chrome.runtime.sendMessage({ type: 'get_ans', query })
+      console.log('query', query)
+      if(query.profile != 'select_profile') chrome.runtime.sendMessage({ type: 'get_ans', query })
+      else {
+        console.log('fill the profile')
+      }
     } else {
       window.open('https://chat.openai.com/auth/login', '_blank')
       openSlider()
