@@ -90,9 +90,9 @@ const Slider: React.FC = () => {
     chrome.runtime.onMessage.addListener((req) => {
       if (req.type === 'generated_ans') {
         setIsConnected(req.isClosed)
-        let result = req.data.slice(req.data.indexOf('['), req.data.indexOf('status'))
-        result = result?.slice(2, result.length - 6)
-        if (result != 'our Nam') setTextArea(unescape(result))
+        let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
+        result = result?.slice(10, result.length - 6)
+        setTextArea(unescape(result))
       }
     })
   }, [])
@@ -212,13 +212,13 @@ const Slider: React.FC = () => {
               ></textarea>
             </div>
             <div className="px-4 w-full flex gap-x-2">
-              <button
+              {!isConnected && <button
                 onClick={() => sendQueryToGPT()}
                 className="w-full rounded-lg bg-green-600 text-white py-2"
                 id="submit"
               >
-                {isConnected ? 'generating answer ...' : 'Submit to GPT'}
-              </button>
+                {isConnected ? 'generating answer ...' : 'Generate Proposal'}
+              </button>}
               {refresh ? (
                 <button
                   onClick={() => {
@@ -234,7 +234,7 @@ const Slider: React.FC = () => {
               {isConnected && (
                 <button
                   onClick={() => closeGPTAns()}
-                  className="bg-custom-bg rounded-lg py-2 px-3 text-white"
+                  className="bg-custom-bg rounded-lg py-2 px-3 text-white w-full"
                 >
                   Stop generating
                 </button>

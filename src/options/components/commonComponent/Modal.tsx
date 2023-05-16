@@ -27,7 +27,7 @@ const Modal = ({
 
           <div className="modal-container bg-custom-bg w-3/12 rounded-lg shadow-lg z-50">
             <div className="modal-content p-4">
-              <h2 className="text-xl font-bold mb-4">Modal Title</h2>
+              <h2 className="text-xl font-bold mb-4">Delete Proposal</h2>
               <p>Are you sure you want to delete the profile?</p>
               <div className="flex gap-x-2">
                 <button
