@@ -8,7 +8,7 @@ import unescape from 'unescape-js'
 
 const Slider: React.FC = () => {
   const { getToken, deleteToken } = useGPT()
-  const [selectedProfile, setSelectedProfile] = useState<string>("")
+  const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [isSelected, setIsSelected] = useState<boolean>(false)
@@ -54,11 +54,10 @@ const Slider: React.FC = () => {
   const sendQueryToGPT = async () => {
     const res: any = await getToken()
     if (res && res?.gpt_access_token) {
-      if(selectedProfile != '' && selectedProfile != `select_profile`) {
+      if (selectedProfile != '' && selectedProfile != `select_profile`) {
         setIsSelected(false)
         chrome.runtime.sendMessage({ type: 'get_ans', query })
-      }
-      else {
+      } else {
         setIsSelected(true)
       }
     } else {
@@ -74,7 +73,7 @@ const Slider: React.FC = () => {
 
   const fillProposal = (proposal: string | undefined) => {
     const textarea = document.querySelector('.up-textarea') as HTMLTextAreaElement
-    if(proposal) textarea.value = proposal
+    if (proposal) textarea.value = proposal
     const event = new Event('input', { bubbles: true })
     textarea.dispatchEvent(event)
   }
@@ -130,7 +129,9 @@ const Slider: React.FC = () => {
         <div className="flex w-full px-4 flex-col">
           <select
             name="keywords"
-            className={`py-3 px-2 rounded-lg ${isSelected?"border-1 border-red-600": "border-0"} w-full cursor-pointer drop-shadow-md duration-300 outline-none border-none text-black`}
+            className={`py-3 px-2 rounded-lg ${
+              isSelected ? 'border-1 border-red-600' : 'border-0'
+            } w-full cursor-pointer drop-shadow-md duration-300 outline-none border-none text-black`}
             id="keywords"
             value={selectedProfile}
             onChange={(e) => {
@@ -146,7 +147,7 @@ const Slider: React.FC = () => {
                 </option>
               ))}
           </select>
-          {isSelected && <span className='text-red-400 pt-1 pl-4'>Please select a profile</span>}
+          {isSelected && <span className="text-red-400 pt-1 pl-4">Please select a profile</span>}
         </div>
         <div className="py-2 px-4 flex gap-x-4 group">
           <input
@@ -261,7 +262,7 @@ const Slider: React.FC = () => {
                 id="proposal"
                 className="rounded-lg w-full text-black outline-none border-none p-3"
                 cols={30}
-                rows={22}
+                rows={13}
                 defaultValue={textarea}
               ></textarea>
             </div>
@@ -274,7 +275,9 @@ const Slider: React.FC = () => {
           onClick={() => {
             fillProposal(
               inbuilt
-                ? proposals?.find((proposal: proposalsProps) => proposal.profile === selectedProfile)?.proposal
+                ? proposals?.find(
+                    (proposal: proposalsProps) => proposal.profile === selectedProfile,
+                  )?.proposal
                 : textarea != ''
                 ? textarea
                 : '',
@@ -283,7 +286,7 @@ const Slider: React.FC = () => {
           }}
           className="px-4 mt-2 w-full"
         >
-         {!isConnected && <button className="w-full bg-green-600 py-2 rounded-lg">Fill</button>}
+          {!isConnected && <button className="w-full bg-green-600 py-2 rounded-lg">Fill</button>}
         </div>
       </div>
     </div>
