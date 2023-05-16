@@ -84,7 +84,7 @@ export class StreamClient {
       return
     }
 
-    this.reader.cancel().then(() => {
+    this.reader?.cancel().then(() => {
       this._onStreamClosed()
     })
   }
