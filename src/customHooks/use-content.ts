@@ -18,7 +18,18 @@ export const useContent = () => {
           let index = -1
           if (res?.proposals && res?.proposals?.length > 0) {
             index = allProposals?.findIndex((obj: any) => obj.profile == proposal[0].profile)
-            newProposals = [...proposal, ...res.proposals]
+            proposal = {
+              ...proposal[0],
+              skills: proposal[0]?.skills?.trim().split(/[,]+/g),
+              clients: proposal[0]?.clients?.trim().split(/[,]+/g),
+            }
+            proposal = {
+              ...proposal[0],
+              clients: proposal[0]?.clients?.map((item: string) => item.trim()),
+              skills: proposal[0]?.skills?.map((item: string) => item.trim()),
+            }
+            proposal = [proposal]
+            newProposals = [...proposal, ...res?.proposals]
           } else newProposals = proposal
           if (index == -1) {
             chrome.storage.local.set({ proposals: newProposals }).then(() => {

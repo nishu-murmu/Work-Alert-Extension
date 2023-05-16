@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { proposals } from '../../atoms'
+import { proposalIndex, proposals } from '../../atoms'
 import { BinIcon, PenIcon } from '../../../util/Icons'
 import { proposalsProps } from '../../../util/types'
 import { useContent } from '../../../customHooks/use-content'
@@ -25,6 +25,7 @@ export default function ProfileSection() {
   })
   const [expError, setExpError] = useState(false)
   const [toggleModal, setToggleModal] = useState<boolean>(false)
+  const [index, setIndex] = useRecoilState(proposalIndex)
   const { setProposal, getProposals } = useContent()
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const [editFlag, setEditFlag] = useState({ status: false, name: '' })
@@ -98,7 +99,7 @@ export default function ProfileSection() {
             <input
               type="text"
               placeholder="Enter Profile"
-              value={values.profile}
+              value={values.profile ?? ''}
               className={`bg-transparent border ${
                 !emptyFields?.profile ? 'border-white' : 'border-red-600'
               } rounded-md px-3 py-2 text-lg`}
@@ -110,7 +111,7 @@ export default function ProfileSection() {
             <input
               type="text"
               placeholder="Enter Name"
-              value={values.name}
+              value={values.name ?? ""}
               onChange={(e) => setValues((prev: any) => ({ ...prev, name: e.target.value }))}
               className={`bg-transparent border ${
                 !emptyFields?.name ? 'border-white' : 'border-red-600'
@@ -124,7 +125,7 @@ export default function ProfileSection() {
             <input
               type="text"
               id="experience-input"
-              value={values.experience}
+              value={values.experience ?? ""}
               pattern="[0-9]+"
               placeholder="Enter Experience"
               onBlur={() => clearState()}
@@ -148,11 +149,11 @@ export default function ProfileSection() {
             <input
               type="text"
               placeholder="Enter Skills"
-              value={values.skills}
+              value={values.skills ?? ""}
               onChange={(e) =>
                 setValues((prev: any) => ({
                   ...prev,
-                  skills: e.target.value.trim().split(/[ ,]+/g),
+                  skills: e.target.value,
                 }))
               }
               onBlur={() => clearState()}
@@ -174,7 +175,7 @@ export default function ProfileSection() {
             <input
               type="text"
               placeholder="Porfolio Link"
-              value={values.portfolio}
+              value={values.portfolio ?? ""}
               onChange={(e) => setValues((prev: any) => ({ ...prev, portfolio: e.target.value }))}
               className={`bg-transparent border rounded-md px-3 py-2 text-lg`}
               pattern="[a-zA-Z]+"
@@ -184,11 +185,11 @@ export default function ProfileSection() {
             <input
               type="text"
               placeholder="Enter Clients"
-              value={values.clients}
+              value={values.clients ?? ""}
               onChange={(e) =>
                 setValues((prev: any) => ({
                   ...prev,
-                  clients: e.target.value.trim().split(/[ ,]+/g),
+                  clients: e.target.value,
                 }))
               }
               onBlur={() => clearState()}
@@ -199,7 +200,7 @@ export default function ProfileSection() {
           </div>
           <textarea
             rows={4}
-            value={values.proposal}
+            value={values.proposal ?? ""}
             placeholder="Enter proposal description"
             className={`bg-transparent border mt-9 ${
               !emptyFields?.proposal ? 'border-white' : 'border-red-600'
@@ -238,9 +239,10 @@ export default function ProfileSection() {
           <div className="w-10/12 gap-y-2 flex flex-col">
             {allProposals.length > 0 ? (
               <>
-                {allProposals?.map((proposal: any, index) => (
+                {allProposals?.slice().reverse().map((proposal: any, index) => (
                   <div
                     key={index}
+                    id={index.toString()}
                     className="bg-custom-bg h-16 py-4 px-4 flex rounded-md justify-between"
                   >
                     <div className="text-lg">{proposal.profile}</div>
@@ -260,12 +262,13 @@ export default function ProfileSection() {
                       <button
                         onClick={() => {
                           setToggleModal(true)
+                          setIndex(index.toString())
                         }}
                         className="p-1 bg-gray-700 rounded-md"
                       >
                         <BinIcon fillColor="white" strokeColor="black" />
                       </button>
-                      <Modal toggleModal={toggleModal} setTogggleModal={setToggleModal} proposal={proposal} />
+                      <Modal toggleModal={toggleModal} setTogggleModal={setToggleModal} />
                     </div>
                   </div>
                 ))}
