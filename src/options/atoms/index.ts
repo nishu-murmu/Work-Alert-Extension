@@ -1,4 +1,4 @@
-import { RecoilState, atom } from 'recoil'
+import { atom } from 'recoil'
 import { jobsProps, keywordProps, proposalsProps } from '../../util/types'
 
 export const jobsState = atom({

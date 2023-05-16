@@ -12,7 +12,15 @@ function App() {
 
   useEffect(() => {
     setRoute('home')
+    chrome.runtime.onMessage.addListener((req) => {
+      if (req.type === 'notification_clicked') {
+        'clicked and showed'
+        setRoute('home')
+      }
+    })
   }, [])
+
+  useEffect(() => {},[route])
 
   return (
     <div className="bg-black text-white min-h-screen">

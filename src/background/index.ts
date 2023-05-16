@@ -107,6 +107,10 @@ chrome.runtime.onMessage.addListener((req) => {
 chrome.notifications.onClicked.addListener(() => {
   tabChange()
   redirectWindow()
+  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
+    let tabId: any = tabs[0]?.id
+    chrome.tabs.sendMessage(tabId, {type: 'notification_clicked'})
+  })
 })
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
