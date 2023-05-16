@@ -37,10 +37,10 @@ const tabChange = () => {
     if (!tabs.find((tab) => tab.url === OptionsUrl)) {
       chrome.tabs.create({
         url: OptionsUrl,
-      })
+      }).then(() => redirectSection())
     } else {
       chrome.tabs.query({ url: OptionsUrl }, (tabs: any) => {
-        chrome.tabs.update(tabs[0].id, { active: true })
+        chrome.tabs.update(tabs[0].id, { active: true }).then(() => redirectSection())
       })
     }
   })
@@ -60,12 +60,19 @@ const updateBadge = async () => {
 const redirectWindow = () => {
   chrome.windows.getCurrent({ populate: false }, (current) => {
     let id = current.id
-    if (id) chrome.windows.update(id, { focused: true })
+    if (id) chrome.windows.update(id, { focused: true }).then(() => redirectSection())
+  })
+}
+
+const redirectSection = () => {
+  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
+    let tabId: any = tabs[0]?.id
+    chrome.tabs.sendMessage(tabId, {type: 'notification_clicked'})
   })
 }
 
 chrome.alarms.create({
-  periodInMinutes: 1, 
+  periodInMinutes: 3, 
   when: 1,
 })
 

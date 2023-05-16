@@ -32,15 +32,16 @@ const useGPT = () => {
   }
 
   function generateQueryParams(query: QueryProps) {
+    console.log({query})
     const result: string[] = [
       `Name: ${query?.name}\nSkills: ${query?.skills.join(' ')}\nExperience: ${
         query.experience
-      }\nPrevious Clients: Facebook`,
+      }\nInbuilt Proposal: ${query?.proposal}\n`,
       `Client Job Description: ${query?.job_description}`,
-      `Extract pain points from client job description and write a cover letter around it in a ${
+      `Extract pain points from client job description and write a cover letter using the Inbuilt Proposal in a ${
         query?.tone
-      } tone and it should not exceed ${query?.range_of_words.split('_')[1]} words.`,
-      `${query?.optional_info ? `Additional Instructions: ${query?.optional_info}` : ''}`,
+      } tone and it should not exceed more than ${query?.range_of_words.split('_')[1]} words. `,
+      `${query?.optional_info ? ` Additional Instructions: ${query?.optional_info}` : ''}`,
     ].filter(Boolean)
 
     return result
@@ -81,16 +82,16 @@ const useGPT = () => {
         let tabId: any = tabs[0]?.id
         stream.onmessage = (event: any) => {
           if (event.data.trim() != 'data: [DONE]') {
-              chrome.tabs.sendMessage(tabId, {
-                type: 'generated_ans',
-                data: event.data,
-                isClosed: true,
-              })
+            chrome.tabs.sendMessage(tabId, {
+              type: 'generated_ans',
+              data: event.data,
+              isClosed: true,
+            })
           } else {
-              chrome.tabs.sendMessage(tabId, {
-                type: 'generated_ans',
-                isClosed: false,
-              })
+            chrome.tabs.sendMessage(tabId, {
+              type: 'generated_ans',
+              isClosed: false,
+            })
             stream.close()
           }
         }
@@ -133,19 +134,39 @@ const useGPT = () => {
     })
       .then((res) => res.json())
       .then(async (data) => {
-        let id = data.items[0].id
-        await fetch(`https://chat.openai.com/backend-api/conversation/gen_title/${id}`, {
-          headers: {
-            accept: '*/*',
-            authorization: `Bearer ${accessToken}`,
-            'content-type': 'application/json',
+        let id = data.items[0]?.id
+        const response = await fetch(
+          `https://chat.openai.com/backend-api/conversation/gen_title/${id}`,
+          {
+            headers: {
+              accept: '*/*',
+              authorization: `Bearer ${accessToken}`,
+              'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+              message_id: message_id,
+            }),
+            method: 'POST',
           },
-          body: JSON.stringify({
-            message_id: message_id,
-          }),
-          method: 'POST',
-        })
+        )
+        if (response.ok) {
+          deleteTitle(id.toString())
+        }
       })
+  }
+
+  async function deleteTitle(messageId: string) {
+    fetch(`https://chat.openai.com/backend-api/conversation/${messageId}`, {
+      headers: {
+        accept: '*/*',
+        authorization: `Bearer ${accessToken}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        is_visible: false,
+      }),
+      method: 'PATCH',
+    }).catch((err) => console.log({ err }))
   }
 
   function closeAns() {

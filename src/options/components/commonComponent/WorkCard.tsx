@@ -45,9 +45,7 @@ const WorkCards: React.FC = () => {
   }, [jobs, filter])
 
   return (
-    <div
-      className={`grid grid-cols-3 grid-flow-row w-full flex-col gap-y-4 overflow-y-scroll max-h-[780px] py-2 gap-4`}
-    >
+    <div className={`grid grid-cols-3 grid-flow-row w-full flex-col gap-y-4 py-2 gap-4`}>
       {sortedJobs &&
         sortedJobs.length > 0 &&
         sortedJobs.map((item: jobsProps, index: any) => (

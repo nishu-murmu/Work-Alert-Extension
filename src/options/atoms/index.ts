@@ -1,4 +1,4 @@
-import { RecoilState, atom } from 'recoil'
+import { atom } from 'recoil'
 import { jobsProps, keywordProps, proposalsProps } from '../../util/types'
 
 export const jobsState = atom({
@@ -13,7 +13,7 @@ export const allJobsState = atom({
 
 export const isJobs = atom({
   key: 'isJobs',
-  default: false,
+  default: false as boolean,
 })
 
 export const clickedKeyword = atom({
@@ -28,12 +28,12 @@ export const proposals = atom({
 
 export const clickedValue = atom({
   key: 'clickedValue',
-  default: '',
+  default: '' as string,
 })
 
 export const isEmpty = atom({
   key: 'isEmpty',
-  default: false,
+  default: false as boolean,
 })
 
 export const keywords = atom({
@@ -43,10 +43,15 @@ export const keywords = atom({
 
 export const keywordCount: any = atom({
   key: 'keywordsCount',
-  default: [],
+  default: [] as [],
 })
 
 export const selectedFilter = atom({
   key: 'selectedFilter',
-  default: 'default',
+  default: 'default' as string,
+})
+
+export const proposalIndex = atom({
+  key: 'proposalIndex',
+  default: "" as string,
 })

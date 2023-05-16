@@ -1,17 +1,18 @@
 import { useRecoilState } from "recoil";
-import { proposals } from "../../atoms";
+import { proposalIndex, proposals } from "../../atoms";
 import { useContent } from "../../../customHooks/use-content";
 import { ModalProps } from "../../../util/types";
 
 const Modal = ({
   toggleModal,
   setTogggleModal,
-  proposal,
 }: ModalProps) => {
-  const [_, setAllProposals] = useRecoilState(proposals)
+  const [allProposals, setAllProposals] = useRecoilState(proposals)
+  const [index, setIndex] = useRecoilState(proposalIndex)
   const { deleteProposal } = useContent()
 
-  const deleteHandler = async (proposal: any) => {
+  const deleteHandler = async () => {
+    const proposal = allProposals.slice().reverse()[parseInt(index)]
     const res: any = await deleteProposal(proposal)
     if (res) {
       setAllProposals(res)
@@ -26,13 +27,13 @@ const Modal = ({
 
           <div className="modal-container bg-custom-bg w-3/12 rounded-lg shadow-lg z-50">
             <div className="modal-content p-4">
-              <h2 className="text-xl font-bold mb-4">Modal Title</h2>
+              <h2 className="text-xl font-bold mb-4">Delete Proposal</h2>
               <p>Are you sure you want to delete the profile?</p>
               <div className="flex gap-x-2">
                 <button
                   onClick={() => {
                     setTogggleModal((prev: boolean) => !prev)
-                    deleteHandler(proposal)
+                    deleteHandler()
                   }}
                   className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
                 >
