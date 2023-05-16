@@ -30,7 +30,7 @@ const BackToTop = () => {
       onKeyDown={goToBtn}
       role="button"
       tabIndex={0}
-      className={`fixed bg-green-500 animate-bounce cursor-pointer  rounded-full p-3 right-12 bottom-12 ${
+      className={`fixed bg-green-500 animate-bounce cursor-pointer  rounded-full p-2 right-12 bottom-12 ${
         !isVisible ? 'hidden' : 'backToTop'
       }`}
     >
