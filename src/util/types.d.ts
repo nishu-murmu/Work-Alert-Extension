@@ -43,5 +43,4 @@ export interface QueryProps extends proposalsProps {
 export interface ModalProps {
   toggleModal: boolean
   setTogggleModal: (newValue: boolean | ((prevValue: boolean) => boolean)) => void
-  proposal: proposalsProps
 }
