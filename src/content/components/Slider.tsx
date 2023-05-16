@@ -8,9 +8,10 @@ import unescape from 'unescape-js'
 
 const Slider: React.FC = () => {
   const { getToken, deleteToken } = useGPT()
-  const [selectedProfile, setSelectedProfile] = useState<string>('')
+  const [selectedProfile, setSelectedProfile] = useState<string>("")
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
   const [isConnected, setIsConnected] = useState<boolean>(false)
+  const [isSelected, setIsSelected] = useState<boolean>(false)
   const [textarea, setTextArea] = useState<string>('')
   const [query, setQuery] = useState<QueryProps>({
     profile: '',
@@ -53,10 +54,12 @@ const Slider: React.FC = () => {
   const sendQueryToGPT = async () => {
     const res: any = await getToken()
     if (res && res?.gpt_access_token) {
-      console.log('query', query)
-      if(query.profile != 'select_profile') chrome.runtime.sendMessage({ type: 'get_ans', query })
+      if(selectedProfile != '' && selectedProfile != `select_profile`) {
+        setIsSelected(false)
+        chrome.runtime.sendMessage({ type: 'get_ans', query })
+      }
       else {
-        console.log('fill the profile')
+        setIsSelected(true)
       }
     } else {
       window.open('https://chat.openai.com/auth/login', '_blank')
@@ -124,13 +127,16 @@ const Slider: React.FC = () => {
       </div>
 
       <div className="main-section">
-        <div className="flex w-full px-4">
+        <div className="flex w-full px-4 flex-col">
           <select
             name="keywords"
-            className="py-3 px-2 rounded-lg border-0 w-full cursor-pointer drop-shadow-md duration-300 outline-none border-none text-black"
+            className={`py-3 px-2 rounded-lg ${isSelected?"border-1 border-red-600": "border-0"} w-full cursor-pointer drop-shadow-md duration-300 outline-none border-none text-black`}
             id="keywords"
             value={selectedProfile}
-            onChange={(e) => setSelectedProfile(e.target.value)}
+            onChange={(e) => {
+              setSelectedProfile(e.target.value)
+              setIsSelected(false)
+            }}
           >
             <option value="select_profile">Select Profile</option>
             {proposals &&
@@ -140,6 +146,7 @@ const Slider: React.FC = () => {
                 </option>
               ))}
           </select>
+          {isSelected && <span className='text-red-400 pt-1 pl-4'>Please select a profile</span>}
         </div>
         <div className="py-2 px-4 flex gap-x-4 group">
           <input
@@ -254,7 +261,7 @@ const Slider: React.FC = () => {
                 id="proposal"
                 className="rounded-lg w-full text-black outline-none border-none p-3"
                 cols={30}
-                rows={10}
+                rows={22}
                 defaultValue={textarea}
               ></textarea>
             </div>
