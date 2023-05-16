@@ -153,7 +153,7 @@ export default function ProfileSection() {
               onChange={(e) =>
                 setValues((prev: any) => ({
                   ...prev,
-                  skills: e.target.value.trim().split(/[ ,]+/g),
+                  skills: e.target.value,
                 }))
               }
               onBlur={() => clearState()}
@@ -189,7 +189,7 @@ export default function ProfileSection() {
               onChange={(e) =>
                 setValues((prev: any) => ({
                   ...prev,
-                  clients: e.target.value.trim().split(/[ ,]+/g),
+                  clients: e.target.value,
                 }))
               }
               onBlur={() => clearState()}

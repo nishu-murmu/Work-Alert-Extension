@@ -84,7 +84,7 @@ const Slider: React.FC = () => {
     chrome.runtime.onMessage.addListener((req) => {
       if (req.type === 'generated_ans') {
         setIsConnected(req.isClosed)
-        let result = req.data.slice(req.data.indexOf('['), req.data.indexOf('end_turn'))
+        let result = req.data.slice(req.data.indexOf('['), req.data.indexOf('status'))
         result = result?.slice(2, result.length - 6)
         if (result != 'our Nam') setTextArea(unescape(result))
       }
