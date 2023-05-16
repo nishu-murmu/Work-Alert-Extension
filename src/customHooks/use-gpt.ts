@@ -134,7 +134,7 @@ const useGPT = () => {
     })
       .then((res) => res.json())
       .then(async (data) => {
-        let id = data.items[0].id
+        let id = data.items[0]?.id
         const response = await fetch(
           `https://chat.openai.com/backend-api/conversation/gen_title/${id}`,
           {

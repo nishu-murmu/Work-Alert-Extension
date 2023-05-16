@@ -14,7 +14,6 @@ function App() {
     setRoute('home')
     chrome.runtime.onMessage.addListener((req) => {
       if (req.type === 'notification_clicked') {
-        'clicked and showed'
         setRoute('home')
       }
     })
