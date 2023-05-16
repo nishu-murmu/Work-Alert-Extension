@@ -1,17 +1,18 @@
 import { useRecoilState } from "recoil";
-import { proposals } from "../../atoms";
+import { proposalIndex, proposals } from "../../atoms";
 import { useContent } from "../../../customHooks/use-content";
 import { ModalProps } from "../../../util/types";
 
 const Modal = ({
   toggleModal,
   setTogggleModal,
-  proposal,
 }: ModalProps) => {
-  const [_, setAllProposals] = useRecoilState(proposals)
+  const [allProposals, setAllProposals] = useRecoilState(proposals)
+  const [index, setIndex] = useRecoilState(proposalIndex)
   const { deleteProposal } = useContent()
 
-  const deleteHandler = async (proposal: any) => {
+  const deleteHandler = async () => {
+    const proposal = allProposals.slice().reverse()[parseInt(index)]
     const res: any = await deleteProposal(proposal)
     if (res) {
       setAllProposals(res)
@@ -32,7 +33,7 @@ const Modal = ({
                 <button
                   onClick={() => {
                     setTogggleModal((prev: boolean) => !prev)
-                    deleteHandler(proposal)
+                    deleteHandler()
                   }}
                   className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
                 >
