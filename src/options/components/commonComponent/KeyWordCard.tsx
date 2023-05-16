@@ -63,7 +63,7 @@ const KeyWordCards = () => {
                     })
                   }
                 }}
-                className={`flex max-w-[320px]  w-full justify-between items-center gap-x-3 text-lg border cursor-pointer ${
+                className={`flex max-w-[420px] w-full justify-between items-center gap-x-3 text-lg border cursor-pointer ${
                   keywordsCount &&
                   keywordsCount.find((key: any) => key.keyword === item.keyword)?.count
                     ? 'border-green-400'
