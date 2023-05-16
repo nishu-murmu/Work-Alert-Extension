@@ -65,7 +65,7 @@ const redirectWindow = () => {
 }
 
 chrome.alarms.create({
-  periodInMinutes: 1, 
+  periodInMinutes: 3, 
   when: 1,
 })
 
