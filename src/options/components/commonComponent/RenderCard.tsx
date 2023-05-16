@@ -15,15 +15,13 @@ const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
         setIsJobNew(true)
       } else setIsJobNew(false)
     })
-
   }, [])
-
 
   return (
     <div
       key={item.uid}
       className={`text-green-500 bg-custom-bg overflow-hidden  rounded-md p-5 h-auto ${
-        isJobNew ? 'border border-green-500' : ''
+        isJobNew ? 'border border-green-500' : 'border-transparent'
       }`}
     >
       <div className="relative text-lg px-2 w-full mb-4 text-gray-500">
@@ -35,7 +33,9 @@ const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
               ? `${timeRange(item.date.toString()).range} days ago`
               : `${timeRange(item.date.toString()).range} hours ago`}
           </div>
-          <div className='text-white'>{item.budget ? item.budget : item.hourly && `${item.hourly.trim()}`}</div>
+          <div className="text-white">
+            {item.budget ? item.budget : item.hourly && `${item.hourly.trim()}`}
+          </div>
         </div>
         {item.hourly && <div className="right-4 absolute text-white">hourly</div>}
       </div>
