@@ -50,7 +50,7 @@ const useGPT = () => {
   const generateAns = async (query: QueryProps) => {
     const queryParams: string[] = generateQueryParams(query)
     if (accessToken) {
-      stream = new StreamClient('https://chat.openai.com/backend-api/conversation', {
+      stream = new StreamClient(config.gpt_conversation_api, {
         headers: {
           accept: '*/*',
           'accept-language': 'en-US,en;q=0.9',
