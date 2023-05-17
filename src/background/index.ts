@@ -8,6 +8,7 @@ import {
   separateCounts,
   timeRange,
 } from '../util'
+import { config } from '../util/config'
 import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
 const { getSession, generateAns, closeAns } = useGPT()
@@ -72,7 +73,7 @@ const redirectSection = () => {
 }
 
 chrome.alarms.create({
-  periodInMinutes: 3, 
+  periodInMinutes: config.API_INTERVAL, 
   when: 1,
 })
 

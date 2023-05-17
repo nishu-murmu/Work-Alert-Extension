@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
-import { CrossIcon, RefreshIcon } from '../../util/Icons'
+import { CrossIcon, RefreshIcon, SpinnerLoader } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
 import useGPT from '../../customHooks/use-gpt'
@@ -12,6 +12,7 @@ const Slider: React.FC = () => {
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [isSelected, setIsSelected] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [textarea, setTextArea] = useState<string>('')
   const [query, setQuery] = useState<QueryProps>({
     profile: '',
@@ -89,6 +90,7 @@ const Slider: React.FC = () => {
     callSession()
     chrome.runtime.onMessage.addListener((req) => {
       if (req.type === 'generated_ans') {
+        setLoading(false)
         setIsConnected(req.isClosed)
         let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
         result = result?.slice(10, result.length - 6)
@@ -212,13 +214,20 @@ const Slider: React.FC = () => {
               ></textarea>
             </div>
             <div className="px-4 w-full flex gap-x-2">
-              {!isConnected && <button
-                onClick={() => sendQueryToGPT()}
-                className="w-full rounded-lg bg-green-600 text-white py-2"
-                id="submit"
-              >
-                {isConnected ? 'generating answer ...' : 'Generate Proposal'}
-              </button>}
+              {!isConnected && (
+                <button
+                  onClick={() => {
+                    setLoading(true)
+                    sendQueryToGPT()
+                    if(loading) setLoading(false)
+                  }}
+                  className="w-full rounded-lg bg-green-600 text-white py-2 flex flex-row justify-center gap-x-3"
+                  id="submit"
+                >
+                  {!loading && <span>{isConnected ? 'generating answer ...' : 'Generate Proposal'}</span>}
+                  <span>{loading && <SpinnerLoader className="h-4 w-4" />}</span>
+                </button>
+              )}
               {refresh ? (
                 <button
                   onClick={() => {
@@ -226,11 +235,12 @@ const Slider: React.FC = () => {
                     callSession()
                   }}
                 >
-                  <RefreshIcon/>
+                  <RefreshIcon />
                 </button>
               ) : (
                 <></>
               )}
+              {/* <button className='w-full rounded-lg bg-green-600 text-white py-2'><SpinnerLoader className='h-5 w-5' /></button> */}
               {isConnected && (
                 <button
                   onClick={() => closeGPTAns()}
