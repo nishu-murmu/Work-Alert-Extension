@@ -11,7 +11,6 @@ chrome.storage.local.get(['gpt_access_token']).then((res) => {
 const message_id = uuidv4()
 
 const useGPT = () => {
-  
   function getSession() {
     return new Promise((resolve) => {
       fetch(config.gpt_session_api)
@@ -139,20 +138,17 @@ const useGPT = () => {
       .then((res) => res.json())
       .then(async (data) => {
         let id = data.items[0]?.id
-        const response = await fetch(
-          `${config.gpt_conversation_api}/gen_title/${id}`,
-          {
-            headers: {
-              accept: '*/*',
-              authorization: `Bearer ${accessToken}`,
-              'content-type': 'application/json',
-            },
-            body: JSON.stringify({
-              message_id: message_id,
-            }),
-            method: 'POST',
+        const response = await fetch(`${config.gpt_conversation_api}/gen_title/${id}`, {
+          headers: {
+            accept: '*/*',
+            authorization: `Bearer ${accessToken}`,
+            'content-type': 'application/json',
           },
-        )
+          body: JSON.stringify({
+            message_id: message_id,
+          }),
+          method: 'POST',
+        })
         if (response.ok) {
           deleteTitle(id.toString())
         }

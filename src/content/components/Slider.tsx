@@ -38,7 +38,7 @@ const Slider: React.FC = () => {
 
   const callSession = () => {
     chrome.runtime.sendMessage({ type: 'session_call' }, (res: any) => {
-      if (res?.success == true) {
+      if (res && res?.success === true) {
         setRefresh(false)
       } else {
         deleteToken()
@@ -46,7 +46,6 @@ const Slider: React.FC = () => {
       }
     })
   }
-
   function closeSlider() {
     window.postMessage({ toggleSlider: false })
     window.postMessage({ from: 'FROM_SLIDER' })
@@ -54,9 +53,11 @@ const Slider: React.FC = () => {
 
   const sendQueryToGPT = async () => {
     const res: any = await getToken()
+
     if (res && res?.gpt_access_token) {
       if (selectedProfile != '' && selectedProfile != `select_profile`) {
         setIsSelected(false)
+        setLoading(true)
         chrome.runtime.sendMessage({ type: 'get_ans', query })
       } else {
         setIsSelected(true)
@@ -90,11 +91,12 @@ const Slider: React.FC = () => {
     callSession()
     chrome.runtime.onMessage.addListener((req) => {
       if (req.type === 'generated_ans') {
-        setLoading(false)
         setIsConnected(req.isClosed)
+
         let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
         result = result?.slice(10, result.length - 6)
         setTextArea(unescape(result))
+        setLoading(false)
       }
     })
   }, [])
@@ -214,36 +216,55 @@ const Slider: React.FC = () => {
               ></textarea>
             </div>
             <div className="px-4 w-full flex gap-x-2">
-              {!isConnected && (
-                <button
-                  onClick={() => {
-                    setLoading(true)
-                    sendQueryToGPT()
-                    if(loading) setLoading(false)
-                  }}
-                  className="w-full rounded-lg bg-green-600 text-white py-2 flex flex-row justify-center gap-x-3"
-                  id="submit"
-                >
-                  {!loading && <span>{isConnected ? 'generating answer ...' : 'Generate Proposal'}</span>}
-                  <span>{loading && <SpinnerLoader className="h-4 w-4" />}</span>
-                </button>
-              )}
               {refresh ? (
-                <button
-                  onClick={() => {
-                    setRefresh(false)
-                    callSession()
-                  }}
-                >
-                  <RefreshIcon />
-                </button>
+                <>
+                  <button
+                    onClick={() => {
+                      window.open('https://chat.openai.com/auth/login', '_blank')
+                      openSlider()
+                    }}
+                    className="w-full rounded-lg bg-green-600 text-white py-2 flex flex-row justify-center gap-x-3"
+                    id="submit"
+                  >
+                    Login to ChatGPT
+                  </button>
+                  <button
+                    onClick={() => {
+                      callSession()
+                    }}
+                  >
+                    <RefreshIcon />
+                  </button>
+                </>
               ) : (
-                <></>
+                <>
+                  {!isConnected && (
+                    <button
+                      onClick={() => {
+                        sendQueryToGPT()
+                      }}
+                      className="w-full rounded-lg bg-green-600 text-white py-2 flex flex-row justify-center gap-x-3"
+                      id="submit"
+                    >
+                      {!loading && (
+                        <span className="py-[-3px]">
+                          {isConnected ? 'generating answer ...' : 'Generate Proposal'}
+                        </span>
+                      )}
+                      <span className="py-[2px]">
+                        {loading && <SpinnerLoader className="h-4 w-4" />}
+                      </span>
+                    </button>
+                  )}
+                </>
               )}
-              {/* <button className='w-full rounded-lg bg-green-600 text-white py-2'><SpinnerLoader className='h-5 w-5' /></button> */}
+
               {isConnected && (
                 <button
-                  onClick={() => closeGPTAns()}
+                  onClick={() => {
+                    setLoading(false)
+                    closeGPTAns()
+                  }}
                   className="bg-custom-bg rounded-lg py-2 px-3 text-white w-full"
                 >
                   Stop generating
