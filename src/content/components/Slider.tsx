@@ -46,7 +46,6 @@ const Slider: React.FC = () => {
     })
   }
   function closeSlider() {
-    console.log( document.querySelector("#root-id"))
     let shadowRoot = document.querySelector("#root-id")?.shadowRoot
     //@ts-ignore
     shadowRoot.querySelector("#render").style.display = "none"
