@@ -94,7 +94,6 @@ const Slider: React.FC = () => {
         setIsConnected(req.isClosed)
         let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
         result = result?.slice(10, result.length - 6)
-        console.log(result)
         if(result !== "") setTextArea(unescape(result))
       }
     })
