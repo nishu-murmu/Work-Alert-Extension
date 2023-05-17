@@ -12,7 +12,8 @@ const RenderedApp = () => {
 
   return (
     <div className="flex z-[9999999] relative">
-      {toggleSlide && <Slider />}
+      {/* @ts-ignore */}
+      <Slider toggleSlider={toggleSlide} />
     </div>
   )
 }
