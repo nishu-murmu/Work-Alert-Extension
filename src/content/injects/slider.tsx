@@ -15,6 +15,7 @@ shadowDOM.append(linkElement)
 
 const renderElement = document.createElement('div') as HTMLElement
 renderElement.id = 'render'
+renderElement.style.display = 'none'
 
 ReactDOM.createRoot(renderElement).render(<App />)
 shadowDOM.appendChild(renderElement)

@@ -1,24 +1,14 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React from 'react'
 
 
 const ProprosalButton: React.FC = () => {
-  const [toggleSlide, setToggleSlide] = useState<boolean>(false)
 
   function toggleSlider() {
-    setToggleSlide((prev) => !prev)
+    let shadowRoot = document.querySelector("#root-id")?.shadowRoot
+    //@ts-ignore
+    shadowRoot.querySelector("#render").style.display = "block"
   }
 
-  useEffect(() => {
-    window.postMessage({ toggleSlider: toggleSlide })
-  }, [toggleSlide])
-
-  useEffect(() => {
-    window.addEventListener('message', (event) => {
-      if (event.data.from === 'FROM_SLIDER') {
-        setToggleSlide((prev) => !prev)
-      }
-    })
-  }, [])
   return (
     <button onClick={() => toggleSlider()} style={{backgroundColor: "green", padding: "12px 16px", borderRadius: "10px", color: 'white', border: 'transparent', cursor: 'pointer'}}>
       Write Proposal
