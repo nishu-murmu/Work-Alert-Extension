@@ -90,14 +90,16 @@ const Slider: React.FC = () => {
     })
     callSession()
     chrome.runtime.onMessage.addListener((req) => {
-      if (req.type === 'generated_ans') {
+      if (req.error && req.error == true) {
+        setLoading(false)
+      } else if (req.type === 'generated_ans') {
         setIsConnected(req.isClosed)
 
         let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
         result = result?.slice(10, result.length - 6)
         if (result !== '') setTextArea(unescape(result))
-        setLoading(false)
       }
+      setLoading(false)
     })
   }, [])
 
@@ -252,8 +254,10 @@ const Slider: React.FC = () => {
                   {!isConnected && (
                     <button
                       onClick={() => {
-                        sendQueryToGPT()
+                        loading && setLoading(false)
+                        !loading && sendQueryToGPT()
                       }}
+                      disabled={loading}
                       className="w-full rounded-lg bg-green-600 text-white py-2 flex flex-row justify-center gap-x-3"
                       id="submit"
                     >
@@ -273,8 +277,8 @@ const Slider: React.FC = () => {
               {isConnected && (
                 <button
                   onClick={() => {
-                    setLoading(false)
                     closeGPTAns()
+                    setLoading(false)
                   }}
                   className="bg-custom-bg rounded-lg py-2 px-3 text-white w-full"
                 >
