@@ -167,7 +167,7 @@ export default function ProfileSection() {
               placeholder="Porfolio Link"
               value={values.portfolio ?? ""}
               onChange={(e) => setValues((prev: any) => ({ ...prev, portfolio: e.target.value }))}
-              className={`bg-transparent border rounded-md px-3 py-2 text-lg`}
+              className={`rounded-md px-4 py-2 border text-lg w-[30rem] bg-transparent`}
               pattern="[a-zA-Z]+"
               onBlur={() => clearState()}
               onClickCapture={() => clearState()}
