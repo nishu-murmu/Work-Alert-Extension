@@ -21,7 +21,7 @@ const Slider: React.FC = () => {
     experience: '0',
     skills: [],
     portfolio: '',
-    clients: [],
+    client: '',
     tone: '',
     job_description: '',
     range_of_words: '',
@@ -95,7 +95,7 @@ const Slider: React.FC = () => {
 
         let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
         result = result?.slice(10, result.length - 6)
-        setTextArea(unescape(result))
+        if (result !== '') setTextArea(unescape(result))
         setLoading(false)
       }
     })
@@ -199,6 +199,17 @@ const Slider: React.FC = () => {
                   <option value="app_200">Approx 200</option>
                 </select>
               </div>
+            </div>
+            <div className="px-4 w-full py-2">
+              <input
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setQuery((prev: QueryProps) => ({ ...prev, client: e.target.value }))
+                }}
+                type="text"
+                id="client"
+                className="rounded-lg w-full text-black p-3 outline-none border-none"
+                placeholder="Enter Client:"
+              />
             </div>
             <div className="px-4 w-full py-2">
               <label className={` text-white font-medium`} htmlFor="proposal">
