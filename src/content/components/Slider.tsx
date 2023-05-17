@@ -4,6 +4,7 @@ import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
 import useGPT from '../../customHooks/use-gpt'
 import unescape from 'unescape-js'
+import ReactMarkdown from 'react-markdown'
 
 const Slider: React.FC = () => {
   const { getToken, deleteToken } = useGPT()
@@ -18,7 +19,7 @@ const Slider: React.FC = () => {
     proposal: '',
     name: '',
     experience: '0',
-    skills: [],
+    skills: "",
     portfolio: '',
     client: '',
     tone: '',
@@ -75,7 +76,9 @@ const Slider: React.FC = () => {
 
   const fillProposal = (proposal: string | undefined) => {
     const textarea = document.querySelector('.up-textarea') as HTMLTextAreaElement
-    if (proposal) textarea.value = proposal
+    if (proposal) textarea.value = `${proposal}\n ${proposals?.find(
+      (proposal: proposalsProps) => proposal.profile === selectedProfile,
+    )?.portfolio}`
     const event = new Event('input', { bubbles: true })
     textarea.dispatchEvent(event)
   }
@@ -94,7 +97,6 @@ const Slider: React.FC = () => {
         setLoading(false)
       } else if (req.type === 'generated_ans') {
         setIsConnected(req.isClosed)
-
         let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
         result = result?.slice(10, result.length - 6)
         if (result !== '') setTextArea(unescape(result))
@@ -298,6 +300,7 @@ const Slider: React.FC = () => {
                 rows={13}
                 defaultValue={textarea}
               ></textarea>
+              {/* <ReactMarkdown className='rounded-lg w-full h-[28rem] overflow-y-auto outline-none border-none text-black bg-white p-3'>{textarea}</ReactMarkdown> */}
             </div>
           </>
         ) : (
@@ -310,7 +313,7 @@ const Slider: React.FC = () => {
               inbuilt
                 ? proposals?.find(
                     (proposal: proposalsProps) => proposal.profile === selectedProfile,
-                  )?.proposal
+                  )?.prebuilt
                 : textarea != ''
                 ? textarea
                 : '',

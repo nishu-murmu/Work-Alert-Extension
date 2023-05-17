@@ -674,6 +674,10 @@ video {
   height: 2rem;
 }
 
+.h-\[28rem\] {
+  height: 28rem;
+}
+
 .h-auto {
   height: auto;
 }
@@ -972,6 +976,11 @@ video {
 
 .bg-transparent {
   background-color: transparent;
+}
+
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
 .fill-blue-900 {
