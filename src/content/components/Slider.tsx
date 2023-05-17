@@ -1,17 +1,18 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
-import { CrossIcon, RefreshIcon } from '../../util/Icons'
+import { CrossIcon, RefreshIcon, SpinnerLoader } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
 import useGPT from '../../customHooks/use-gpt'
 import useBgJobs from '../../customHooks/use-bg-job'
 import unescape from 'unescape-js'
 
-const Slider: React.FC = () => {
+const Slider: React.FC = (props:any) => {
   const { getToken, deleteToken } = useGPT()
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [isSelected, setIsSelected] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [textarea, setTextArea] = useState<string>('')
   const [query, setQuery] = useState<QueryProps>({
     profile: '',
@@ -20,7 +21,7 @@ const Slider: React.FC = () => {
     experience: '0',
     skills: [],
     portfolio: '',
-    clients: [],
+    client: '',
     tone: '',
     job_description: '',
     range_of_words: '',
@@ -29,7 +30,7 @@ const Slider: React.FC = () => {
   const [proposals, setProposals] = useState<proposalsProps[]>([])
   const [refresh, setRefresh] = useState(false)
   const { getProposals } = useContent()
-  const [toggleSlide, setToggleSlide] = useState<boolean>(true)
+  const [toggleSlide, setToggleSlide] = useState<boolean>(false)
 
   function openSlider() {
     setToggleSlide(true)
@@ -37,7 +38,7 @@ const Slider: React.FC = () => {
 
   const callSession = () => {
     chrome.runtime.sendMessage({ type: 'session_call' }, (res: any) => {
-      if (res?.success == true) {
+      if (res && res?.success === true) {
         setRefresh(false)
       } else {
         deleteToken()
@@ -45,17 +46,19 @@ const Slider: React.FC = () => {
       }
     })
   }
-
   function closeSlider() {
     window.postMessage({ toggleSlider: false })
     window.postMessage({ from: 'FROM_SLIDER' })
+    setToggleSlide(true)
   }
 
   const sendQueryToGPT = async () => {
     const res: any = await getToken()
+
     if (res && res?.gpt_access_token) {
       if (selectedProfile != '' && selectedProfile != `select_profile`) {
         setIsSelected(false)
+        setLoading(true)
         chrome.runtime.sendMessage({ type: 'get_ans', query })
       } else {
         setIsSelected(true)
@@ -88,12 +91,16 @@ const Slider: React.FC = () => {
     })
     callSession()
     chrome.runtime.onMessage.addListener((req) => {
-      if (req.type === 'generated_ans') {
+      if (req.error && req.error == true) {
+        setLoading(false)
+      } else if (req.type === 'generated_ans') {
         setIsConnected(req.isClosed)
+
         let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
         result = result?.slice(10, result.length - 6)
-        setTextArea(unescape(result))
+        if (result !== '') setTextArea(unescape(result))
       }
+      setLoading(false)
     })
   }, [])
 
@@ -115,7 +122,7 @@ const Slider: React.FC = () => {
   }, [selectedProfile])
 
   return (
-    <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">
+    <div className={`right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white ${props.toggleSlider ? "hidden":""}`}>
       <div className="header-section flex w-full ">
         <button onClick={() => closeSlider()}>
           <CrossIcon className="h-8 w-8 my-2 mx-3" strokeColor="green" />
@@ -197,6 +204,17 @@ const Slider: React.FC = () => {
               </div>
             </div>
             <div className="px-4 w-full py-2">
+              <input
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setQuery((prev: QueryProps) => ({ ...prev, client: e.target.value }))
+                }}
+                type="text"
+                id="client"
+                className="rounded-lg w-full text-black p-3 outline-none border-none"
+                placeholder="Enter Client:"
+              />
+            </div>
+            <div className="px-4 w-full py-2">
               <label className={` text-white font-medium`} htmlFor="proposal">
                 Optional Information:
               </label>
@@ -212,28 +230,57 @@ const Slider: React.FC = () => {
               ></textarea>
             </div>
             <div className="px-4 w-full flex gap-x-2">
-              {!isConnected && <button
-                onClick={() => sendQueryToGPT()}
-                className="w-full rounded-lg bg-green-600 text-white py-2"
-                id="submit"
-              >
-                {isConnected ? 'generating answer ...' : 'Generate Proposal'}
-              </button>}
               {refresh ? (
-                <button
-                  onClick={() => {
-                    setRefresh(false)
-                    callSession()
-                  }}
-                >
-                  <RefreshIcon/>
-                </button>
+                <>
+                  <button
+                    onClick={() => {
+                      window.open('https://chat.openai.com/auth/login', '_blank')
+                      openSlider()
+                    }}
+                    className="w-full rounded-lg bg-green-600 text-white py-2 flex flex-row justify-center gap-x-3"
+                    id="submit"
+                  >
+                    Login to ChatGPT
+                  </button>
+                  <button
+                    onClick={() => {
+                      callSession()
+                    }}
+                  >
+                    <RefreshIcon />
+                  </button>
+                </>
               ) : (
-                <></>
+                <>
+                  {!isConnected && (
+                    <button
+                      onClick={() => {
+                        loading && setLoading(false)
+                        !loading && sendQueryToGPT()
+                      }}
+                      disabled={loading}
+                      className="w-full rounded-lg bg-green-600 text-white py-2 flex flex-row justify-center gap-x-3"
+                      id="submit"
+                    >
+                      {!loading && (
+                        <span className="py-[-3px]">
+                          {isConnected ? 'generating answer ...' : 'Generate Proposal'}
+                        </span>
+                      )}
+                      <span className="py-[2px]">
+                        {loading && <SpinnerLoader className="h-4 w-4" />}
+                      </span>
+                    </button>
+                  )}
+                </>
               )}
+
               {isConnected && (
                 <button
-                  onClick={() => closeGPTAns()}
+                  onClick={() => {
+                    closeGPTAns()
+                    setLoading(false)
+                  }}
                   className="bg-custom-bg rounded-lg py-2 px-3 text-white w-full"
                 >
                   Stop generating

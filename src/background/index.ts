@@ -8,6 +8,7 @@ import {
   separateCounts,
   timeRange,
 } from '../util'
+import { config } from '../util/config'
 import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
 const { getSession, generateAns, closeAns } = useGPT()
@@ -35,9 +36,11 @@ chrome.action.onClicked.addListener(() => {
 const tabChange = () => {
   chrome.tabs.query({}, (tabs) => {
     if (!tabs.find((tab) => tab.url === OptionsUrl)) {
-      chrome.tabs.create({
-        url: OptionsUrl,
-      }).then(() => redirectSection())
+      chrome.tabs
+        .create({
+          url: OptionsUrl,
+        })
+        .then(() => redirectSection())
     } else {
       chrome.tabs.query({ url: OptionsUrl }, (tabs: any) => {
         chrome.tabs.update(tabs[0].id, { active: true }).then(() => redirectSection())
@@ -53,7 +56,7 @@ const updateBadge = async () => {
     result.keywordsCount.reduce((acc: any, item: any) => {
       return acc + item.count
     }, 0)
-  if (total !== 0) chrome.action.setBadgeText({ text: total ?total.toString(): '' })
+  if (total !== 0) chrome.action.setBadgeText({ text: total ? total.toString() : '' })
   else chrome.action.setBadgeText({ text: '' })
 }
 
@@ -65,14 +68,14 @@ const redirectWindow = () => {
 }
 
 const redirectSection = () => {
-  chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     let tabId: any = tabs[0]?.id
-    chrome.tabs.sendMessage(tabId, {type: 'notification_clicked'})
+    chrome.tabs.sendMessage(tabId, { type: 'notification_clicked' })
   })
 }
 
 chrome.alarms.create({
-  periodInMinutes: 3, 
+  periodInMinutes: config.API_INTERVAL,
   when: 1,
 })
 

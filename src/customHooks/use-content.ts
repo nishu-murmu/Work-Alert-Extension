@@ -20,14 +20,8 @@ export const useContent = () => {
             index = allProposals?.findIndex((obj: any) => obj.profile == proposal[0].profile)
             proposal = {
               ...proposal[0],
-              skills: proposal[0]?.skills
-                ?.trim()
-                .split(/[,]+/g)
-                .map((item: string) => item.trim()),
-              clients: proposal[0]?.clients
-                ?.trim()
-                .split(/[,]+/g)
-                .map((item: string) => item.trim()),
+              tone: proposal[0].tone === 'select' ? undefined: proposal[0].tone,
+              range_of_words: proposal[0].tone === 'default' ? undefined: proposal[0].range_of_words,
             }
             newProposals = [...res?.proposals, proposal]
           } else newProposals = proposal
