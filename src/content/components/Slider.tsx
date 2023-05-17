@@ -6,7 +6,7 @@ import useGPT from '../../customHooks/use-gpt'
 import useBgJobs from '../../customHooks/use-bg-job'
 import unescape from 'unescape-js'
 
-const Slider: React.FC = () => {
+const Slider: React.FC = (props:any) => {
   const { getToken, deleteToken } = useGPT()
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
@@ -30,7 +30,7 @@ const Slider: React.FC = () => {
   const [proposals, setProposals] = useState<proposalsProps[]>([])
   const [refresh, setRefresh] = useState(false)
   const { getProposals } = useContent()
-  const [toggleSlide, setToggleSlide] = useState<boolean>(true)
+  const [toggleSlide, setToggleSlide] = useState<boolean>(false)
 
   function openSlider() {
     setToggleSlide(true)
@@ -49,6 +49,7 @@ const Slider: React.FC = () => {
   function closeSlider() {
     window.postMessage({ toggleSlider: false })
     window.postMessage({ from: 'FROM_SLIDER' })
+    setToggleSlide(true)
   }
 
   const sendQueryToGPT = async () => {
@@ -121,7 +122,7 @@ const Slider: React.FC = () => {
   }, [selectedProfile])
 
   return (
-    <div className="right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white">
+    <div className={`right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white ${props.toggleSlider ? "hidden":""}`}>
       <div className="header-section flex w-full ">
         <button onClick={() => closeSlider()}>
           <CrossIcon className="h-8 w-8 my-2 mx-3" strokeColor="green" />
