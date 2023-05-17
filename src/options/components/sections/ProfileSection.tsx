@@ -14,7 +14,7 @@ export default function ProfileSection() {
     experience: '0',
     skills: [],
     portfolio: '',
-    clients: [],
+    client: "",
   })
   const [emptyFields, setEmptyFields] = useState({
     profile: false,
@@ -33,25 +33,21 @@ export default function ProfileSection() {
   const submitHandler = async (e: any) => {
     clearState()
     e.preventDefault()
-    const { profile, proposal, name, experience, skills } = values
+    const { profile, proposal, name } = values
 
-    if (!profile || !proposal || !name || skills.length === 0 || expError || !experience) {
+    if (!profile || !proposal || !name || expError) {
       expError
         ? setEmptyFields((prevState) => ({
             ...prevState,
             profile: !profile,
             proposal: !proposal,
             name: !name,
-            experience: true,
-            skills: !skills.length,
           }))
         : setEmptyFields((prevState) => ({
             ...prevState,
             profile: !profile,
             proposal: !proposal,
             name: !name,
-            experience: !experience,
-            skills: !skills.length,
           }))
       return
     } else {
@@ -133,16 +129,12 @@ export default function ProfileSection() {
                 const input = e.target.value
                 const value = parseInt(input)
                 if (isNaN(value)) {
-                  setExpError(true)
                   setValues((prev: any) => ({ ...prev, experience: e.target.value }))
                 } else {
-                  setExpError(false)
                   setValues((prev: any) => ({ ...prev, experience: value }))
                 }
               }}
-              className={`bg-transparent border ${
-                !emptyFields?.experience ? 'border-white' : 'border-red-600'
-              } rounded-md px-3 py-2 text-lg`}
+              className={`bg-transparent border border-white rounded-md px-3 py-2 text-lg`}
               onClickCapture={() => clearState()}
             />
 
@@ -157,9 +149,7 @@ export default function ProfileSection() {
                 }))
               }
               onBlur={() => clearState()}
-              className={`bg-transparent border ${
-                !emptyFields?.skills ? 'border-white' : 'border-red-600'
-              } rounded-md px-3 py-2 text-lg`}
+              className={`bg-transparent border 'border-white rounded-md px-3 py-2 text-lg`}
               pattern="[a-zA-Z]+"
               onClickCapture={() => clearState()}
             />
@@ -171,7 +161,7 @@ export default function ProfileSection() {
             </div>
           )}
 
-          <div className={`flex gap-x-4 ${expError ? ' mt-2' : 'mt-9'}`}>
+          <div className={`flex gap-x-4 mt-9`}>
             <input
               type="text"
               placeholder="Porfolio Link"
@@ -180,21 +170,6 @@ export default function ProfileSection() {
               className={`bg-transparent border rounded-md px-3 py-2 text-lg`}
               pattern="[a-zA-Z]+"
               onBlur={() => clearState()}
-              onClickCapture={() => clearState()}
-            />
-            <input
-              type="text"
-              placeholder="Enter Clients"
-              value={values.clients ?? ""}
-              onChange={(e) =>
-                setValues((prev: any) => ({
-                  ...prev,
-                  clients: e.target.value,
-                }))
-              }
-              onBlur={() => clearState()}
-              className={`bg-transparent border rounded-md px-3 py-2 text-lg`}
-              pattern="[a-zA-Z]+"
               onClickCapture={() => clearState()}
             />
           </div>

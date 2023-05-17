@@ -30,7 +30,7 @@ export interface proposalsProps {
   experience: string
   skills: string[]
   portfolio?: string
-  clients?: string[]
+  client?: string
 }
 
 export interface QueryProps extends proposalsProps {
