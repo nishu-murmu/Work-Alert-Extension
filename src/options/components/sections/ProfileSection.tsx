@@ -12,7 +12,7 @@ export default function ProfileSection() {
     proposal: '',
     name: '',
     experience: '0',
-    skills: [],
+    skills: "",
     portfolio: '',
     client: "",
   })
@@ -33,7 +33,7 @@ export default function ProfileSection() {
   const submitHandler = async (e: any) => {
     clearState()
     e.preventDefault()
-    const { profile, proposal, name } = values
+    const { profile, proposal, name, skills } = values
 
     if (!profile || !proposal || !name || expError) {
       expError
@@ -42,6 +42,7 @@ export default function ProfileSection() {
             profile: !profile,
             proposal: !proposal,
             name: !name,
+            skills: !skills,
           }))
         : setEmptyFields((prevState) => ({
             ...prevState,
@@ -51,7 +52,7 @@ export default function ProfileSection() {
           }))
       return
     } else {
-      setValues({ profile: '', proposal: '', skills: [], name: '', experience: '', portfolio: '' })
+      setValues({ profile: '', proposal: '', skills: "", name: '', experience: '', portfolio: '', prebuilt: '' })
       document.querySelectorAll('input').forEach((ele: any) => {
         ele.value = ''
       })
@@ -107,7 +108,7 @@ export default function ProfileSection() {
             <input
               type="text"
               placeholder="Enter Name"
-              value={values.name ?? ""}
+              value={values.name ?? ''}
               onChange={(e) => setValues((prev: any) => ({ ...prev, name: e.target.value }))}
               className={`bg-transparent border ${
                 !emptyFields?.name ? 'border-white' : 'border-red-600'
@@ -117,11 +118,11 @@ export default function ProfileSection() {
               onClickCapture={() => clearState()}
             />
           </div>
-          <div className="flex gap-x-4 mt-9">
+          <div className="flex gap-x-4 mt-4">
             <input
               type="text"
               id="experience-input"
-              value={values.experience ?? ""}
+              value={values.experience ?? ''}
               pattern="[0-9]+"
               placeholder="Enter Experience"
               onBlur={() => clearState()}
@@ -134,26 +135,26 @@ export default function ProfileSection() {
                   setValues((prev: any) => ({ ...prev, experience: value }))
                 }
               }}
-              className={`bg-transparent border border-white rounded-md px-3 py-2 text-lg`}
-              onClickCapture={() => clearState()}
-            />
-
-            <input
-              type="text"
-              placeholder="Enter Skills"
-              value={values.skills ?? ""}
-              onChange={(e) =>
-                setValues((prev: any) => ({
-                  ...prev,
-                  skills: e.target.value,
-                }))
-              }
-              onBlur={() => clearState()}
-              className={`bg-transparent border 'border-white rounded-md px-3 py-2 text-lg`}
-              pattern="[a-zA-Z]+"
+              className={`bg-transparent border border-white rounded-md px-3 py-2 text-lg w-[30rem]`}
               onClickCapture={() => clearState()}
             />
           </div>
+          <textarea
+            name="skills"
+            id="skills"
+            rows={3}
+            value={values.skills ?? ''}
+            placeholder="Enter Skills"
+            onChange={(e) =>
+              setValues((prev: any) => ({
+                ...prev,
+                skills: e.target.value,
+              }))
+            }
+            onClickCapture={() => clearState()}
+            onBlur={() => clearState()}
+            className={`rounded-md px-4 py-2 border text-lg w-[30rem] bg-transparent mt-4`}
+          ></textarea>
           {expError && (
             <div className="flex items-center justify-between w-full rounded-md px-7 text-red-600 py-2 text-md">
               <div> Enter valid experience </div>
@@ -161,28 +162,40 @@ export default function ProfileSection() {
             </div>
           )}
 
-          <div className={`flex gap-x-4 mt-9`}>
-            <input
-              type="text"
-              placeholder="Porfolio Link"
-              value={values.portfolio ?? ""}
+          <div className={`flex gap-x-4 mt-4`}>
+            <textarea
+              placeholder="Enter Portfolio"
+              value={values.portfolio ?? ''}
               onChange={(e) => setValues((prev: any) => ({ ...prev, portfolio: e.target.value }))}
               className={`rounded-md px-4 py-2 border text-lg w-[30rem] bg-transparent`}
-              pattern="[a-zA-Z]+"
+              rows={3}
               onBlur={() => clearState()}
               onClickCapture={() => clearState()}
-            />
+            ></textarea>
           </div>
           <textarea
-            rows={4}
-            value={values.proposal ?? ""}
+            rows={3}
+            value={values.proposal ?? ''}
             placeholder="Enter proposal description"
-            className={`bg-transparent border mt-9 ${
+            className={`bg-transparent border mt-4 ${
               !emptyFields?.proposal ? 'border-white' : 'border-red-600'
             } rounded-md px-4 py-2 text-lg w-[30rem]`}
             onBlur={() => clearState()}
             onChange={(e) => {
               setValues((prev: any) => ({ ...prev, proposal: e.target.value }))
+            }}
+            onClickCapture={() => clearState()}
+          />
+          <textarea
+            rows={3}
+            value={values.prebuilt ?? ''}
+            placeholder="Enter Prebuilt Proposal"
+            className={`bg-transparent border mt-4 ${
+              !emptyFields?.proposal ? 'border-white' : 'border-red-600'
+            } rounded-md px-4 py-2 text-lg w-[30rem]`}
+            onBlur={() => clearState()}
+            onChange={(e) => {
+              setValues((prev: any) => ({ ...prev, prebuilt: e.target.value }))
             }}
             onClickCapture={() => clearState()}
           />
@@ -199,9 +212,7 @@ export default function ProfileSection() {
             className={`${
               emptyFields?.profile ||
               emptyFields?.proposal ||
-              emptyFields?.name ||
-              (emptyFields?.experience && !expError) ||
-              emptyFields?.skills
+              emptyFields?.name
                 ? 'mt-7'
                 : 'mt-9'
             } hover:text-gray-400 border w-2/5 mx-auto bg-transparent place-content-center border-white text-lg px-5 py-2 rounded-md`}
@@ -214,39 +225,42 @@ export default function ProfileSection() {
           <div className="w-10/12 gap-y-2 flex flex-col">
             {allProposals.length > 0 ? (
               <>
-                {allProposals?.slice().reverse().map((proposal: any, index) => (
-                  <div
-                    key={index}
-                    id={index.toString()}
-                    className="bg-custom-bg h-16 py-4 px-4 flex rounded-md justify-between"
-                  >
-                    <div className="text-lg">{proposal.profile}</div>
-                    <div className="flex gap-x-4">
-                      <button
-                        onClick={() => {
-                          setValues(proposal)
-                          setEditFlag({
-                            name: proposal.profile,
-                            status: true,
-                          })
-                        }}
-                        className="p-1 bg-gray-700 rounded-md"
-                      >
-                        <PenIcon />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setToggleModal(true)
-                          setIndex(index.toString())
-                        }}
-                        className="p-1 bg-gray-700 rounded-md"
-                      >
-                        <BinIcon fillColor="white" strokeColor="black" />
-                      </button>
-                      <Modal toggleModal={toggleModal} setTogggleModal={setToggleModal} />
+                {allProposals
+                  ?.slice()
+                  .reverse()
+                  .map((proposal: any, index) => (
+                    <div
+                      key={index}
+                      id={index.toString()}
+                      className="bg-custom-bg h-16 py-4 px-4 flex rounded-md justify-between"
+                    >
+                      <div className="text-lg">{proposal.profile}</div>
+                      <div className="flex gap-x-4">
+                        <button
+                          onClick={() => {
+                            setValues(proposal)
+                            setEditFlag({
+                              name: proposal.profile,
+                              status: true,
+                            })
+                          }}
+                          className="p-1 bg-gray-700 rounded-md"
+                        >
+                          <PenIcon />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setToggleModal(true)
+                            setIndex(index.toString())
+                          }}
+                          className="p-1 bg-gray-700 rounded-md"
+                        >
+                          <BinIcon fillColor="white" strokeColor="black" />
+                        </button>
+                        <Modal toggleModal={toggleModal} setTogggleModal={setToggleModal} />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </>
             ) : (
               <div className="text-xl text-green-500 flex items-center justify-center">
