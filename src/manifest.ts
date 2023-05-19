@@ -1,4 +1,5 @@
 import { defineManifest } from '@crxjs/vite-plugin'
+import { config } from './util/config'
 
 export default defineManifest({
   name: 'Work Alert Extension',
@@ -41,6 +42,10 @@ export default defineManifest({
       use_dynamic_url: true,
     },
   ],
-  permissions: ['tabs', 'storage', 'activeTab', 'alarms', 'notifications'],
+  permissions: ['tabs', 'storage', 'activeTab', 'alarms', 'notifications', 'identity'],
   host_permissions: ['https://*.upwork.com/*', 'https://*.openai.com/'],
+  oauth2: {
+    scopes: ['openid', 'email', 'profile'],
+    client_id: config.OAuth2Token,
+  },
 })

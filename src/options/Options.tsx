@@ -5,10 +5,12 @@ import ProfileSection from './components/sections/ProfileSection'
 import RouteSection from './components/sections/RouteSection'
 import { useRecoilState } from 'recoil'
 import { isJobs } from './atoms'
+import useFirebase from '../customHooks/use-firebase'
 
 function App() {
   const [route, setRoute] = useState('')
   const [isClick, setIsClicked] = useRecoilState(isJobs)
+  const { addUser } = useFirebase()
 
   useEffect(() => {
     setRoute('home')
@@ -19,10 +21,15 @@ function App() {
     })
   }, [])
 
-  useEffect(() => {},[route])
+  useEffect(() => {}, [route])
+
+  const loginWithGoogle = () => {
+    addUser().then(console.log).catch(console.log)
+  }
 
   return (
     <div className="bg-black text-white min-h-screen">
+      <button onClick={loginWithGoogle}>Login with google</button>
       {!isClick && (
         <>
           <HeaderSection />
