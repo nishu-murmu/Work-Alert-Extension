@@ -41,6 +41,10 @@ export default defineManifest({
       use_dynamic_url: true,
     },
   ],
-  permissions: ['tabs', 'storage', 'activeTab', 'alarms', 'notifications'],
+  permissions: ['tabs', 'storage', 'activeTab', 'alarms', 'notifications', 'identity'],
   host_permissions: ['https://*.upwork.com/*', 'https://*.openai.com/'],
+  oauth2: {
+    scopes: ['openid', 'email', 'profile'],
+    client_id: '304843596099-3b8gt566hgtpvaivenkgmfr540h9hcgh.apps.googleusercontent.com',
+  },
 })
