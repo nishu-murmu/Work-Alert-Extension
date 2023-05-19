@@ -3,10 +3,10 @@ import { CrossIcon, RefreshIcon, SpinnerLoader } from '../../util/Icons'
 import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
 import useGPT from '../../customHooks/use-gpt'
-import useBgJobs from '../../customHooks/use-bg-job'
 import unescape from 'unescape-js'
+import ReactMarkdown from 'react-markdown'
 
-const Slider: React.FC = (props:any) => {
+const Slider: React.FC = () => {
   const { getToken, deleteToken } = useGPT()
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
@@ -19,7 +19,7 @@ const Slider: React.FC = (props:any) => {
     proposal: '',
     name: '',
     experience: '0',
-    skills: [],
+    skills: "",
     portfolio: '',
     client: '',
     tone: '',
@@ -30,7 +30,7 @@ const Slider: React.FC = (props:any) => {
   const [proposals, setProposals] = useState<proposalsProps[]>([])
   const [refresh, setRefresh] = useState(false)
   const { getProposals } = useContent()
-  const [toggleSlide, setToggleSlide] = useState<boolean>(false)
+  const [toggleSlide, setToggleSlide] = useState<boolean>(true)
 
   function openSlider() {
     setToggleSlide(true)
@@ -47,9 +47,9 @@ const Slider: React.FC = (props:any) => {
     })
   }
   function closeSlider() {
-    window.postMessage({ toggleSlider: false })
-    window.postMessage({ from: 'FROM_SLIDER' })
-    setToggleSlide(true)
+    let shadowRoot = document.querySelector("#root-id")?.shadowRoot
+    //@ts-ignore
+    shadowRoot.querySelector("#render").style.display = "none"
   }
 
   const sendQueryToGPT = async () => {
@@ -76,7 +76,9 @@ const Slider: React.FC = (props:any) => {
 
   const fillProposal = (proposal: string | undefined) => {
     const textarea = document.querySelector('.up-textarea') as HTMLTextAreaElement
-    if (proposal) textarea.value = proposal
+    if (proposal) textarea.value = `${proposal}\n ${proposals?.find(
+      (proposal: proposalsProps) => proposal.profile === selectedProfile,
+    )?.portfolio}`
     const event = new Event('input', { bubbles: true })
     textarea.dispatchEvent(event)
   }
@@ -95,7 +97,6 @@ const Slider: React.FC = (props:any) => {
         setLoading(false)
       } else if (req.type === 'generated_ans') {
         setIsConnected(req.isClosed)
-
         let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
         result = result?.slice(10, result.length - 6)
         if (result !== '') setTextArea(unescape(result))
@@ -122,7 +123,7 @@ const Slider: React.FC = (props:any) => {
   }, [selectedProfile])
 
   return (
-    <div className={`right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white ${props.toggleSlider ? "hidden":""}`}>
+    <div className={`right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white`}>
       <div className="header-section flex w-full ">
         <button onClick={() => closeSlider()}>
           <CrossIcon className="h-8 w-8 my-2 mx-3" strokeColor="green" />
@@ -299,6 +300,7 @@ const Slider: React.FC = (props:any) => {
                 rows={13}
                 defaultValue={textarea}
               ></textarea>
+              {/* <ReactMarkdown className='rounded-lg w-full h-[28rem] overflow-y-auto outline-none border-none text-black bg-white p-3'>{textarea}</ReactMarkdown> */}
             </div>
           </>
         ) : (
@@ -311,7 +313,7 @@ const Slider: React.FC = (props:any) => {
               inbuilt
                 ? proposals?.find(
                     (proposal: proposalsProps) => proposal.profile === selectedProfile,
-                  )?.proposal
+                  )?.prebuilt
                 : textarea != ''
                 ? textarea
                 : '',
