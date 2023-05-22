@@ -28,7 +28,7 @@ export default defineManifest({
         'http://www.upwork.com/ab/proposals/job/*/apply/',
         'https://www.upwork.com/ab/proposals/job/*/apply/',
       ],
-      js: ['src/content/injects/proposal-button.tsx', 'src/content/injects/slider.tsx'],
+      js: ['src/content/injects/proposal-button.tsx', 'src/content/injects/slider.tsx', 'src/content/injects/icon-button.tsx'],
     },
     {
       matches: ['https://www.upwork.com/nx/find-work/*'],
