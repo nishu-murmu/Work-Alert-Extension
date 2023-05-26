@@ -4,7 +4,7 @@ import App from '../components/app'
 let linkElement = document.createElement('link')
 linkElement.rel = 'stylesheet'
 linkElement.type = 'text/css'
-linkElement.href = chrome.runtime.getURL('/src/styles/main-compiled.css')
+linkElement.href = chrome.runtime.getURL('/src/styles/output.css')
 // Attaching Slider component to shadowDOM
 let rootElement = document.createElement('div')
 rootElement.id = 'root-id'

@@ -14,7 +14,7 @@ if (!document.querySelector('#injected-icon-button')) {
     let linkElement = document.createElement('link')
     linkElement.rel = 'stylesheet'
     linkElement.type = 'text/css'
-    linkElement.href = chrome.runtime.getURL('/src/styles/main-compiled.css')
+    linkElement.href = chrome.runtime.getURL('/src/styles/output.css')
     let icon: any
 
     const diffX = Math.abs(e.pageX - startX)
