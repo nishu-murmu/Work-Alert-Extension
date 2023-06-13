@@ -24,9 +24,9 @@ export default defineManifest({
   },
   content_scripts: [
     {
-      matches: ["<all_urls>"],
-      js: ["src/content/index.ts"]
-    }
+      matches: ['<all_urls>'],
+      js: ['src/content/index.ts'],
+    },
   ],
   web_accessible_resources: [
     {
@@ -35,7 +35,15 @@ export default defineManifest({
       use_dynamic_url: true,
     },
   ],
-  permissions: ['tabs', 'storage', 'activeTab', 'alarms', 'notifications', 'identity'],
+  permissions: [
+    'tabs',
+    'storage',
+    'activeTab',
+    'alarms',
+    'notifications',
+    'identity',
+    'contextMenus',
+  ],
   host_permissions: ['https://*.upwork.com/*', 'https://*.openai.com/'],
   oauth2: {
     scopes: ['openid', 'email', 'profile'],

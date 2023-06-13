@@ -45,3 +45,15 @@ export interface ModalProps {
   toggleModal: boolean
   setTogggleModal: (newValue: boolean | ((prevValue: boolean) => boolean)) => void
 }
+
+export interface configProps {
+  gpt_conversation_api: string
+  gpt_session_api: string
+  API_INTERVAL: number
+  OAuth2Token: string
+  context_menu_items: {
+    id: string
+    title: string
+    contexts: chrome.contextMenus.ContextType[]
+  }[]
+}

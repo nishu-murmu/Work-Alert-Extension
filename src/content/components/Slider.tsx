@@ -4,7 +4,6 @@ import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
 import useGPT from '../../customHooks/use-gpt'
 import unescape from 'unescape-js'
-import ReactMarkdown from 'react-markdown'
 
 const Slider: React.FC = () => {
   const { getToken, deleteToken } = useGPT()

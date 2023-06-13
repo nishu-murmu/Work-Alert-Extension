@@ -19,16 +19,16 @@ interface keywordsProps {
 }
 let OptionsUrl = `chrome-extension://${chrome.runtime.id}/options.html`
 
-chrome.runtime.onInstalled.addListener(async () => {
-  chrome.tabs.create(
-    {
-      url: OptionsUrl,
-    },
-    () => {
-      updateBadge()
-    },
-  )
-})
+// chrome.runtime.onInstalled.addListener(async () => {
+//   chrome.tabs.create(
+//     {
+//       url: OptionsUrl,
+//     },
+//     () => {
+//       updateBadge()
+//     },
+//   )
+// })
 
 chrome.action.onClicked.addListener(() => {
   tabChange()
@@ -123,7 +123,7 @@ chrome.notifications.onClicked.addListener(() => {
 chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
   if (request.type === 'session_call') {
     getSession().then((res: any) => {
-      sendResponse({ success: res.success, data:res.data })
+      sendResponse({ success: res.success, data: res.data })
     })
   }
   if (request.type === 'close_ans') {
@@ -133,10 +133,32 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
     const queryParams: string[] = generateQueryParams(request.query)
     generateAns(queryParams)
   }
-  if (request.type === 'from_prompt') {
-    generateAns(request.query)
-  }
   return true
+})
+
+chrome.contextMenus.create({ title: 'Edit using GPT', contexts: ['selection'], id: 'header' })
+
+function getAnsPrompt(queryParams: string[]) {
+  generateAns(queryParams)
+}
+
+config.context_menu_items.map((item) => {
+  chrome.contextMenus.create({
+    id: item.id,
+    parentId: 'header',
+    contexts: item.contexts,
+    title: item.title,
+  })
+})
+
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+  console.log({ info, tab })
+  chrome.runtime.sendMessage({from:"context"})
+  if (info.menuItemId === config.context_menu_items?.[0]?.id) {
+    if (info?.selectionText) {
+      getAnsPrompt(['Rephrase this question for me?', info?.selectionText?.toString()])
+    }
+  }
 })
 
 export {}
