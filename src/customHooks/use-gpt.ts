@@ -17,38 +17,20 @@ const useGPT = () => {
         .then((data) => {
           if (data.accessToken) {
             chrome.storage.local.set({ gpt_access_token: data.accessToken })
-            resolve(true)
+            resolve({ success: true, data })
           } else {
             chrome.storage.local.set({ gpt_access_token: null })
-            resolve(false)
+            resolve({ success: false, data })
           }
         })
         .catch((err) => {
-          resolve(false)
           console.log(err)
+          resolve(err)
         })
     })
   }
-
-  function generateQueryParams(query: QueryProps) {
-    const result: string[] = [
-      `Name: ${query?.name}\nSkills: ${query?.skills}\nExperience: ${query.experience}\nInbuilt Proposal: ${query?.proposal}\nClient Name: ${query?.client}`,
-      `Client Job Description: ${query?.job_description}`,
-      `Extract pain points from client job description and write a cover letter using the Inbuilt Proposal ${
-        query.tone ? 'in a ' + query?.tone + ' tone' : ''
-      }${
-        query.range_of_words
-          ? ' and it should not exceed more than ' + query?.range_of_words.split('_')[1] + ' words'
-          : ''
-      }.`,
-      `${query?.optional_info ? ` Additional Instructions: ${query?.optional_info}` : ''}`,
-    ].filter(Boolean)
-
-    return result
-  }
-
-  const generateAns = async (query: QueryProps) => {
-    const queryParams: string[] = generateQueryParams(query)
+  
+  const generateAns = async (queryParams: string[]) => {
 
     console.log({ queryParams })
     if (accessToken) {

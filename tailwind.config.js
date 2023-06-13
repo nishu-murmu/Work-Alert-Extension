@@ -12,7 +12,8 @@ export default {
         }
       },
       colors: {
-        "custom-bg": "#282828"
+        "custom-bg": "#282828",
+        'custom-bg-light':'#3F3F3F',
       },
       fontSize: {
         16: "16px"

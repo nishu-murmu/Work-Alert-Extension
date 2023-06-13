@@ -64,7 +64,7 @@ const WorkSection = () => {
           onClick={() => setIsClicked((prev) => !prev)}
         >
           <span className="mt-1">
-            <ArrowLeftIcon className="group-hover:text-gray-400" />
+            <ArrowLeftIcon className="group-hover:text-gray-400 w-6 h-6" />
           </span>
           <button
             ref={backRef}

@@ -3,6 +3,7 @@ import useGPT from '../customHooks/use-gpt'
 import {
   compareJobs,
   countJobsKeywords,
+  generateQueryParams,
   getAllJobsData,
   notify,
   separateCounts,
@@ -119,16 +120,20 @@ chrome.notifications.onClicked.addListener(() => {
   redirectWindow()
 })
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
   if (request.type === 'session_call') {
-    getSession().then((res) => {
-      sendResponse({ success: res })
+    getSession().then((res: any) => {
+      sendResponse({ success: res.success, data:res.data })
     })
   }
   if (request.type === 'close_ans') {
     closeAns()
   }
   if (request.type === 'get_ans') {
+    const queryParams: string[] = generateQueryParams(request.query)
+    generateAns(queryParams)
+  }
+  if (request.type === 'from_prompt') {
     generateAns(request.query)
   }
   return true

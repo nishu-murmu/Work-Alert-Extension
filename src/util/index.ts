@@ -1,5 +1,5 @@
 import XMLParser from 'fast-xml-parser'
-import { jobsProps, keywordProps } from './types'
+import { QueryProps, jobsProps, keywordProps } from './types'
 import he from 'he'
 const parser = new XMLParser.XMLParser()
 
@@ -160,5 +160,22 @@ export const separateCounts = (arr: any) => {
     const count = dict[keyword]
     result.push({ keyword, count })
   }
+  return result
+}
+
+export function generateQueryParams(query: QueryProps) {
+  const result: string[] = [
+    `Name: ${query?.name}\nSkills: ${query?.skills}\nExperience: ${query.experience}\nInbuilt Proposal: ${query?.proposal}\nClient Name: ${query?.client}`,
+    `Client Job Description: ${query?.job_description}`,
+    `Extract pain points from client job description and write a cover letter using the Inbuilt Proposal ${
+      query.tone ? 'in a ' + query?.tone + ' tone' : ''
+    }${
+      query.range_of_words
+        ? ' and it should not exceed more than ' + query?.range_of_words.split('_')[1] + ' words'
+        : ''
+    }.`,
+    `${query?.optional_info ? ` Additional Instructions: ${query?.optional_info}` : ''}`,
+  ].filter(Boolean)
+
   return result
 }
