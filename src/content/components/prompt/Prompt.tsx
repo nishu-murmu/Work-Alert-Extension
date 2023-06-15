@@ -1,13 +1,12 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { config } from '../../util/config'
-import { ArrowLeftIcon } from '../../util/Icons'
+import { config } from '../../../util/config'
+import { ArrowLeftIcon } from '../../../util/Icons'
 
 const InjectedPrompt: React.FC<{ selectedText: string }> = ({ selectedText }) =>  {
   const [showInput, setShowInput] = useState<boolean>(false)
   const [input, setInput] = useState<string>('')
   function submitHandler(option: string, e?: FormEvent<HTMLFormElement>) {
     e?.preventDefault()
-    console.log(selectedText, 'from prompt')
     chrome.runtime.sendMessage({
       type: 'from_prompt',
       query: [option, selectedText],
@@ -15,12 +14,13 @@ const InjectedPrompt: React.FC<{ selectedText: string }> = ({ selectedText }) =>
   }
   console.log({selectedText})
   return (
-    <div className="cursor-pointer absolute w-80 flex flex-col gap-y-1 p-2 m-1 border border-gray-500 rounded-md bg-custom-bg text-white">
+    <div className="cursor-pointer absolute w-[150px] flex flex-col gap-y-1 p-2 m-1 border border-gray-500 rounded-md bg-custom-bg text-white">
       {!showInput &&
-        config?.prompt_list.map((option, index) => (
+        config?.prompt_list.map((option: string, index: number) => (
           <div
-            className="hover:bg-custom-bg-light p-2 rounded-md border border-transparent"
-            onClick={() => {
+            className="hover:bg-custom-bg-light p-2 text-sm rounded-md border border-transparent"
+            onClick={(e) => {
+              e.stopPropagation()
               if (option === config.prompt_list?.[0]) {
                 submitHandler(option)
               } else setShowInput((prev) => !prev)

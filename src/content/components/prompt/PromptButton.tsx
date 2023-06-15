@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import InjectedPrompt from './Prompt'
 
-const IconButton: React.FC<{ selectedText: string }> = ({ selectedText }) => {
+const PromptButton: React.FC<{ selectedText: string }> = ({ selectedText }) => {
   const [show, setShow] = useState<boolean>(false)
   return (
     <>
@@ -15,4 +15,4 @@ const IconButton: React.FC<{ selectedText: string }> = ({ selectedText }) => {
   )
 }
 
-export default IconButton
+export default PromptButton
