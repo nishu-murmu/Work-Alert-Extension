@@ -119,24 +119,35 @@ chrome.notifications.onClicked.addListener(() => {
   tabChange()
   redirectWindow()
 })
-
 chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
-  if (request.type === 'session_call') {
-    getSession().then((res: any) => {
-      sendResponse({ success: res.success, data:res.data })
-    })
-  }
-  if (request.type === 'close_ans') {
-    closeAns()
-  }
-  if (request.type === 'get_ans') {
-    const queryParams: string[] = generateQueryParams(request.query)
-    generateAns(queryParams)
-  }
-  if (request.type === 'from_prompt') {
-    generateAns(request.query)
-  }
-  return true
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    let tabId: any = tabs[0]?.id
+    if (request.type === 'session_call') {
+      getSession().then((res: any) => {
+        sendResponse({ success: res.success, data: res.data })
+      })
+    }
+    if (request.type === 'close_ans') {
+      closeAns()
+    }
+    if (request.type === 'get_ans') {
+      const queryParams: string[] = generateQueryParams(request.query)
+      generateAns(queryParams)
+    }
+    if (request.from === 'from_prompt' && request.type == 'generate_ans') {
+      chrome.tabs.sendMessage(tabId, {
+        type: 'display_modal',
+      })
+      console.log(request.query)
+      generateAns(request.query)
+    }
+    if(request.from == 'from_prompt' && request.type == 'custom_input') {
+      chrome.tabs.sendMessage(tabId, {
+        type: 'display_input',
+      })
+    }
+    return true
+  })
 })
 
 export {}

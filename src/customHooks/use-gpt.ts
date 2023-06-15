@@ -82,10 +82,11 @@ const useGPT = () => {
         stream._onStreamClosed = () => {
           genTitle()
         }
-        stream.onerror = (err: any) => {
+        stream._onStreamFailure = (err: any) => {
           chrome.tabs.sendMessage(tabId, {
             type: 'generated_ans',
             error: true,
+            errMsg: err
           })
         }
       })

@@ -45,3 +45,21 @@ export interface ModalProps {
   toggleModal: boolean
   setTogggleModal: (newValue: boolean | ((prevValue: boolean) => boolean)) => void
 }
+
+type prompt =
+  | {
+      key: string
+      value: string
+    }
+  | {
+      key: string
+      value?: undefined
+    }
+
+export interface configProps {
+  gpt_conversation_api: string
+  gpt_session_api: string
+  API_INTERVAL: number
+  OAuth2Token: string
+  prompt_list: prompt[]
+}

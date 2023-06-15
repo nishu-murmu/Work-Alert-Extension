@@ -1,33 +1,45 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { config } from '../../../util/config'
 import { ArrowLeftIcon } from '../../../util/Icons'
+import { prompt } from '../../../util/types'
 
-const InjectedPrompt: React.FC<{ selectedText: string }> = ({ selectedText }) =>  {
+const InjectedPrompt: React.FC<{ selectedText: string }> = ({ selectedText }) => {
   const [showInput, setShowInput] = useState<boolean>(false)
   const [input, setInput] = useState<string>('')
+
   function submitHandler(option: string, e?: FormEvent<HTMLFormElement>) {
     e?.preventDefault()
     chrome.runtime.sendMessage({
-      type: 'from_prompt',
+      from: 'from_prompt',
+      type: 'generate_ans',
       query: [option, selectedText],
     })
   }
-  console.log({selectedText})
+  function customInputHandler() {
+    chrome.runtime.sendMessage({
+      from: 'from_prompt',
+      type: 'custom_input',
+    })
+  }
   return (
-    <div className="cursor-pointer absolute w-[150px] flex flex-col gap-y-1 p-2 m-1 border border-gray-500 rounded-md bg-custom-bg text-white">
+    <div className="cursor-pointer absolute w-[150px] h-[160px] overflow-y-scroll flex flex-col gap-y-1 p-2 m-1 border border-gray-500 rounded-md bg-custom-bg text-white">
       {!showInput &&
-        config?.prompt_list.map((option: string, index: number) => (
+        config?.prompt_list.map((option: prompt, index: number) => (
           <div
             className="hover:bg-custom-bg-light p-2 text-sm rounded-md border border-transparent"
             onClick={(e) => {
               e.stopPropagation()
-              if (option === config.prompt_list?.[0]) {
-                submitHandler(option)
-              } else setShowInput((prev) => !prev)
+              if (option.key !== config.prompt_list?.[config.prompt_list.length - 1]?.key) {
+                if (option?.value) {
+                  submitHandler(option.value)
+                } else setShowInput((prev) => !prev)
+              } else {
+                customInputHandler()
+              }
             }}
             key={index}
           >
-            {option}
+            {option.key}
           </div>
         ))}
       {showInput && (

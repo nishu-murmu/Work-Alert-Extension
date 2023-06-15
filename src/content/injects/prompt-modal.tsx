@@ -1,6 +1,5 @@
 import ReactDOM from 'react-dom/client'
-import ContextModal from '../components/prompt/PromptModal'
-
+import PromptModal from '../components/prompt/PromptModal'
 let linkElement = document.createElement('link')
 linkElement.rel = 'stylesheet'
 linkElement.type = 'text/css'
@@ -18,17 +17,7 @@ shadowDOM.append(linkElement)
 const renderElement = document.createElement('div') as HTMLElement
 renderElement.id = 'render-context'
 
-ReactDOM.createRoot(renderElement).render(<ContextModal />)
+ReactDOM.createRoot(renderElement).render(<PromptModal />)
 
 shadowDOM.appendChild(renderElement)
 rootElement.style.display = 'none'
-renderElement.style.display = 'none'
-
-chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
-  console.log(req, 'from modal')
-  if (req.type === 'display_modal') {
-    console.log('check modal open')
-    rootElement.style.display = 'block'
-    renderElement.style.display = 'block'
-  }
-})

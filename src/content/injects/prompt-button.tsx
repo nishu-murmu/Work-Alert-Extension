@@ -18,16 +18,11 @@ document.body.addEventListener('mouseup', (e) => {
   mouse_position.X = (e.clientX - 12).toString() + 'px'
   mouse_position.Y = (e.clientY - 5).toString() + 'px'
 
-  console.log(
-    document.querySelector('#root-injected-icon-button'),
-    window.getSelection()?.toString(),
-    'check',
-  )
   let shadowDOM: any
   if (!document.querySelector('#root-injected-icon-button')) {
     elem = document.createElement('div') as HTMLDivElement
     elem.id = 'injected-icon-button'
-    elem.style.position = 'fixed'
+    elem.style.position = 'absolute'
     elem.style.borderRadius = '50%'
     elem.style.border = 'transparent'
     elem.style.width = '30px'
@@ -47,10 +42,10 @@ document.body.addEventListener('mouseup', (e) => {
     //@ts-ignore
     document.querySelector('#injected-icon-button')?.remove() as HTMLDivElement
   }
-  shadowDOM.appendChild(elem)
 })
 
-document.body.addEventListener('wheel', () => {
-  //@ts-ignore
-  document.querySelector('#root-injected-icon-button')?.remove() as HTMLDivElement
-})
+
+// document.body.addEventListener('wheel', () => {
+//   //@ts-ignore
+//   document.querySelector('#root-injected-icon-button')?.remove() as HTMLDivElement
+// })
