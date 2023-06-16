@@ -19,6 +19,7 @@ const InjectedPrompt: React.FC<{ selectedText: string }> = ({ selectedText }) =>
     chrome.runtime.sendMessage({
       from: 'from_prompt',
       type: 'custom_input',
+      text: selectedText,
     })
   }
   return (

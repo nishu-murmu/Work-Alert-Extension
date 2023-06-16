@@ -19,7 +19,7 @@ const Slider: React.FC = () => {
     proposal: '',
     name: '',
     experience: '0',
-    skills: "",
+    skills: '',
     portfolio: '',
     client: '',
     tone: '',
@@ -47,9 +47,9 @@ const Slider: React.FC = () => {
     })
   }
   function closeSlider() {
-    let shadowRoot = document.querySelector("#root-id")?.shadowRoot
+    let shadowRoot = document.querySelector('#root-id')?.shadowRoot
     //@ts-ignore
-    shadowRoot.querySelector("#render").style.display = "none"
+    shadowRoot.querySelector('#render').style.display = 'none'
   }
 
   const sendQueryToGPT = async () => {
@@ -76,9 +76,11 @@ const Slider: React.FC = () => {
 
   const fillProposal = (proposal: string | undefined) => {
     const textarea = document.querySelector('.up-textarea') as HTMLTextAreaElement
-    if (proposal) textarea.value = `${proposal}\n ${proposals?.find(
-      (proposal: proposalsProps) => proposal.profile === selectedProfile,
-    )?.portfolio}`
+    if (proposal)
+      textarea.value = `${proposal}\n ${
+        proposals?.find((proposal: proposalsProps) => proposal.profile === selectedProfile)
+          ?.portfolio
+      }`
     const event = new Event('input', { bubbles: true })
     textarea.dispatchEvent(event)
   }
