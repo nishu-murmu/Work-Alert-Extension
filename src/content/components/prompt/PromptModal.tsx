@@ -17,7 +17,7 @@ const PromptModal: React.FC<{}> = () => {
         document.querySelector('#context-modal').style.display = 'block'
       }
       if (req.type === 'display_input') {
-        setCustomInput(prev => !prev)
+        setCustomInput((prev) => !prev)
         //@ts-ignore
         document.querySelector('#context-modal').style.display = 'block'
       }
@@ -26,7 +26,6 @@ const PromptModal: React.FC<{}> = () => {
         if (req.error && req.error == true) {
           setError(true)
         } else if (req.type === 'generated_ans') {
-          console.log(req)
           let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
           result = result?.slice(10, result.length - 6)
           if (result !== '') setTextArea(unescape(result))
@@ -52,7 +51,7 @@ const PromptModal: React.FC<{}> = () => {
       </div>
       {!loading ? (
         <span className="rounded-lg w-full text-white outline-none border-none p-3">
-          <ThreeDotsLoader/>
+          <ThreeDotsLoader />
         </span>
       ) : error ? (
         <span className="rounded-lg w-full text-white outline-none border-none p-3">
