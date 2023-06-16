@@ -179,3 +179,49 @@ export function generateQueryParams(query: QueryProps) {
 
   return result
 }
+
+export const getAllChat = () => {
+  const allChat = document.querySelectorAll('.room-body [id^=story]')
+  const msgArray = [] as any
+  let previousChatClientName = ''
+  allChat.forEach((element) => {
+    const message = element.querySelector<HTMLElement>('.story-message')?.innerText?.trim()
+    const clientName = element.querySelector<HTMLElement>('.user-name')?.innerText?.trim()
+    if (clientName) previousChatClientName = clientName
+    msgArray.push({ message, clientName: clientName || previousChatClientName })
+  })
+  let formattedString = ''
+  for (const item of msgArray) {
+    formattedString += `${item.clientName}: ${item.message}\n`
+  }
+  return {
+    formattedString,
+    client: document.querySelector<HTMLElement>('#sidebar-header-title')?.title || '',
+  }
+}
+
+export const getGptAnsFromBG = ({
+  type,
+  from,
+  query,
+  callback,
+}: {
+  type: string
+  from: string
+  query: any
+  callback: (ans: string) => void
+}) => {
+  chrome.runtime.sendMessage({
+    type,
+    from,
+    query,
+  })
+  chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
+    if (request.type === 'generated_ans') {
+      let result = request.data.slice(request.data.indexOf('parts'), request.data.indexOf('status'))
+      result = result?.slice(10, result.length - 6)
+      console.log({ result })
+      callback(result)
+    }
+  })
+}

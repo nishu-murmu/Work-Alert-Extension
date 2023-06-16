@@ -12,7 +12,7 @@ import {
 import { config } from '../util/config'
 import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
-const { getSession, generateAns, closeAns } = useGPT()
+const { getSession, generateAns, closeAns, _generateAns } = useGPT()
 interface keywordsProps {
   keyword: string
   rssLink?: string
@@ -138,16 +138,18 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
       chrome.tabs.sendMessage(tabId, {
         type: 'display_modal',
       })
-      console.log(request.query)
       generateAns(request.query)
     }
-    if(request.from == 'from_prompt' && request.type == 'custom_input') {
+    if (request.from == 'from_prompt' && request.type == 'custom_input') {
       chrome.tabs.sendMessage(tabId, {
         type: 'display_input',
       })
     }
-    return true
+    if (request.type === 'get_client_ans_from_gpt') {
+      generateAns(request.query)
+    }
   })
+  return true
 })
 
 export {}
