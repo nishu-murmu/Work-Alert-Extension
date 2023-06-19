@@ -24,10 +24,11 @@ export const config: configProps = {
   ],
   upwork_msg_url: 'https://www.upwork.com/ab/messages/rooms',
   upwork_msg_ans_macro: `
-    Below is the my upwork conversation with #{client_name}
-    Please write a message for me
-    I want to #{message}
+I have been working with #{client_name} on upwork project
+Below is the my recent upwork conversation with #{client_name}
 
-    Conversation: #{formattedString}
-  `,
+"""#{formattedString}"""
+
+#{message}
+`,
 }
