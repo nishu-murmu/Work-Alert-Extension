@@ -220,8 +220,35 @@ export const getGptAnsFromBG = ({
     if (request.type === 'generated_ans') {
       let result = request.data.slice(request.data.indexOf('parts'), request.data.indexOf('status'))
       result = result?.slice(10, result.length - 6)
-      console.log({ result })
       callback(result)
     }
   })
+}
+
+export const toggleSlider = ({ id = 'work-alert-slider' }: { id?: string | undefined }) => {
+  let slider = document.querySelector('#' + id) as HTMLElement
+  if (slider) {
+    if (slider.style.display === 'flex') {
+      slider.style.display = 'none'
+      slider.style.zIndex = '-1'
+      return slider
+    } else {
+      slider.style.display = 'flex'
+      slider.style.zIndex = '99999999'
+      return slider
+    }
+  }
+  let linkElement = document.createElement('link')
+  linkElement.rel = 'stylesheet'
+  linkElement.type = 'text/css'
+  linkElement.href = chrome.runtime.getURL('/src/styles/output.css')
+  let rootElement = document.createElement('div')
+  rootElement.id = id
+  rootElement.style.zIndex = '9999999'
+  rootElement.style.display = 'flex'
+  rootElement.style.position = 'relative'
+  document.body.prepend(rootElement)
+  const shadowDOM = rootElement.attachShadow({ mode: 'open' })
+  shadowDOM.append(linkElement)
+  return shadowDOM
 }
