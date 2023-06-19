@@ -62,4 +62,5 @@ export interface configProps {
   API_INTERVAL: number
   OAuth2Token: string
   prompt_list: prompt[]
+  upwork_msg_url: string
 }

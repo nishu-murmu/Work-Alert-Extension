@@ -29,10 +29,8 @@ const useGPT = () => {
         })
     })
   }
-  
-  const generateAns = async (queryParams: string[]) => {
 
-    console.log({ queryParams })
+  const generateAns = async (queryParams: string[]) => {
     if (accessToken) {
       stream = new StreamClient(config.gpt_conversation_api, {
         headers: {
@@ -86,7 +84,7 @@ const useGPT = () => {
           chrome.tabs.sendMessage(tabId, {
             type: 'generated_ans',
             error: true,
-            errMsg: err
+            errMsg: err,
           })
         }
       })
@@ -159,7 +157,71 @@ const useGPT = () => {
     //@ts-ignore
     stream.close()
   }
-  return { getSession, generateAns, genTitle, closeAns, getToken, deleteToken }
+
+  const _generateAns = async (queryParams: string[]) => {
+    if (accessToken) {
+      stream = new StreamClient(config.gpt_conversation_api, {
+        headers: {
+          accept: '*/*',
+          'accept-language': 'en-US,en;q=0.9',
+          authorization: `Bearer ${accessToken}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'next',
+          messages: [
+            {
+              content: {
+                content_type: 'text',
+                parts: queryParams,
+              },
+              id: message_id,
+              role: 'user',
+            },
+          ],
+          model: 'text-davinci-002-render-sha',
+          parent_message_id: uuidv4(),
+        }),
+        method: 'POST',
+        mode: 'no-cors',
+        credentials: 'include',
+      })
+
+      return stream
+
+      //@ts-ignore
+      // chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+      //   let tabId: any = tabs[0]?.id
+      //   stream.onmessage = (event: any) => {
+      //     if (event.data.trim() != 'data: [DONE]') {
+      //       chrome.tabs.sendMessage(tabId, {
+      //         type: 'generated_ans',
+      //         data: event.data,
+      //         isClosed: true,
+      //       })
+      //     } else {
+      //       chrome.tabs.sendMessage(tabId, {
+      //         type: 'generated_ans',
+      //         isClosed: false,
+      //       })
+      //       stream.close()
+      //     }
+      //   }
+      //   stream._onStreamClosed = () => {
+      //     genTitle()
+      //   }
+      //   stream._onStreamFailure = (err: any) => {
+      //     chrome.tabs.sendMessage(tabId, {
+      //       type: 'generated_ans',
+      //       error: true,
+      //       errMsg: err,
+      //     })
+      //   }
+      // })
+    }
+  }
+
+  return { getSession, generateAns, genTitle, closeAns, getToken, deleteToken, _generateAns }
 }
 
 export default useGPT
