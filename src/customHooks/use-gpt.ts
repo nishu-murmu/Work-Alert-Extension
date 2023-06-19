@@ -63,10 +63,16 @@ const useGPT = () => {
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
         let tabId: any = tabs[0]?.id
         stream.onmessage = (event: any) => {
+          console.log({ data: event.data })
           if (event.data.trim() != 'data: [DONE]') {
+            let value = event.data.slice(
+              event.data.lastIndexOf('data:'),
+              event.data.lastIndexOf('}'),
+            )
+            const data: any = JSON.parse(value.slice(6) + '}')
             chrome.tabs.sendMessage(tabId, {
               type: 'generated_ans',
-              data: event.data,
+              data: data?.message?.content?.parts[0].toString(),
               isClosed: true,
             })
           } else {
@@ -75,10 +81,8 @@ const useGPT = () => {
               isClosed: false,
             })
             stream.close()
+            genTitle()
           }
-        }
-        stream._onStreamClosed = () => {
-          genTitle()
         }
         stream._onStreamFailure = (err: any) => {
           chrome.tabs.sendMessage(tabId, {
@@ -103,14 +107,14 @@ const useGPT = () => {
   }
 
   const deleteToken = async () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       chrome.storage.local.remove('gpt_access_token').then(() => {
         resolve(true)
       })
     })
   }
   async function genTitle() {
-    await fetch(`${config.gpt_conversation_api}s?offset=0&limit=20`, {
+    await fetch(`${config.gpt_conversation_api}s?offset=0&limit=20&order=updated`, {
       headers: {
         accept: '*/*',
         'accept-language': 'en-US,en;q=0.9',

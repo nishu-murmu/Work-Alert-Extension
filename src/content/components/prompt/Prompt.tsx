@@ -1,7 +1,6 @@
 import React, { FormEvent, useState } from 'react'
 import unescape from 'unescape-js'
 import { config } from '../../../util/config'
-import { ArrowLeftIcon } from '../../../util/Icons'
 import { prompt } from '../../../util/types'
 import { getGptAnsFromBG } from '../../../util'
 

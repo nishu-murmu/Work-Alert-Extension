@@ -208,13 +208,8 @@ export function getGPTAnswer(callback: (ans: string) => void) {
   chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
     if (request.type === 'generated_ans') {
       let result = ''
-      if (request.data) {
-        let data = request.data.slice(
-          request.data.lastIndexOf('data:'),
-          request.data.indexOf('end_turn'),
-        )
-        result = data.slice(data.indexOf('parts'), data.indexOf('status'))
-        result = result?.slice(10, result.length - 6)
+      if (request?.data) {
+        result = request.data
       }
       callback(result ?? '')
     }

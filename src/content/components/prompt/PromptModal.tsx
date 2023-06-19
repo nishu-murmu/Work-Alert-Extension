@@ -47,7 +47,9 @@ const PromptModal: React.FC<{}> = () => {
       },
     })
   }
-  useEffect(() => {}, [textarea])
+  useEffect(() => {
+    console.log(textarea)
+  }, [textarea])
 
   return (
     <div className="flex flex-col">
