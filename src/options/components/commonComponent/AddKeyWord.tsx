@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import useBgJobs from '../../../customHooks/use-bg-job'
 import { keywordProps } from '../../../util/types'
+import CustomInput from './core/CustomInput'
 
 const AddKeyWordSection: React.FC = () => {
   const [keyword, setKeyword] = useState<string>('')
@@ -64,7 +65,9 @@ const AddKeyWordSection: React.FC = () => {
     <div className="container">
       <div className=" flex justify-center items-center flex-col gap-y-4">
         <div id="btn-group" className="gap-x-4 flex place-content-center">
-          <input
+          <CustomInput
+            id="Keyword"
+            name="Keyword"
             type="text"
             ref={inputRef}
             placeholder="Keyword"
@@ -75,10 +78,12 @@ const AddKeyWordSection: React.FC = () => {
             } rounded-md px-4 py-2 text-lg`}
             onChange={(e) => setKeyword(e.target.value)}
             pattern="[a-zA-Z0-9]+"
-            onKeyDown={(e) => submitOnKeyDown(e)}
+            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => submitOnKeyDown(e)}
           />
-          <input
+          <CustomInput
             type="text"
+            id="Rss"
+            name="Rss"
             placeholder="UpWork RSS Feed"
             value={rssLink}
             onFocus={() => clearState()}

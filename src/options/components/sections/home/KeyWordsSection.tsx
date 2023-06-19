@@ -1,4 +1,4 @@
-import KeyWordCards from '../commonComponent/KeyWordCard'
+import KeyWordCards from '../../commonComponent/KeyWordCard'
 
 const KeyWordsSection: React.FC = () => {
   return (

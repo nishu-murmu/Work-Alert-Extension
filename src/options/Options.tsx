@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import HeaderSection from './components/sections/HeaderSection'
-import MainSection from './components/sections/MainSection'
+import HomeSection from './components/sections/HomeSection'
 import ProfileSection from './components/sections/ProfileSection'
 import RouteSection from './components/sections/RouteSection'
 import { useRecoilState } from 'recoil'
@@ -39,7 +39,7 @@ function App() {
 
       {route == 'home' ? (
         <div className="py-4 flex flex-col gap-y-4">
-          <MainSection />
+          <HomeSection />
         </div>
       ) : (
         <div>
