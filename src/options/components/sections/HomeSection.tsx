@@ -1,5 +1,5 @@
 import { useRecoilState } from 'recoil'
-import AddKeyWordSection from '../commonComponent/AddKeyWord'
+import AddKeyWordSection from './home/AddKeyWordSection'
 import KeyWordsSection from './home/KeyWordsSection'
 import { isJobs } from '../../atoms'
 import WorkSection from './home/WorkSection'

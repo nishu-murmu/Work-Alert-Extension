@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
-import useOpJobs from '../../../customHooks/use-option-jobs'
-import useBgJobs from '../../../customHooks/use-bg-job'
-import { keywordProps } from '../../../util/types'
-import CustomInput from './core/CustomInput'
+import useOpJobs from '../../../../customHooks/use-option-jobs'
+import useBgJobs from '../../../../customHooks/use-bg-job'
+import { keywordProps } from '../../../../util/types'
+import CustomInput from '../../commonComponent/core/CustomInput'
 
 const AddKeyWordSection: React.FC = () => {
   const [keyword, setKeyword] = useState<string>('')
@@ -106,7 +106,7 @@ const AddKeyWordSection: React.FC = () => {
         )}
         <button
           onClick={() => submitHandler(keyword, rssLink)}
-          className=" hover:text-gray-400 border w-2/5 mx-auto bg-transparent place-content-center border-white text-lg px-5 py-2 rounded-md"
+          className=" hover:text-gray-400 border w-[57%] mx-auto bg-transparent place-content-center border-white text-lg px-5 py-2 rounded-md"
         >
           Add New Keyword
         </button>
