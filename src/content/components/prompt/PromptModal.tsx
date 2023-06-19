@@ -2,6 +2,7 @@ import unescape from 'unescape-js'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { CrossIcon } from '../../../util/Icons'
 import ThreeDotsLoader from '../Loaders/three-dots'
+import { getGPTAnswer, getGptAnsFromBG } from '../../../util'
 
 const PromptModal: React.FC<{}> = () => {
   const [textarea, setTextArea] = useState<string>('')
@@ -14,9 +15,9 @@ const PromptModal: React.FC<{}> = () => {
   useEffect(() => {
     chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
       if (req.type === 'display_modal') {
-        setLoading(true)
         //@ts-ignore
         document.querySelector('#context-modal').style.display = 'block'
+        setTextArea(req.text)
       }
       if (req.type === 'display_input') {
         setText(req.selectedText)
@@ -24,16 +25,9 @@ const PromptModal: React.FC<{}> = () => {
         //@ts-ignore
         document.querySelector('#context-modal').style.display = 'block'
       }
-      if (req.type == 'generated_ans') {
-        setLoading(false)
-        if (req.error && req.error == true) {
-          setError(true)
-        } else if (req.type === 'generated_ans') {
-          let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
-          result = result?.slice(10, result.length - 6)
-          if (result !== '') setTextArea(unescape(result))
-        }
-      }
+      getGPTAnswer((res) => {
+        if (res.length > 0) setTextArea(unescape(res))
+      })
     })
   }, [])
 
@@ -44,10 +38,13 @@ const PromptModal: React.FC<{}> = () => {
 
   function submitHandler(e?: FormEvent<HTMLFormElement>) {
     e?.preventDefault()
-    chrome.runtime.sendMessage({
-      from: 'from_prompt',
-      type: 'generate_ans',
+    getGptAnsFromBG({
+      from: 'PromptModal.tsx',
       query: [input, text],
+      type: 'get_client_ans_from_gpt',
+      callback: (str) => {
+        if (str.length > 0) setTextArea(unescape(str))
+      },
     })
   }
   useEffect(() => {}, [textarea])
@@ -73,6 +70,7 @@ const PromptModal: React.FC<{}> = () => {
                 name="custom-input"
                 id="custom-input"
                 placeholder="Custom Prompt"
+                value={input}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
                 className="rounded-md w-full p-2 text-white"
               />
@@ -93,6 +91,7 @@ const PromptModal: React.FC<{}> = () => {
                 className="rounded-lg w-full text-white outline-none border-none p-3"
                 cols={40}
                 rows={8}
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setTextArea(e.target.value)}
                 value={textarea}
               ></textarea>
             )}

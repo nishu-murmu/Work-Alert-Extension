@@ -4,7 +4,8 @@ import { useContent } from '../../customHooks/use-content'
 import { QueryProps, proposalsProps } from '../../util/types'
 import useGPT from '../../customHooks/use-gpt'
 import unescape from 'unescape-js'
-import ReactMarkdown from 'react-markdown'
+import { getGptAnsFromBG } from '../../util'
+import { proposalQuery } from '../../util/config'
 
 const Slider: React.FC = () => {
   const { getToken, deleteToken } = useGPT()
@@ -59,7 +60,15 @@ const Slider: React.FC = () => {
       if (selectedProfile != '' && selectedProfile != `select_profile`) {
         setIsSelected(false)
         setLoading(true)
-        chrome.runtime.sendMessage({ type: 'get_ans', query })
+        getGptAnsFromBG({
+          from: 'Slider.tsx',
+          query: proposalQuery(query),
+          type: 'get_client_ans_from_gpt',
+          callback: (str: string) => {
+            if (str.length > 0) setTextArea(unescape(str))
+          },
+        })
+        setLoading(false)
       } else {
         setIsSelected(true)
       }
@@ -93,17 +102,10 @@ const Slider: React.FC = () => {
     getProposals().then((res: any) => {
       setProposals(res)
     })
-    callSession()
-    chrome.runtime.onMessage.addListener((req) => {
-      if (req.error && req.error == true) {
-        setLoading(false)
-      } else if (req.type === 'generated_ans') {
-        setIsConnected(req.isClosed)
-        let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
-        result = result?.slice(10, result.length - 6)
-        if (result !== '') setTextArea(unescape(result))
+    getToken().then((res: any) => {
+      if (!res?.gpt_access_token) {
+        callSession()
       }
-      setLoading(false)
     })
   }, [])
 

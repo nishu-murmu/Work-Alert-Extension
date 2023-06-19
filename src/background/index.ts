@@ -3,7 +3,6 @@ import useGPT from '../customHooks/use-gpt'
 import {
   compareJobs,
   countJobsKeywords,
-  generateQueryParams,
   getAllJobsData,
   notify,
   separateCounts,
@@ -12,7 +11,7 @@ import {
 import { config } from '../util/config'
 import { jobsProps } from '../util/types'
 const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
-const { getSession, generateAns, closeAns, _generateAns } = useGPT()
+const { getSession, generateAns, closeAns } = useGPT()
 interface keywordsProps {
   keyword: string
   rssLink?: string
@@ -130,24 +129,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'close_ans') {
       closeAns()
     }
-    if (request.type === 'get_ans') {
-      const queryParams: string[] = generateQueryParams(request.query)
-      generateAns(queryParams)
-    }
-    if (request.from === 'from_prompt' && request.type == 'generate_ans') {
-      chrome.tabs.sendMessage(tabId, {
-        type: 'display_modal',
-      })
-      generateAns(request.query)
-    }
     if (request.from == 'from_prompt' && request.type == 'custom_input') {
-      console.log({ request })
       chrome.tabs.sendMessage(tabId, {
         type: 'display_input',
         selectedText: request.text,
       })
     }
     if (request.type === 'get_client_ans_from_gpt') {
+      if (request.from === 'Prompt.tsx') {
+        chrome.tabs.sendMessage(tabId, {
+          type: 'display_modal',
+          text: request.text,
+        })
+      }
       generateAns(request.query)
     }
   })

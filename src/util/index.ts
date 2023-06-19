@@ -163,23 +163,6 @@ export const separateCounts = (arr: any) => {
   return result
 }
 
-export function generateQueryParams(query: QueryProps) {
-  const result: string[] = [
-    `Name: ${query?.name}\nSkills: ${query?.skills}\nExperience: ${query.experience}\nInbuilt Proposal: ${query?.proposal}\nClient Name: ${query?.client}`,
-    `Client Job Description: ${query?.job_description}`,
-    `Extract pain points from client job description and write a cover letter using the Inbuilt Proposal ${
-      query.tone ? 'in a ' + query?.tone + ' tone' : ''
-    }${
-      query.range_of_words
-        ? ' and it should not exceed more than ' + query?.range_of_words.split('_')[1] + ' words'
-        : ''
-    }.`,
-    `${query?.optional_info ? ` Additional Instructions: ${query?.optional_info}` : ''}`,
-  ].filter(Boolean)
-
-  return result
-}
-
 export const getAllChat = () => {
   const allChat = document.querySelectorAll('.room-body [id^=story]')
   const msgArray = [] as any
@@ -208,20 +191,32 @@ export const getGptAnsFromBG = ({
 }: {
   type: string
   from: string
-  query: any
+  query?: any
   callback: (ans: string) => void
 }) => {
-  chrome.runtime.sendMessage({
-    type,
-    from,
-    query,
-  })
+  if (query) {
+    chrome.runtime.sendMessage({
+      type,
+      from,
+      query,
+    })
+  }
+  getGPTAnswer(callback)
+}
+
+export function getGPTAnswer(callback: (ans: string) => void) {
   chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
     if (request.type === 'generated_ans') {
-      let result = request.data.slice(request.data.indexOf('parts'), request.data.indexOf('status'))
-      result = result?.slice(10, result.length - 6)
-      console.log({ result })
-      callback(result)
+      let result = ''
+      if (request.data) {
+        let data = request.data.slice(
+          request.data.lastIndexOf('data:'),
+          request.data.indexOf('end_turn'),
+        )
+        result = data.slice(data.indexOf('parts'), data.indexOf('status'))
+        result = result?.slice(10, result.length - 6)
+      }
+      callback(result ?? '')
     }
   })
 }

@@ -1,4 +1,4 @@
-import { configProps } from './types'
+import { QueryProps, configProps } from './types'
 
 export const config: configProps = {
   gpt_conversation_api: 'https://chat.openai.com/backend-api/conversation',
@@ -23,4 +23,35 @@ export const config: configProps = {
     },
   ],
   upwork_msg_url: 'https://www.upwork.com/ab/messages/rooms',
+}
+
+export function proposalQuery(query: QueryProps) {
+  const result: string[] = [
+    `Name: ${query?.name}\nSkills: ${query?.skills}\nExperience: ${query.experience}\nInbuilt Proposal: ${query?.proposal}\nClient Name: ${query?.client}`,
+    `Client Job Description: ${query?.job_description}`,
+    `Extract pain points from client job description and write a cover letter using the Inbuilt Proposal ${
+      query.tone ? 'in a ' + query?.tone + ' tone' : ''
+    }${
+      query.range_of_words
+        ? ' and it should not exceed more than ' + query?.range_of_words.split('_')[1] + ' words'
+        : ''
+    }.`,
+    `${query?.optional_info ? ` Additional Instructions: ${query?.optional_info}` : ''}`,
+  ].filter(Boolean)
+
+  return result
+}
+
+export function clientMsgQuery(client_name: string, message: string, formattedString: string) {
+  const result: string[] = [
+    `
+            Below is the my upwork conversation with ${client_name}
+            Please write a message for me
+            I want to ${message}
+            
+            Conversation: ${formattedString}
+        `,
+  ].filter(Boolean)
+
+  return result
 }

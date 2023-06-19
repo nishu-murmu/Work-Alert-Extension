@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { getAllChat, getGptAnsFromBG } from '../../util'
 import unescape from 'unescape-js'
+import { clientMsgQuery } from '../../util/config'
 
 const UpworkClientMsg = () => {
   const [generatedANS, setGeneratedANS] = useState('')
@@ -12,15 +13,7 @@ const UpworkClientMsg = () => {
     const { formattedString, client } = getAllChat()
     getGptAnsFromBG({
       from: 'UpworkClientMsg.tsx',
-      query: [
-        `
-            Below is the my upwork conversation with ${client_name}
-            Please write a message for me
-            I want to ${message}
-            
-            Conversation: ${formattedString}
-        `,
-      ],
+      query: clientMsgQuery(client_name.toString(), message.toString(), formattedString),
       type: 'get_client_ans_from_gpt',
       callback: (str) => {
         if (str.length > 0) setGeneratedANS(unescape(str))
