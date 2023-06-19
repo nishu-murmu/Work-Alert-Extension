@@ -20,10 +20,6 @@ input[type='checkbox'] {
   -webkit-appearance: auto;
 }
 
-label {
-  color: white !important;
-}
-
 .loading {
   align-items: center;
   display: flex;
@@ -51,7 +47,16 @@ label {
 }
 
 @keyframes dot {
-  0% { background-color: grey; transform: scale(1); }
-  50% { background-color: grey; transform: scale(1.3); }
-  100% { background-color: grey; transform: scale(1); }
+  0% {
+    background-color: grey;
+    transform: scale(1);
+  }
+  50% {
+    background-color: grey;
+    transform: scale(1.3);
+  }
+  100% {
+    background-color: grey;
+    transform: scale(1);
+  }
 }
