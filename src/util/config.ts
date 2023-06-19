@@ -23,6 +23,14 @@ export const config: configProps = {
     },
   ],
   upwork_msg_url: 'https://www.upwork.com/ab/messages/rooms',
+  upwork_msg_ans_macro: `
+I have been working with #{client_name} on upwork project
+Below is the my recent upwork conversation with #{client_name}
+
+"""#{formattedString}"""
+
+#{message}
+`,
 }
 
 export function proposalQuery(query: QueryProps) {
@@ -37,20 +45,6 @@ export function proposalQuery(query: QueryProps) {
         : ''
     }.`,
     `${query?.optional_info ? ` Additional Instructions: ${query?.optional_info}` : ''}`,
-  ].filter(Boolean)
-
-  return result
-}
-
-export function clientMsgQuery(client_name: string, message: string, formattedString: string) {
-  const result: string[] = [
-    `
-            Below is the my upwork conversation with ${client_name}
-            Please write a message for me
-            I want to ${message}
-            
-            Conversation: ${formattedString}
-        `,
   ].filter(Boolean)
 
   return result

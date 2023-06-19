@@ -215,3 +215,31 @@ export function getGPTAnswer(callback: (ans: string) => void) {
     }
   })
 }
+
+export const toggleSlider = ({ id = 'work-alert-slider' }: { id?: string | undefined }) => {
+  let slider = document.querySelector('#' + id) as HTMLElement
+  if (slider) {
+    if (slider.style.display === 'flex') {
+      slider.style.display = 'none'
+      slider.style.zIndex = '-1'
+      return slider
+    } else {
+      slider.style.display = 'flex'
+      slider.style.zIndex = '99999999'
+      return slider
+    }
+  }
+  let linkElement = document.createElement('link')
+  linkElement.rel = 'stylesheet'
+  linkElement.type = 'text/css'
+  linkElement.href = chrome.runtime.getURL('/src/styles/output.css')
+  let rootElement = document.createElement('div')
+  rootElement.id = id
+  rootElement.style.zIndex = '9999999'
+  rootElement.style.display = 'flex'
+  rootElement.style.position = 'relative'
+  document.body.prepend(rootElement)
+  const shadowDOM = rootElement.attachShadow({ mode: 'open' })
+  shadowDOM.append(linkElement)
+  return shadowDOM
+}

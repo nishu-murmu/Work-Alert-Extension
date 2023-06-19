@@ -46,24 +46,3 @@ document.body.addEventListener('mouseup', (e) => {
     }
   }
 })
-
-document.body.addEventListener('click', function (event: any) {
-  var excludedDiv = document.getElementById('root-injected-icon-button')
-
-  // Check if the clicked element is the excluded div or one of its descendants
-  var isExcluded = event.target === excludedDiv || excludedDiv?.contains(event.target)
-
-  // If the clicked element is the excluded div or its descendant, return early and skip the click handler's execution
-  if (isExcluded) {
-    // console.log('not clicked')
-    return
-  }
-  // console.log('clicked')
-  //@ts-ignore
-  // document.querySelector('#root-injected-icon-button')?.remove() as HTMLDivElement
-})
-
-// document.body.addEventListener('wheel', () => {
-//   //@ts-ignore
-//   document.querySelector('#root-injected-icon-button')?.remove() as HTMLDivElement
-// })
