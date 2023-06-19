@@ -1,10 +1,10 @@
 import { useRecoilState } from 'recoil'
-import WordCards from '../commonComponent/WorkCard'
-import { clickedKeyword, isJobs, selectedFilter } from '../../atoms'
-import { ArrowLeftIcon } from '../../../util/Icons'
-import useOpJobs from '../../../customHooks/use-option-jobs'
-import { keywordProps } from '../../../util/types'
-import { compareArrays } from '../../../util'
+import WordCards from '../../commonComponent/WorkCard'
+import { clickedKeyword, isJobs, selectedFilter } from '../../../atoms'
+import { ArrowLeftIcon } from '../../../../util/Icons'
+import useOpJobs from '../../../../customHooks/use-option-jobs'
+import { keywordProps } from '../../../../util/types'
+import { compareArrays } from '../../../../util'
 import { ChangeEvent, useEffect, useLayoutEffect, useRef } from 'react'
 
 const WorkSection = () => {

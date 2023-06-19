@@ -46,8 +46,3 @@ document.body.addEventListener('mouseup', (e) => {
     }
   }
 })
-
-// document.body.addEventListener('wheel', () => {
-//   //@ts-ignore
-//   document.querySelector('#root-injected-icon-button')?.remove() as HTMLDivElement
-// })

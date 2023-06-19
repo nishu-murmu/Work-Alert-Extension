@@ -1,36 +1,33 @@
 import unescape from 'unescape-js'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { CrossIcon } from '../../../util/Icons'
 import ThreeDotsLoader from '../Loaders/three-dots'
+import { getGPTAnswer, getGptAnsFromBG } from '../../../util'
 
 const PromptModal: React.FC<{}> = () => {
   const [textarea, setTextArea] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [customInput, setCustomInput] = useState<boolean>(false)
+  const [input, setInput] = useState<string>('')
+  const [text, setText] = useState<string>('')
   const [error, setError] = useState<boolean>(false)
 
   useEffect(() => {
     chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
       if (req.type === 'display_modal') {
-        setLoading(true)
         //@ts-ignore
         document.querySelector('#context-modal').style.display = 'block'
+        setTextArea(req.text)
       }
       if (req.type === 'display_input') {
+        setText(req.selectedText)
         setCustomInput((prev) => !prev)
         //@ts-ignore
         document.querySelector('#context-modal').style.display = 'block'
       }
-      if (req.type == 'generated_ans') {
-        setLoading(false)
-        if (req.error && req.error == true) {
-          setError(true)
-        } else if (req.type === 'generated_ans') {
-          let result = req.data.slice(req.data.indexOf('parts'), req.data.indexOf('status'))
-          result = result?.slice(10, result.length - 6)
-          if (result !== '') setTextArea(unescape(result))
-        }
-      }
+      getGPTAnswer((res) => {
+        if (res.length > 0) setTextArea(unescape(res))
+      })
     })
   }, [])
 
@@ -39,7 +36,20 @@ const PromptModal: React.FC<{}> = () => {
     document.querySelector('#context-modal').style.display = 'none'
   }
 
-  useEffect(() => {}, [textarea])
+  function submitHandler(e?: FormEvent<HTMLFormElement>) {
+    e?.preventDefault()
+    getGptAnsFromBG({
+      from: 'PromptModal.tsx',
+      query: [input, text],
+      type: 'get_client_ans_from_gpt',
+      callback: (str) => {
+        if (str.length > 0) setTextArea(unescape(str))
+      },
+    })
+  }
+  useEffect(() => {
+    console.log(textarea)
+  }, [textarea])
 
   return (
     <div className="flex flex-col">
@@ -49,36 +59,44 @@ const PromptModal: React.FC<{}> = () => {
           <CrossIcon className="w-5 h-5" strokeColor="white" />
         </button>
       </div>
-      {!loading ? (
-        <span className="rounded-lg w-full text-white outline-none border-none p-3">
-          <ThreeDotsLoader />
-        </span>
-      ) : error ? (
+      {error ? (
         <span className="rounded-lg w-full text-white outline-none border-none p-3">
           <p className="text-red-500 text-center flex">Failed to fetch</p>
         </span>
       ) : (
         <div className="flex flex-col gap-y-4 my-2">
           {customInput && (
-            <input
-              type="text"
-              name="custom-input"
-              id="custom-input"
-              placeholder="Custom Prompt"
-              className="rounded-md w-full p-2 text-white"
-            />
+            <form onSubmit={(e: FormEvent<HTMLFormElement>) => submitHandler(e)}>
+              <input
+                type="text"
+                name="custom-input"
+                id="custom-input"
+                placeholder="Custom Prompt"
+                value={input}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+                className="rounded-md w-full p-2 text-white"
+              />
+              <button className="hidden" type="submit"></button>
+            </form>
           )}
           <div>
             <label htmlFor="ans">Generated Ans:</label>
-            <textarea
-              name="ans"
-              id="ans"
-              style={{ fontSize: '13px' }}
-              className="rounded-lg w-full text-white outline-none border-none p-3"
-              cols={40}
-              rows={8}
-              defaultValue={textarea}
-            ></textarea>
+            {loading ? (
+              <span className="rounded-lg w-full text-white outline-none h-[180px] border-none p-3">
+                <ThreeDotsLoader />
+              </span>
+            ) : (
+              <textarea
+                name="ans"
+                id="ans"
+                style={{ fontSize: '13px' }}
+                className="rounded-lg w-full text-white outline-none border-none p-3"
+                cols={40}
+                rows={8}
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setTextArea(e.target.value)}
+                value={textarea}
+              ></textarea>
+            )}
           </div>
         </div>
       )}

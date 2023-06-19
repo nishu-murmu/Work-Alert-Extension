@@ -1,24 +1,34 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import React, { FormEvent, useState } from 'react'
+import unescape from 'unescape-js'
 import { config } from '../../../util/config'
-import { ArrowLeftIcon } from '../../../util/Icons'
 import { prompt } from '../../../util/types'
+import { getGptAnsFromBG } from '../../../util'
 
 const InjectedPrompt: React.FC<{ selectedText: string }> = ({ selectedText }) => {
   const [showInput, setShowInput] = useState<boolean>(false)
-  const [input, setInput] = useState<string>('')
 
   function submitHandler(option: string, e?: FormEvent<HTMLFormElement>) {
     e?.preventDefault()
-    chrome.runtime.sendMessage({
-      from: 'from_prompt',
-      type: 'generate_ans',
+    getGptAnsFromBG({
+      from: 'Prompt.tsx',
       query: [option, selectedText],
+      type: 'get_client_ans_from_gpt',
+      callback: (str) => {
+        if (str.length > 0) {
+          chrome.runtime.sendMessage({
+            from: 'Prompt.tsx',
+            type: 'answer',
+            text: unescape(str),
+          })
+        }
+      },
     })
   }
   function customInputHandler() {
     chrome.runtime.sendMessage({
       from: 'from_prompt',
       type: 'custom_input',
+      text: selectedText,
     })
   }
   return (
@@ -42,25 +52,6 @@ const InjectedPrompt: React.FC<{ selectedText: string }> = ({ selectedText }) =>
             {option.key}
           </div>
         ))}
-      {showInput && (
-        <form
-          onSubmit={(e: FormEvent<HTMLFormElement>) => submitHandler(input, e)}
-          className="flex gap-x-2"
-        >
-          <span onClick={() => setShowInput(false)}>
-            <ArrowLeftIcon className="w-8 h-8 mt-.5" />
-          </span>
-          <input
-            type="text"
-            id="custom"
-            name="custom"
-            placeholder="Enter custom question for GPT?"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
-            className="p-2 rounded-md border border-transparent text-black w-full"
-          />
-          <button type="submit" className="hidden"></button>
-        </form>
-      )}
     </div>
   )
 }
