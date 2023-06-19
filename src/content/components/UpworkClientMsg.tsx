@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { getAllChat, getGptAnsFromBG } from '../../util'
 import unescape from 'unescape-js'
+import { config } from '../../util/config'
 
 const UpworkClientMsg = () => {
   const [generatedANS, setGeneratedANS] = useState('')
@@ -13,13 +14,10 @@ const UpworkClientMsg = () => {
     getGptAnsFromBG({
       from: 'UpworkClientMsg.tsx',
       query: [
-        `
-            Below is the my upwork conversation with ${client_name}
-            Please write a message for me
-            I want to ${message}
-            
-            Conversation: ${formattedString}
-        `,
+        config.upwork_msg_ans_macro
+          .replace('#{client_name}', client)
+          .replace('#{message}', (message || '') as string)
+          .replace('#{formattedString}', formattedString),
       ],
       type: 'get_client_ans_from_gpt',
       callback: (str) => {
@@ -31,7 +29,7 @@ const UpworkClientMsg = () => {
   return (
     <div>
       <form action="#" onSubmit={onSubmit}>
-        <label htmlFor="message">Message</label>
+        <label htmlFor="message">Client Name:</label>
         <input
           type="text"
           name="client_name"
@@ -39,6 +37,7 @@ const UpworkClientMsg = () => {
           defaultValue={getAllChat().client}
           required
         />
+        <label htmlFor="message">Message:</label>
         <input type="text" name="message" id="message" required />
         <button type="submit">Send</button>
       </form>
