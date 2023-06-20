@@ -49,9 +49,12 @@ const Proposal: React.FC = () => {
     })
   }
   function closeSlider() {
-    let shadowRoot = document.querySelector('#root-id')?.shadowRoot
+    console.log('called')
+    let shadowRoot = document.querySelector('#proposal-slider')?.shadowRoot?.host
     //@ts-ignore
-    shadowRoot.querySelector('#render').style.display = 'none'
+    shadowRoot.style.display = 'none'
+    //@ts-ignore
+    shadowRoot.style.zIndex = '-1'
   }
 
   const sendQueryToGPT = async () => {
