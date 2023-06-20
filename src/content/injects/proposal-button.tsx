@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client'
-import ProprosalButton from '../components/ProposalButton'
+import ProprosalButton from '../components/proposal/ProposalButton'
 
 window.onload = () => {
   // Attaching ProposalButton component to shadowDOM

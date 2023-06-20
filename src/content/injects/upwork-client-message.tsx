@@ -1,8 +1,8 @@
 import ReactDOM from 'react-dom/client'
 import { config } from '../../util/config'
-import UpworkClientMsg from '../components/UpworkClientMsg'
+import ClientMessage from '../components/ClientMessage'
 import { toggleSlider } from '../../util'
-import SliderKK from '../components/Slider copy'
+import Slider from '../components/Slider'
 
 let root = '' as any
 
@@ -24,16 +24,16 @@ margin-right: 8px;
       img.src = chrome.runtime.getURL('/img/enacton.png')
       document.querySelector('.editor-tools')?.insertAdjacentElement('afterend', img)
       img.addEventListener('click', () => {
-        const element = toggleSlider({})
+        const element = toggleSlider('message-proposal')
         setTimeout(() => {
           if (root == '') {
             root = ReactDOM.createRoot(element)
           }
 
           root.render(
-            <SliderKK title="Generate Answer" sliderId="">
-              <UpworkClientMsg />
-            </SliderKK>,
+            <Slider title="Generate Answer" sliderId="message-proposal">
+              <ClientMessage />
+            </Slider>,
           )
         }, 100)
       })
