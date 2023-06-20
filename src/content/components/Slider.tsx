@@ -59,16 +59,20 @@ const Slider: React.FC = () => {
     if (res && res?.gpt_access_token) {
       if (selectedProfile != '' && selectedProfile != `select_profile`) {
         setIsSelected(false)
-        setLoading(true)
         getGptAnsFromBG({
           from: 'Slider.tsx',
           query: proposalQuery(query),
           type: 'get_client_ans_from_gpt',
           callback: (str: string) => {
+            setIsConnected(true)
+            setLoading(true)
             if (str.length > 0) setTextArea(unescape(str))
+            else {
+              setLoading(false)
+              setIsConnected(false)
+            }
           },
         })
-        setLoading(false)
       } else {
         setIsSelected(true)
       }
@@ -125,6 +129,10 @@ const Slider: React.FC = () => {
       job_description: up?.innerHTML as HTMLSpanElement,
     }))
   }, [selectedProfile])
+
+  useEffect(() => {
+    console.log(isConnected)
+  }, [isConnected])
 
   return (
     <div className={`right-2 fixed px-4 py-2 h-screen w-2/6 bg-black text-white`}>
