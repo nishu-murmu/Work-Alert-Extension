@@ -14,7 +14,6 @@ const KeyWordsSection: React.FC = () => {
     getBgKeywords().then((res: any) => setKeywords(res))
 
     getLocalKeywordsCount().then((res: any) => {
-      console.log({ res })
       setKeywordsCount(res)
     })
 

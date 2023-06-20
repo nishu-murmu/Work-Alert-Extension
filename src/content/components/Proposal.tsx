@@ -49,7 +49,6 @@ const Proposal: React.FC = () => {
     })
   }
   function closeSlider() {
-    console.log('called')
     let shadowRoot = document.querySelector('#proposal-slider')?.shadowRoot?.host
     //@ts-ignore
     shadowRoot.style.display = 'none'
@@ -133,10 +132,6 @@ const Proposal: React.FC = () => {
       job_description: up?.innerHTML as HTMLSpanElement,
     }))
   }, [selectedProfile])
-
-  useEffect(() => {
-    console.log(isConnected)
-  }, [isConnected])
 
   return (
     <>

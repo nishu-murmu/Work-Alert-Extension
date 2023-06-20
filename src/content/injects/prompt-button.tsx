@@ -40,9 +40,16 @@ document.body.addEventListener('mouseup', (e) => {
       if (selectedText)
         ReactDOM.createRoot(elem).render(<PromptButton selectedText={selectedText} />)
       shadowDOM.appendChild(elem)
-    } else {
+    }
+  }
+})
+
+document.addEventListener('click', (e: any) => {
+  if (window.getSelection()?.toString().length == 0) {
+    const targetElem = document.querySelector('#root-injected-icon-button')
+    if (!targetElem?.contains(e.target)) {
       //@ts-ignore
-      document.querySelector('#injected-icon-button')?.remove() as HTMLDivElement
+      document.querySelector('#root-injected-icon-button')?.remove() as HTMLDivElement
     }
   }
 })
