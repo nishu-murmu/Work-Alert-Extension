@@ -5,6 +5,50 @@ export const config: configProps = {
   gpt_session_api: 'https://chat.openai.com/api/auth/session',
   API_INTERVAL: 3,
   OAuth2Token: 'http://304843596099-0hqqp6hggjf17uq8fshgd8tbe18mtqmk.apps.googleusercontent.com/',
+  proposal_tone: [
+    {
+      key: 'select',
+      value: 'Select Tone',
+    },
+    {
+      key: 'formal',
+      value: 'Formal',
+    },
+    {
+      key: 'informal',
+      value: 'In-Formal',
+    },
+    {
+      key: 'neutral',
+      value: 'Neutral',
+    },
+    {
+      key: 'friendly',
+      value: 'Friendly',
+    },
+  ],
+  proposal_limit: [
+    {
+      key: 'default',
+      value: 'Select Range of words',
+    },
+    {
+      key: 'approx_50',
+      value: 'Approx 50',
+    },
+    {
+      key: 'app_100',
+      value: 'Approx 100',
+    },
+    {
+      key: 'app_150',
+      value: 'Approx 150',
+    },
+    {
+      key: 'app_200',
+      value: 'Approx 200',
+    },
+  ],
   prompt_list: [
     {
       key: 'Rephrase',

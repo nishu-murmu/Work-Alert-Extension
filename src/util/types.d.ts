@@ -59,6 +59,8 @@ type prompt =
 export interface configProps {
   gpt_conversation_api: string
   gpt_session_api: string
+  proposal_tone: { key: string; value: string }[]
+  proposal_limit: { key: string; value: string }[]
   API_INTERVAL: number
   OAuth2Token: string
   prompt_list: prompt[]

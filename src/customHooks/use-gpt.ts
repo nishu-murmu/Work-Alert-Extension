@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid'
-import { QueryProps } from '../util/types'
 import { StreamClient } from '../util/SSE'
 import { config } from '../util/config'
 let accessToken: string = ''
@@ -63,18 +62,23 @@ const useGPT = () => {
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
         let tabId: any = tabs[0]?.id
         stream.onmessage = (event: any) => {
-          console.log({ data: event.data })
           if (event.data.trim() != 'data: [DONE]') {
-            let value = event.data.slice(
-              event.data.lastIndexOf('data:'),
-              event.data.lastIndexOf('}'),
-            )
-            const data: any = JSON.parse(value.slice(6) + '}')
-            chrome.tabs.sendMessage(tabId, {
-              type: 'generated_ans',
-              data: data?.message?.content?.parts[0].toString(),
-              isClosed: true,
-            })
+            if (
+              event.data.lastIndexOf('data: {"message"') <
+                event.data.lastIndexOf('"error": null') &&
+              event.data.lastIndexOf('data: {"message"') >= 0
+            ) {
+              let value = event.data.slice(
+                event.data.lastIndexOf('data: {"message"'),
+                event.data.lastIndexOf('"error": null'),
+              )
+              const data: any = JSON.parse(value.slice(6, value.length - 2) + '}')
+              chrome.tabs.sendMessage(tabId, {
+                type: 'generated_ans',
+                data: data?.message?.content?.parts[0].toString(),
+                isClosed: true,
+              })
+            }
           } else {
             chrome.tabs.sendMessage(tabId, {
               type: 'generated_ans',

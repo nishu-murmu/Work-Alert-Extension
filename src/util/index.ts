@@ -216,7 +216,7 @@ export function getGPTAnswer(callback: (ans: string) => void) {
   })
 }
 
-export const toggleSlider = ({ id = 'work-alert-slider' }: { id?: string | undefined }) => {
+export const toggleSlider = (id?: string) => {
   let slider = document.querySelector('#' + id) as HTMLElement
   if (slider) {
     if (slider.style.display === 'flex') {
@@ -234,9 +234,9 @@ export const toggleSlider = ({ id = 'work-alert-slider' }: { id?: string | undef
   linkElement.type = 'text/css'
   linkElement.href = chrome.runtime.getURL('/src/styles/output.css')
   let rootElement = document.createElement('div')
-  rootElement.id = id
+  if (id) rootElement.id = id
   rootElement.style.zIndex = '9999999'
-  rootElement.style.display = 'flex'
+  rootElement.style.display = 'none'
   rootElement.style.position = 'relative'
   document.body.prepend(rootElement)
   const shadowDOM = rootElement.attachShadow({ mode: 'open' })

@@ -1,5 +1,8 @@
 import ReactDOM from 'react-dom/client'
-import App from '../components/app'
+import Slider from '../components/Slider'
+import Proposal from '../components/Proposal'
+import { toggleSlider } from '../../util'
+let root = '' as any
 
 let linkElement = document.createElement('link')
 linkElement.rel = 'stylesheet'
@@ -13,9 +16,16 @@ const shadowDOM = rootElement.attachShadow({ mode: 'open' })
 
 shadowDOM.append(linkElement)
 
-const renderElement = document.createElement('div') as HTMLElement
-renderElement.id = 'render'
-renderElement.style.display = 'none'
+const element = toggleSlider('proposal-slider')
 
-ReactDOM.createRoot(renderElement).render(<App />)
-shadowDOM.appendChild(renderElement)
+setTimeout(() => {
+  if (root == '') {
+    root = ReactDOM.createRoot(element)
+  }
+
+  root.render(
+    <Slider title="Write Proposal" sliderId="proposal-slider">
+      <Proposal />
+    </Slider>,
+  )
+}, 100)
