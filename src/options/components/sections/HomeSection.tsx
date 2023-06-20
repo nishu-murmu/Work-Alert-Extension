@@ -1,12 +1,12 @@
 import { useRecoilState } from 'recoil'
-import AddKeyWordSection from '../commonComponent/AddKeyWord'
-import KeyWordsSection from './KeyWordsSection'
+import AddKeyWordSection from './home/AddKeyWordSection'
+import KeyWordsSection from './home/KeyWordsSection'
 import { isJobs } from '../../atoms'
-import WorkSection from './WorkSection'
+import WorkSection from './home/WorkSection'
 import { useState } from 'react'
 import BackToTop from '../commonComponent/BackToTop'
 
-const MainSection: React.FC = () => {
+const HomeSection: React.FC = () => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
 
   return (
@@ -22,4 +22,4 @@ const MainSection: React.FC = () => {
   )
 }
 
-export default MainSection
+export default HomeSection

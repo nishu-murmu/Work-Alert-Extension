@@ -3,17 +3,15 @@ import useOpJobs from '../../../customHooks/use-option-jobs'
 import { useRecoilState } from 'recoil'
 import { clickedKeyword, isJobs, keywordCount, keywords } from '../../atoms'
 import useBgJobs from '../../../customHooks/use-bg-job'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { keywordProps } from '../../../util/types'
 
-const KeyWordCards = () => {
+const KeyWordCards: React.FC<{ keywordsCount: any; keys: any }> = ({ keywordsCount, keys }) => {
   const { deleteLocalJobs } = useOpJobs()
-  const { getBgKeywords, getLocalKeywordsCount, deleteLocalKeywordsCount } = useBgJobs()
+  const { deleteLocalKeywordsCount } = useBgJobs()
 
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
-  const [keywordsCount, setKeywordsCount] = useRecoilState<any[]>(keywordCount)
-  const [keys, setKeywords] = useRecoilState(keywords)
   const divRef = useRef<HTMLDivElement>(null)
 
   const clickHandler = (key: any) => {
@@ -21,27 +19,6 @@ const KeyWordCards = () => {
     setClickKeyword(key)
     deleteLocalKeywordsCount(key.keyword)
   }
-
-  useEffect(() => {
-    getBgKeywords().then((res: any) => setKeywords(res))
-
-    getLocalKeywordsCount().then((res: any) => {
-      setKeywordsCount(res)
-    })
-
-    chrome.runtime.onMessage.addListener((req) => {
-      if (req.key === 'addKeyCount') {
-        getLocalKeywordsCount().then((res: any) => {
-          setKeywordsCount(res)
-        })
-      }
-      if (req.key === 'deleteKeyCount') {
-        getLocalKeywordsCount().then((res: any) => {
-          setKeywordsCount(res)
-        })
-      }
-    })
-  }, [])
 
   return (
     <div className="container py-2 mt-2 rounded-xl w-full space-y-4 flex-col">

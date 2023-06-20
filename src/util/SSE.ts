@@ -73,7 +73,6 @@ export class StreamClient {
       headers: this.headers,
       body: data,
     }).catch((error) => {
-      console.log({error})
       if (this.onerror) {
         this.onerror(error)
       }

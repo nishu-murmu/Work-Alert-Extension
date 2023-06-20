@@ -18,16 +18,16 @@ interface keywordsProps {
 }
 let OptionsUrl = `chrome-extension://${chrome.runtime.id}/options.html`
 
-chrome.runtime.onInstalled.addListener(async () => {
-  chrome.tabs.create(
-    {
-      url: OptionsUrl,
-    },
-    () => {
-      updateBadge()
-    },
-  )
-})
+// chrome.runtime.onInstalled.addListener(async () => {
+//   chrome.tabs.create(
+//     {
+//       url: OptionsUrl,
+//     },
+//     () => {
+//       updateBadge()
+//     },
+//   )
+// })
 
 chrome.action.onClicked.addListener(() => {
   tabChange()
@@ -118,19 +118,33 @@ chrome.notifications.onClicked.addListener(() => {
   tabChange()
   redirectWindow()
 })
-
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === 'session_call') {
-    getSession().then((res) => {
-      sendResponse({ success: res })
-    })
-  }
-  if (request.type === 'close_ans') {
-    closeAns()
-  }
-  if (request.type === 'get_ans') {
-    generateAns(request.query)
-  }
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    let tabId: any = tabs[0]?.id
+    if (request.type === 'session_call') {
+      getSession().then((res: any) => {
+        sendResponse({ success: res.success, data: res.data })
+      })
+    }
+    if (request.type === 'close_ans') {
+      closeAns()
+    }
+    if (request.from == 'from_prompt' && request.type == 'custom_input') {
+      chrome.tabs.sendMessage(tabId, {
+        type: 'display_input',
+        selectedText: request.text,
+      })
+    }
+    if (request.type === 'get_client_ans_from_gpt') {
+      if (request.from === 'Prompt.tsx') {
+        chrome.tabs.sendMessage(tabId, {
+          type: 'display_modal',
+          text: request.text,
+        })
+      }
+      generateAns(request.query)
+    }
+  })
   return true
 })
 

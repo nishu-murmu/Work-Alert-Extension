@@ -1,10 +1,10 @@
 import { useRecoilState } from 'recoil'
-import WordCards from '../commonComponent/WorkCard'
-import { clickedKeyword, isJobs, selectedFilter } from '../../atoms'
-import { ArrowLeftIcon } from '../../../util/Icons'
-import useOpJobs from '../../../customHooks/use-option-jobs'
-import { keywordProps } from '../../../util/types'
-import { compareArrays } from '../../../util'
+import WordCards from '../../commonComponent/WorkCard'
+import { clickedKeyword, isJobs, selectedFilter } from '../../../atoms'
+import { ArrowLeftIcon } from '../../../../util/Icons'
+import useOpJobs from '../../../../customHooks/use-option-jobs'
+import { keywordProps } from '../../../../util/types'
+import { compareArrays } from '../../../../util'
 import { ChangeEvent, useEffect, useLayoutEffect, useRef } from 'react'
 
 const WorkSection = () => {
@@ -64,7 +64,7 @@ const WorkSection = () => {
           onClick={() => setIsClicked((prev) => !prev)}
         >
           <span className="mt-1">
-            <ArrowLeftIcon className="group-hover:text-gray-400" />
+            <ArrowLeftIcon className="group-hover:text-gray-400 w-6 h-6" />
           </span>
           <button
             ref={backRef}

@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid'
-import { QueryProps } from '../util/types'
 import { StreamClient } from '../util/SSE'
 import { config } from '../util/config'
 let accessToken: string = ''
@@ -17,40 +16,20 @@ const useGPT = () => {
         .then((data) => {
           if (data.accessToken) {
             chrome.storage.local.set({ gpt_access_token: data.accessToken })
-            resolve(true)
+            resolve({ success: true, data })
           } else {
             chrome.storage.local.set({ gpt_access_token: null })
-            resolve(false)
+            resolve({ success: false, data })
           }
         })
         .catch((err) => {
-          resolve(false)
           console.log(err)
+          resolve(err)
         })
     })
   }
 
-  function generateQueryParams(query: QueryProps) {
-    const result: string[] = [
-      `Name: ${query?.name}\nSkills: ${query?.skills}\nExperience: ${query.experience}\nInbuilt Proposal: ${query?.proposal}\nClient Name: ${query?.client}`,
-      `Client Job Description: ${query?.job_description}`,
-      `Extract pain points from client job description and write a cover letter using the Inbuilt Proposal ${
-        query.tone ? 'in a ' + query?.tone + ' tone' : ''
-      }${
-        query.range_of_words
-          ? ' and it should not exceed more than ' + query?.range_of_words.split('_')[1] + ' words'
-          : ''
-      }.`,
-      `${query?.optional_info ? ` Additional Instructions: ${query?.optional_info}` : ''}`,
-    ].filter(Boolean)
-
-    return result
-  }
-
-  const generateAns = async (query: QueryProps) => {
-    const queryParams: string[] = generateQueryParams(query)
-
-    console.log({ queryParams })
+  const generateAns = async (queryParams: string[]) => {
     if (accessToken) {
       stream = new StreamClient(config.gpt_conversation_api, {
         headers: {
@@ -84,26 +63,36 @@ const useGPT = () => {
         let tabId: any = tabs[0]?.id
         stream.onmessage = (event: any) => {
           if (event.data.trim() != 'data: [DONE]') {
-            chrome.tabs.sendMessage(tabId, {
-              type: 'generated_ans',
-              data: event.data,
-              isClosed: true,
-            })
+            if (
+              event.data.lastIndexOf('data: {"message"') <
+                event.data.lastIndexOf('"error": null') &&
+              event.data.lastIndexOf('data: {"message"') >= 0
+            ) {
+              let value = event.data.slice(
+                event.data.lastIndexOf('data: {"message"'),
+                event.data.lastIndexOf('"error": null'),
+              )
+              const data: any = JSON.parse(value.slice(6, value.length - 2) + '}')
+              chrome.tabs.sendMessage(tabId, {
+                type: 'generated_ans',
+                data: data?.message?.content?.parts[0].toString(),
+                isClosed: true,
+              })
+            }
           } else {
             chrome.tabs.sendMessage(tabId, {
               type: 'generated_ans',
               isClosed: false,
             })
             stream.close()
+            genTitle()
           }
         }
-        stream._onStreamClosed = () => {
-          genTitle()
-        }
-        stream.onerror = (err: any) => {
+        stream._onStreamFailure = (err: any) => {
           chrome.tabs.sendMessage(tabId, {
             type: 'generated_ans',
             error: true,
+            errMsg: err,
           })
         }
       })
@@ -122,14 +111,14 @@ const useGPT = () => {
   }
 
   const deleteToken = async () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       chrome.storage.local.remove('gpt_access_token').then(() => {
         resolve(true)
       })
     })
   }
   async function genTitle() {
-    await fetch(`${config.gpt_conversation_api}s?offset=0&limit=20`, {
+    await fetch(`${config.gpt_conversation_api}s?offset=0&limit=20&order=updated`, {
       headers: {
         accept: '*/*',
         'accept-language': 'en-US,en;q=0.9',
@@ -176,6 +165,7 @@ const useGPT = () => {
     //@ts-ignore
     stream.close()
   }
+
   return { getSession, generateAns, genTitle, closeAns, getToken, deleteToken }
 }
 

@@ -1,5 +1,5 @@
 import XMLParser from 'fast-xml-parser'
-import { jobsProps, keywordProps } from './types'
+import { QueryProps, jobsProps, keywordProps } from './types'
 import he from 'he'
 const parser = new XMLParser.XMLParser()
 
@@ -161,4 +161,85 @@ export const separateCounts = (arr: any) => {
     result.push({ keyword, count })
   }
   return result
+}
+
+export const getAllChat = () => {
+  const allChat = document.querySelectorAll('.room-body [id^=story]')
+  const msgArray = [] as any
+  let previousChatClientName = ''
+  allChat.forEach((element) => {
+    const message = element.querySelector<HTMLElement>('.story-message')?.innerText?.trim()
+    const clientName = element.querySelector<HTMLElement>('.user-name')?.innerText?.trim()
+    if (clientName) previousChatClientName = clientName
+    msgArray.push({ message, clientName: clientName || previousChatClientName })
+  })
+  let formattedString = ''
+  for (const item of msgArray) {
+    formattedString += `${item.clientName}: ${item.message}\n`
+  }
+  return {
+    formattedString,
+    client: document.querySelector<HTMLElement>('#sidebar-header-title')?.title || '',
+  }
+}
+
+export const getGptAnsFromBG = ({
+  type,
+  from,
+  query,
+  callback,
+}: {
+  type: string
+  from: string
+  query?: any
+  callback: (ans: string) => void
+}) => {
+  if (query) {
+    chrome.runtime.sendMessage({
+      type,
+      from,
+      query,
+    })
+  }
+  getGPTAnswer(callback)
+}
+
+export function getGPTAnswer(callback: (ans: string) => void) {
+  chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
+    if (request.type === 'generated_ans') {
+      let result = ''
+      if (request?.data) {
+        result = request.data
+      }
+      callback(result ?? '')
+    }
+  })
+}
+
+export const toggleSlider = (id?: string) => {
+  let slider = document.querySelector('#' + id) as HTMLElement
+  if (slider) {
+    if (slider.style.display === 'flex') {
+      slider.style.display = 'none'
+      slider.style.zIndex = '-1'
+      return slider
+    } else {
+      slider.style.display = 'flex'
+      slider.style.zIndex = '99999999'
+      return slider
+    }
+  }
+  let linkElement = document.createElement('link')
+  linkElement.rel = 'stylesheet'
+  linkElement.type = 'text/css'
+  linkElement.href = chrome.runtime.getURL('/src/styles/output.css')
+  let rootElement = document.createElement('div')
+  if (id) rootElement.id = id
+  rootElement.style.zIndex = '9999999'
+  rootElement.style.display = 'none'
+  rootElement.style.position = 'relative'
+  document.body.prepend(rootElement)
+  const shadowDOM = rootElement.attachShadow({ mode: 'open' })
+  shadowDOM.append(linkElement)
+  return shadowDOM
 }
