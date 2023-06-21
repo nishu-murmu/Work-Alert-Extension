@@ -34,10 +34,6 @@ const Proposal: React.FC = () => {
   const { getProposals } = useContent()
   const [toggleSlide, setToggleSlide] = useState<boolean>(true)
 
-  function openSlider() {
-    setToggleSlide(true)
-  }
-
   const callSession = () => {
     chrome.runtime.sendMessage({ type: 'session_call' }, (res: any) => {
       if (res && res?.success === true) {
@@ -81,7 +77,6 @@ const Proposal: React.FC = () => {
       }
     } else {
       window.open('https://chat.openai.com/auth/login', '_blank')
-      openSlider()
     }
   }
 
@@ -117,10 +112,6 @@ const Proposal: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    window.postMessage({ toggleSlider: toggleSlide })
-  }, [toggleSlide])
-
-  useEffect(() => {
     setQuery((prev: QueryProps) => ({
       ...prev,
       ...proposals?.find((profile: any) => profile.profile === selectedProfile),
@@ -136,24 +127,51 @@ const Proposal: React.FC = () => {
   return (
     <>
       <div className="main-section">
+        <div className="flex w-full px-4 flex-col">
+          <select
+            name="keywords"
+            className={`py-3 px-2 rounded-lg ${
+              isSelected ? 'border-1 border-red-600' : 'border-0'
+            } w-full cursor-pointer drop-shadow-md duration-300 outline-none border-none text-black`}
+            id="keywords"
+            value={selectedProfile}
+            onChange={(e) => {
+              setSelectedProfile(e.target.value)
+              setIsSelected(false)
+            }}
+          >
+            <option value="select_profile">Select Profile</option>
+            {proposals &&
+              proposals.map((proposal: any) => (
+                <option key={proposal.profile} value={proposal.profile}>
+                  {proposal.profile}
+                </option>
+              ))}
+          </select>
+          {isSelected && <span className="text-red-400 pt-1 pl-4">Please select a profile</span>}
+        </div>
+        <div className="py-2 px-4 flex gap-x-4 group">
+          <input
+            className="group-hover:cursor-pointer"
+            type="checkbox"
+            id="inbuilt"
+            onClick={() => setIsInbuilt((prev) => !prev)}
+          />
+          <label className="group-hover:cursor-pointer" htmlFor="inbuilt">
+            Use the inbuilt proposal.
+          </label>
+        </div>
         {!inbuilt && (
           <ProposalForm
             callSession={callSession}
             closeGPTAns={closeGPTAns}
             isConnected={isConnected}
             loading={loading}
-            openSlider={openSlider}
             refresh={refresh}
             sendQueryToGPT={sendQueryToGPT}
             setLoading={setLoading}
             textarea={textarea}
             setQuery={setQuery}
-            isSelected={isSelected}
-            proposals={proposals}
-            selectedProfile={selectedProfile}
-            setIsInbuilt={setIsInbuilt}
-            setIsSelected={setIsSelected}
-            setSelectedProfile={setSelectedProfile}
           />
         )}
 

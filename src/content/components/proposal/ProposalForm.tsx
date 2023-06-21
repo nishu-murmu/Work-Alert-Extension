@@ -7,15 +7,8 @@ const ProposalForm: React.FC<{
   refresh: boolean
   isConnected: boolean
   loading: boolean
-  isSelected: boolean
   textarea: string
-  selectedProfile: string
-  setIsInbuilt: React.Dispatch<React.SetStateAction<boolean>>
-  proposals: proposalsProps[]
-  setIsSelected: React.Dispatch<React.SetStateAction<boolean>>
-  setSelectedProfile: React.Dispatch<React.SetStateAction<string>>
   setQuery: React.Dispatch<React.SetStateAction<QueryProps>>
-  openSlider: () => void
   callSession: () => void
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
   sendQueryToGPT: () => Promise<void>
@@ -23,14 +16,7 @@ const ProposalForm: React.FC<{
 }> = ({
   refresh,
   setQuery,
-  isSelected,
   textarea,
-  selectedProfile,
-  proposals,
-  openSlider,
-  setSelectedProfile,
-  setIsSelected,
-  setIsInbuilt,
   sendQueryToGPT,
   callSession,
   isConnected,
@@ -40,40 +26,6 @@ const ProposalForm: React.FC<{
 }) => {
   return (
     <>
-      <div className="flex w-full px-4 flex-col">
-        <select
-          name="keywords"
-          className={`py-3 px-2 rounded-lg ${
-            isSelected ? 'border-1 border-red-600' : 'border-0'
-          } w-full cursor-pointer drop-shadow-md duration-300 outline-none border-none text-black`}
-          id="keywords"
-          value={selectedProfile}
-          onChange={(e) => {
-            setSelectedProfile(e.target.value)
-            setIsSelected(false)
-          }}
-        >
-          <option value="select_profile">Select Profile</option>
-          {proposals &&
-            proposals.map((proposal: any) => (
-              <option key={proposal.profile} value={proposal.profile}>
-                {proposal.profile}
-              </option>
-            ))}
-        </select>
-        {isSelected && <span className="text-red-400 pt-1 pl-4">Please select a profile</span>}
-      </div>
-      <div className="py-2 px-4 flex gap-x-4 group">
-        <input
-          className="group-hover:cursor-pointer"
-          type="checkbox"
-          id="inbuilt"
-          onClick={() => setIsInbuilt((prev) => !prev)}
-        />
-        <label className="group-hover:cursor-pointer" htmlFor="inbuilt">
-          Use the inbuilt proposal.
-        </label>
-      </div>
       <div className="grid w-full px-4 my-3 h-10  text-black grid-cols-2 gap-x-6">
         <div>
           <select
@@ -140,7 +92,6 @@ const ProposalForm: React.FC<{
             <button
               onClick={() => {
                 window.open('https://chat.openai.com/auth/login', '_blank')
-                openSlider()
               }}
               className="w-full rounded-lg bg-green-600 text-white py-2 flex flex-row justify-center gap-x-3"
               id="submit"

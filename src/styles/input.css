@@ -46,6 +46,13 @@ input[type='checkbox'] {
   animation-delay: 0.3s;
 }
 
+.enabled {
+  color: green;
+}
+
+.disabled {
+  color: red;
+}
 @keyframes dot {
   0% {
     background-color: grey;

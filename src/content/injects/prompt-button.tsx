@@ -3,7 +3,6 @@ import PromptButton from '../components/prompt/PromptButton'
 let selectedText = '' as string
 let mouse_position: any
 let elem: HTMLDivElement
-let icon: any
 
 document.addEventListener('selectionchange', (e: any) => {
   selectedText = window.getSelection()?.toString() || ''

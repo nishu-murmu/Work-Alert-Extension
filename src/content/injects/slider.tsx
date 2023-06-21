@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client'
-import Slider from '../components/Slider'
+import Slider from '../components/core/Slider'
 import Proposal from '../components/Proposal'
 import { toggleSlider } from '../../util'
 let root = '' as any
