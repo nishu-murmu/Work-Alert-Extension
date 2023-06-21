@@ -1,7 +1,7 @@
 import { BinIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { useRecoilState } from 'recoil'
-import { clickedKeyword, isJobs, keywordCount, keywords } from '../../atoms'
+import { clickedKeyword, isJobs } from '../../atoms'
 import useBgJobs from '../../../customHooks/use-bg-job'
 import { useRef } from 'react'
 import { keywordProps } from '../../../util/types'

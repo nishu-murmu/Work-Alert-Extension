@@ -38,7 +38,7 @@ const WorkSection = () => {
   }
 
   async function getfilters() {
-    const filter = await getFilter()
+    await getFilter()
   }
 
   useEffect(() => {
@@ -53,8 +53,7 @@ const WorkSection = () => {
     if (jobs && jobs.length > 0) {
       getfilters()
     }
-    return () => {}
-  }, [])
+  }, [jobs])
 
   return (
     <div className="max-w-[1300px]">

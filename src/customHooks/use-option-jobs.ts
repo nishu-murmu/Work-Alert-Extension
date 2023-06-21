@@ -13,6 +13,7 @@ const useOpJobs = () => {
   const { getBgLocalJobs, getBgKeywords, deleteLocalKeywordsCount } = useBgJobs()
 
   useEffect(() => {
+    console.log('called')
     getLocalJobs()
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (request.alert === 'Update State') {
@@ -126,8 +127,8 @@ const useOpJobs = () => {
       })
     }
   }
-  
-  const getFilter = async(): Promise<void> => {
+
+  const getFilter = async (): Promise<void> => {
     return new Promise((resolve, reject) => {
       chrome.storage.local.get('filter', (res) => {
         if (chrome.runtime.lastError) {
@@ -153,7 +154,7 @@ const useOpJobs = () => {
     deleteLocalJobs,
     setLocalKeywords,
     setFilter,
-    getFilter
+    getFilter,
   }
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import KeyWordCards from '../../commonComponent/KeyWordCard'
 import useBgJobs from '../../../../customHooks/use-bg-job'
 import { useRecoilState } from 'recoil'
@@ -33,13 +33,9 @@ const KeyWordsSection: React.FC = () => {
 
   return (
     <div className="w-[1300px]">
-      <div
-        className={`text-2xl flex justify-center ${
-          keywordsCount.length > 0 ? 'gap-x-[22rem]' : ''
-        }`}
-      >
+      <div className={`text-2xl flex justify-center ${keys.length > 0 ? 'gap-x-[22rem]' : ''}`}>
         <div className="text-green-500 mt-3 py-1 font-bold">Keywords</div>
-        {keywordsCount.length > 0 && (
+        {keys.length > 0 && (
           <button className="text-green-500 mt-3 font-bold px-6 py-1 border-white border rounded-md">
             Export
           </button>
