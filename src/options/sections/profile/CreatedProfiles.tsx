@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { BinIcon, PenIcon } from '../../../../util/Icons'
-import Modal from '../../commonComponent/Modal'
-import { proposalsProps } from '../../../../util/types'
+import { BinIcon, PenIcon } from '../../../util/Icons'
+import Modal from '../../components/commonComponent/Modal'
+import { proposalsProps } from '../../../util/types'
 
 const CreatedProfiles: React.FC<{
   setIndex: any

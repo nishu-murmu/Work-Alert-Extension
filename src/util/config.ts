@@ -66,6 +66,9 @@ export const config: configProps = {
       key: 'Custom',
     },
   ],
+  SUPABASE_KEY:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neXBpdHVhb2h1eXRzdnFnYXFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODc0MDc4MTAsImV4cCI6MjAwMjk4MzgxMH0.rhnYnHfQz-VncAxi7v_EhXHu5q3erGrrwsdtVdiGkLw',
+  SUPABASE_URL: 'https://ogypituaohuytsvqgaqb.supabase.co',
   upwork_msg_url: 'https://www.upwork.com/ab/messages/rooms',
   upwork_msg_ans_macro: `
 I have been working with #{client_name} on upwork project

@@ -1,14 +1,16 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { proposalIndex, proposals } from '../../atoms'
-import { BinIcon, PenIcon } from '../../../util/Icons'
-import { proposalsProps } from '../../../util/types'
-import { useContent } from '../../../customHooks/use-content'
-import Modal from '../commonComponent/Modal'
+import { proposalIndex, proposals } from '../atoms'
+import { BinIcon, PenIcon } from '../../util/Icons'
+import { proposalsProps } from '../../util/types'
+import { useContent } from '../../customHooks/use-content'
+import Modal from '../components/commonComponent/Modal'
 import CreatedProfiles from './profile/CreatedProfiles'
 import CreateProfile from './profile/CreateProfile'
+import MainLayout from '../layouts/main-layout'
+import { withAuth } from '../components/HOC/withAuth'
 
-export default function ProfileSection() {
+function ProfileSection() {
   const [values, setValues] = useState<proposalsProps>({
     profile: '',
     proposal: '',
@@ -96,26 +98,30 @@ export default function ProfileSection() {
   }, [])
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="container flex">
-        <CreateProfile
-          values={values}
-          clearState={clearState}
-          submitHandler={submitHandler}
-          editFlag={editFlag}
-          emptyFields={emptyFields}
-          setValues={setValues}
-          expError={expError}
-        />
-        <CreatedProfiles
-          allProposals={allProposals}
-          setEditFlag={setEditFlag}
-          setIndex={setIndex}
-          setToggleModal={setToggleModal}
-          setValues={setValues}
-          toggleModal={toggleModal}
-        />
+    <MainLayout>
+      <div className="flex items-center justify-center">
+        <div className="container flex">
+          <CreateProfile
+            values={values}
+            clearState={clearState}
+            submitHandler={submitHandler}
+            editFlag={editFlag}
+            emptyFields={emptyFields}
+            setValues={setValues}
+            expError={expError}
+          />
+          <CreatedProfiles
+            allProposals={allProposals}
+            setEditFlag={setEditFlag}
+            setIndex={setIndex}
+            setToggleModal={setToggleModal}
+            setValues={setValues}
+            toggleModal={toggleModal}
+          />
+        </div>
       </div>
-    </div>
+    </MainLayout>
   )
 }
+
+export default withAuth(ProfileSection)

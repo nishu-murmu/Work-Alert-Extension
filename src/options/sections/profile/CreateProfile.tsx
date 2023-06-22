@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react'
-import { proposalsProps } from '../../../../util/types'
-import CustomInput from '../../commonComponent/core/CustomInput'
+import { proposalsProps } from '../../../util/types'
+import CustomInput from '../../components/commonComponent/core/CustomInput'
 
 const CreateProfile: React.FC<{
   setValues: any

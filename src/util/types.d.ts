@@ -67,4 +67,6 @@ export interface configProps {
   prompt_list: prompt[]
   upwork_msg_url: string
   upwork_msg_ans_macro: string
+  SUPABASE_KEY: string
+  SUPABASE_URL: string
 }

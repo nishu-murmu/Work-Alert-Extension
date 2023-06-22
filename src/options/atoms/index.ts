@@ -53,5 +53,10 @@ export const selectedFilter = atom({
 
 export const proposalIndex = atom({
   key: 'proposalIndex',
-  default: "" as string,
+  default: '' as string,
+})
+
+export const userState = atom({
+  key: 'userState',
+  default: JSON.parse(localStorage.getItem('user') || '{}') as any,
 })

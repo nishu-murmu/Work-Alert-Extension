@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
-import HeaderSection from './components/sections/HeaderSection'
-import HomeSection from './components/sections/HomeSection'
-import ProfileSection from './components/sections/ProfileSection'
-import RouteSection from './components/sections/RouteSection'
 import { useRecoilState } from 'recoil'
 import { isJobs } from './atoms'
-import useFirebase from '../customHooks/use-firebase'
+import { HashRouter, Route, Routes } from 'react-router-dom'
+import HomeSection from './sections/HomeSection'
+import ProfileSection from './sections/ProfileSection'
+import Login from './sections/Login'
 
 function App() {
   const [route, setRoute] = useState('')
   const [isClick, setIsClicked] = useRecoilState(isJobs)
-  const { addUser } = useFirebase()
 
   useEffect(() => {
     setRoute('home')
@@ -23,31 +21,34 @@ function App() {
 
   useEffect(() => {}, [route])
 
-  const loginWithGoogle = () => {
-    addUser().then(console.log).catch(console.log)
-  }
-
   return (
-    <div className="bg-black text-white min-h-screen">
-      <button onClick={loginWithGoogle}>Login with google</button>
-      {!isClick && (
-        <>
-          <HeaderSection />
-          <RouteSection setRoute={setRoute} />
-        </>
-      )}
-
-      {route == 'home' ? (
-        <div className="py-4 flex flex-col gap-y-4">
-          <HomeSection />
-        </div>
-      ) : (
-        <div>
-          <ProfileSection />
-        </div>
-      )}
-    </div>
+    <HashRouter>
+      <Routes>
+        <Route index={true} path="/" element={<Login />} />
+        <Route path="/home" element={<HomeSection />} />
+        <Route path="/profile" element={<ProfileSection />} />
+      </Routes>
+    </HashRouter>
   )
 }
 
 export default App
+
+//  <div className="bg-black text-white min-h-screen">
+//       {!isClick && (
+//         <>
+//           <HeaderSection />
+//           <RouteSection setRoute={setRoute} />
+//         </>
+//       )}
+
+//       {route == 'home' ? (
+//         <div className="py-4 flex flex-col gap-y-4">
+//           <HomeSection />
+//         </div>
+//       ) : (
+//         <div>
+//           <ProfileSection />
+//         </div>
+//       )}
+//     </div>

@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import KeyWordCards from '../../commonComponent/KeyWordCard'
-import useBgJobs from '../../../../customHooks/use-bg-job'
+import KeyWordCards from '../../components/commonComponent/KeyWordCard'
+import useBgJobs from '../../../customHooks/use-bg-job'
 import { useRecoilState } from 'recoil'
-import { keywordCount, keywords } from '../../../atoms'
+import { keywordCount, keywords } from '../../atoms'
 
 const KeyWordsSection: React.FC = () => {
   const { getBgKeywords, getLocalKeywordsCount } = useBgJobs()

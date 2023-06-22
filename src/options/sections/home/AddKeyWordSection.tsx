@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
-import useOpJobs from '../../../../customHooks/use-option-jobs'
-import useBgJobs from '../../../../customHooks/use-bg-job'
-import { keywordProps } from '../../../../util/types'
-import CustomInput from '../../commonComponent/core/CustomInput'
+import useOpJobs from '../../../customHooks/use-option-jobs'
+import useBgJobs from '../../../customHooks/use-bg-job'
+import { keywordProps } from '../../../util/types'
+import CustomInput from '../../components/commonComponent/core/CustomInput'
 
 const AddKeyWordSection: React.FC = () => {
   const [keyword, setKeyword] = useState<string>('')
