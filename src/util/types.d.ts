@@ -78,3 +78,5 @@ export interface configProps {
   SUPABASE_KEY: string
   SUPABASE_URL: string
 }
+
+type profileType = 'created' | 'deleted'
