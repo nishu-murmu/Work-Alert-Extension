@@ -1,11 +1,11 @@
 import { useRecoilState } from 'recoil'
-import AddKeyWordSection from './home/AddKeyWordSection'
-import KeyWordsSection from './home/KeyWordsSection'
-import { isJobs } from '../atoms/index'
-import WorkSection from './home/WorkSection'
-import BackToTop from '../components/commonComponent/BackToTop'
-import MainLayout from '../layouts/main-layout'
-import { withAuth } from '../components/HOC/withAuth'
+import AddKeyWordSection from './AddKeyWordSection'
+import KeyWordsSection from './KeyWordsSection'
+import { isJobs } from '../../atoms/index'
+import WorkSection from './WorkSection'
+import BackToTop from '../../components/commonComponent/BackToTop'
+import MainLayout from '../../layouts/main-layout'
+import { withAuth } from '../../components/HOC/withAuth'
 
 const HomeSection: React.FC = () => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)

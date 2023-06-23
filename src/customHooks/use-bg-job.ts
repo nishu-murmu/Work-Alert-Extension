@@ -9,15 +9,6 @@ const useBgJobs = () => {
     return result.jobsByKeyword
   }
 
-  const getBgKeywords = async () => {
-    return new Promise((resolve) => {
-      getAllKeywords().then((res) => {
-        console.log({ res }, 'from bg')
-        resolve(res)
-      })
-    })
-  }
-
   const setLocalJobs = (keyword: string, rssLink: string) => {
     getAllJobsData({ keyword, rssLink }).then((data) => {})
   }
@@ -76,7 +67,6 @@ const useBgJobs = () => {
     getBgLocalJobs,
     setLocalJobs,
     setLocalJobsToStorage,
-    getBgKeywords,
     getLocalKeywordsCount,
     setLocalKeywordsCount,
     deleteLocalKeywordsCount,

@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import { SpinnerLoader } from '../../util/Icons'
+import { SpinnerLoader } from '../../../util/Icons'
 import { FormEvent, useEffect, useState } from 'react'
-import { useSupabase } from '../../customHooks/use-supabase'
-import { userState } from '../atoms'
+import { useSupabase } from '../../../customHooks/use-supabase'
+import { userState } from '../../atoms'
 import { useRecoilState } from 'recoil'
-import MainLayout from '../layouts/main-layout'
+import MainLayout from '../../layouts/main-layout'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -38,7 +38,7 @@ export default function SignUp() {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
-    if (user?.user?.id) {
+    if (user?.id) {
       navigate('/home')
     }
   }, [])

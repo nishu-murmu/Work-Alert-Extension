@@ -1,11 +1,11 @@
 import UserIcon from '@heroicons/react/24/outline/UserIcon'
 import { useState, useRef, Fragment, useEffect } from 'react'
-import { useSupabase } from '../../customHooks/use-supabase'
-import CustomModal from '../components/commonComponent/core/CustomModal'
+import { useSupabase } from '../../../customHooks/use-supabase'
+import CustomModal from '../../components/commonComponent/core/CustomModal'
 import { Menu, Transition } from '@headlessui/react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useRecoilState } from 'recoil'
-import { userState } from '../atoms'
+import { userState } from '../../atoms'
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -13,10 +13,9 @@ const Header: React.FC = () => {
   const { signOut } = useSupabase()
   const [userIcon, setUserIcon] = useState<boolean>(false)
   const [user, setUser] = useRecoilState(userState)
-  const navigate = useNavigate()
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
-    if (user?.user?.id) {
+    if (user?.id) {
       setUserIcon(true)
     }
   }, [])
@@ -41,7 +40,9 @@ const Header: React.FC = () => {
   return (
     <div className="container flex justify-between p-4 mx-auto">
       <div className="text-3xl py-2 font-extrabold">
-        EnactOn <span className="text-green-500">Work</span>Alert
+        <Link to={'/home'}>
+          EnactOn <span className="text-green-500">Work</span>Alert
+        </Link>
       </div>
 
       {userIcon && (

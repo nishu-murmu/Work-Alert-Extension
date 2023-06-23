@@ -1,6 +1,6 @@
 import { useRecoilState } from 'recoil'
 import { getAllJobsData } from '../util'
-import { allJobsState, keywords, proposals, selectedFilter } from '../options/atoms'
+import { allJobsState, keywords, proposals, selectedFilter, userState } from '../options/atoms'
 import { useEffect } from 'react'
 import { keywordProps } from '../util/types'
 import useBgJobs from './use-bg-job'
@@ -10,32 +10,33 @@ const useOpJobs = () => {
   const [allJobs, setAllJobs] = useRecoilState(allJobsState)
   const [filter, setSelectedFilter] = useRecoilState(selectedFilter)
   const [keys, setKeywords] = useRecoilState(keywords)
+  const [user, setUser] = useRecoilState(userState)
   const [allProposals, setAllProposals] = useRecoilState(proposals)
-  const { getBgLocalJobs, getBgKeywords, deleteLocalKeywordsCount } = useBgJobs()
-  const { createKeyword } = useSupabase()
+  const { getBgLocalJobs, deleteLocalKeywordsCount } = useBgJobs()
+  const { createKeyword, getAllKeywords } = useSupabase()
 
-  useEffect(() => {
-    getLocalJobs()
-    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-      if (request.alert === 'Update State') {
-        setAllJobs(request.jobsByKeyword)
+  // useEffect(() => {
+  //   getLocalJobs()
+  //   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  //     if (request.alert === 'Update State') {
+  //       setAllJobs(request.jobsByKeyword)
 
-        chrome.storage.local.get(['newComingJobs'], (res: any) => {
-          let arr
+  //       chrome.storage.local.get(['newComingJobs'], (res: any) => {
+  //         let arr
 
-          if (res?.newComingJobs?.length) {
-            arr = [...res.newComingJobs, ...request.allKeywordJobs]
-          } else {
-            arr = request.allKeywordJobs
-          }
-          const uniqueVal = removeDuplicates(arr)
-          chrome.storage.local.set({ newComingJobs: uniqueVal }).then(() => {})
-        })
+  //         if (res?.newComingJobs?.length) {
+  //           arr = [...res.newComingJobs, ...request.allKeywordJobs]
+  //         } else {
+  //           arr = request.allKeywordJobs
+  //         }
+  //         const uniqueVal = removeDuplicates(arr)
+  //         chrome.storage.local.set({ newComingJobs: uniqueVal }).then(() => {})
+  //       })
 
-        sendResponse({ success: true })
-      }
-    })
-  }, [])
+  //       sendResponse({ success: true })
+  //     }
+  //   })
+  // }, [])
 
   const getNewComingJobs = async () => {
     return new Promise((resolve, reject) => {
@@ -74,10 +75,10 @@ const useOpJobs = () => {
   }
 
   const deleteLocalJobs = (keyword: string) => {
-    getBgKeywords().then((keywords: any) => {
+    getKeywords().then((keywords: any) => {
       let filteredKeywords = keywords.filter((a: any) => a.keyword !== keyword)
       chrome.storage.local.set({ keywords: filteredKeywords }).then(() => {
-        getBgKeywords().then((keywords: any) => {
+        getKeywords().then((keywords: any) => {
           setKeywords(keywords)
         })
       })
@@ -93,6 +94,18 @@ const useOpJobs = () => {
     })
     deleteLocalKeywordsCount(keyword)
   }
+  const getKeywords = async () => {
+    return new Promise((resolve) => {
+      getAllKeywords().then((res: any) => {
+        const result = res.filter((keywords: keywordProps) => {
+          if (keywords.user_id === user?.id) {
+            return keywords
+          }
+        })
+        resolve(result)
+      })
+    })
+  }
 
   const setLocalKeywords = async ({
     keyword,
@@ -104,20 +117,16 @@ const useOpJobs = () => {
     rssLink: string
     user_id: any
     isPublic: boolean
-  }) => {
-    createKeyword({ keyword, rssLink, user_id, isPublic }).then((res: any) => {
-      if (res?.[0]?.id) {
-        getBgKeywords().then((keywords: any) => {
-          let arr = keywords || []
-          if (arr?.filter((item: keywordProps) => item.rssLink === rssLink).length === 0) {
-            chrome.storage.local.set({ keywords: [...arr, { keyword, rssLink }] }).then(() => {
-              getBgKeywords().then((keywords: any) => {
-                setKeywords(keywords)
-              })
-            })
-          }
-        })
-      }
+  }): Promise<boolean> => {
+    return new Promise((resolve) => {
+      createKeyword({ keyword, rssLink, user_id, isPublic }).then((res: any) => {
+        if (res?.[0]?.id) {
+          getKeywords().then((keywords: any) => {
+            setKeywords(keywords)
+            resolve(true)
+          })
+        }
+      })
     })
   }
 
@@ -168,6 +177,7 @@ const useOpJobs = () => {
     allJobs,
     deleteLocalJobs,
     setLocalKeywords,
+    getKeywords,
     setFilter,
     getFilter,
   }

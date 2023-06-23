@@ -4,9 +4,11 @@ import useBgJobs from '../../../customHooks/use-bg-job'
 import { useRecoilState } from 'recoil'
 import { keywordCount, keywords, userState } from '../../atoms'
 import { proposalsProps } from '../../../util/types'
+import useOpJobs from '../../../customHooks/use-option-jobs'
 
 const KeyWordsSection: React.FC = () => {
-  const { getBgKeywords, getLocalKeywordsCount } = useBgJobs()
+  const { getLocalKeywordsCount } = useBgJobs()
+  const { getKeywords } = useOpJobs()
   const [keys, setKeywords] = useRecoilState(keywords)
   const [user, setUser] = useRecoilState(userState)
 
@@ -32,10 +34,10 @@ const KeyWordsSection: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    getBgKeywords().then((res: any) => {
+    getKeywords().then((res: any) => {
       console.log('check', res)
       const result = res.filter((item: proposalsProps) => {
-        if (item.user_id === user?.user?.id) {
+        if (item.user_id === user?.id) {
           return item
         }
       })
