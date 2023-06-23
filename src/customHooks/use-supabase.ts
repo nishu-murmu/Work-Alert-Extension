@@ -9,7 +9,6 @@ export const useSupabase = () => {
         password,
       })
       localStorage.setItem('user', JSON.stringify(data))
-      chrome.storage.local.set({ user: data })
       return { data, error }
     } catch (e) {
       console.log({ e })
@@ -23,7 +22,6 @@ export const useSupabase = () => {
         email,
         password,
       })
-      chrome.storage.local.set({ user: data })
       localStorage.setItem('user', JSON.stringify(data))
       return data.user
     } catch (error) {

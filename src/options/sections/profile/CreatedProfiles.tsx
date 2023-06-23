@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BinIcon, PenIcon } from '../../../util/Icons'
 import { proposalsProps } from '../../../util/types'
 import CustomModal from '../../components/commonComponent/core/CustomModal'
 import { useContent } from '../../../customHooks/use-content'
 import { proposals } from '../../atoms'
 import { useRecoilState } from 'recoil'
+import RestoreIcon from '@heroicons/react/24/outline/ArrowLeftCircleIcon'
 
 const CreatedProfiles: React.FC<{
   setIndex: any
@@ -12,12 +13,12 @@ const CreatedProfiles: React.FC<{
   setEditFlag: any
   setToggleModal: any
   toggleModal: boolean
-  allProposals: proposalsProps[]
 }> = ({ setIndex, setValues, setEditFlag, setToggleModal }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [profileType, setProfileType] = useState<string>('created')
   const [allProposals, setAllProposals] = useRecoilState(proposals)
-  const { deleteProposal } = useContent()
+  const { deleteProposal, getProposals, restoreProposal } = useContent()
   function openModal() {
     setIsOpen(true)
   }
@@ -26,21 +27,43 @@ const CreatedProfiles: React.FC<{
     setIsOpen(false)
   }
 
-  function confirm(index: string) {
+  async function confirm(index: string, isDeleted: boolean) {
     setLoading(true)
-    deleteHandler(index)
-  }
-  const deleteHandler = async (index: string) => {
     const proposal = allProposals.slice().reverse()[parseInt(index)]
-    const res: any = await deleteProposal(proposal)
+    const res: any = isDeleted ? await deleteProposal(proposal) : restoreProposal(proposal)
     if (res) {
       setAllProposals(res)
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    getProposals().then((res: any) => {
+      if (profileType === 'created') {
+        setAllProposals(res.filter((item: any) => !item.status))
+      } else {
+        setAllProposals(res.filter((item: any) => item.status))
+      }
+    })
+  }, [profileType])
+
   return (
     <div className="w-full font-bold flex flex-col space-y-9 mt-8 items-center">
-      <div className="text-2xl">Created Profiles</div>
+      <div className="text-xl flex gap-x-2">
+        <button
+          onClick={() => setProfileType('created')}
+          className={`${profileType === 'created' && 'text-green-500'} hover:text-green-500`}
+        >
+          Created Profiles
+        </button>
+        <div>/</div>
+        <button
+          onClick={() => setProfileType('deleted')}
+          className={`${profileType === 'deleted' && 'text-green-500'} hover:text-green-500`}
+        >
+          Delete Profiles
+        </button>
+      </div>
       <div className="w-10/12 gap-y-2 flex flex-col">
         {allProposals.length > 0 ? (
           <>
@@ -55,18 +78,20 @@ const CreatedProfiles: React.FC<{
                 >
                   <div className="text-lg">{proposal.profile}</div>
                   <div className="flex gap-x-4">
-                    <button
-                      onClick={() => {
-                        setValues(proposal)
-                        setEditFlag({
-                          name: proposal.profile,
-                          status: true,
-                        })
-                      }}
-                      className="p-1 bg-gray-700 rounded-md"
-                    >
-                      <PenIcon />
-                    </button>
+                    {!proposal.status && (
+                      <button
+                        onClick={() => {
+                          setValues(proposal)
+                          setEditFlag({
+                            name: proposal.profile,
+                            status: true,
+                          })
+                        }}
+                        className="p-1 bg-gray-700 rounded-md"
+                      >
+                        <PenIcon />
+                      </button>
+                    )}
                     <button
                       onClick={() => {
                         setToggleModal(true)
@@ -75,16 +100,22 @@ const CreatedProfiles: React.FC<{
                       }}
                       className="p-1 bg-gray-700 rounded-md"
                     >
-                      <BinIcon fillColor="white" strokeColor="black" />
+                      {!proposal.status ? (
+                        <BinIcon fillColor="white" strokeColor="black" />
+                      ) : (
+                        <RestoreIcon fill="white" stroke="black" className="h-5 w-5" />
+                      )}
                     </button>
                     <CustomModal
-                      confirm={() => confirm(index.toString())}
+                      confirm={() => confirm(index.toString(), !proposal.status)}
                       loading={loading}
                       closeModal={closeModal}
                       openModal={openModal}
                       isOpen={isOpen}
-                      modal_title="Delete Profile"
-                      modal_description="Are you sure you want to delete this Profile?"
+                      modal_title={`${!proposal.status ? 'Delete Profile' : 'Restore Profile'}`}
+                      modal_description={`Are you sure you want to ${
+                        !proposal.status ? 'delete' : 'restore'
+                      } this Profile?`}
                     />
                   </div>
                 </div>

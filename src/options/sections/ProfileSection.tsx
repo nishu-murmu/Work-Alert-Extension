@@ -21,7 +21,6 @@ function ProfileSection() {
     portfolio: '',
     client: '',
   })
-  const notify = () => toast('Profile Saved!')
   const [emptyFields, setEmptyFields] = useState({
     profile: false,
     proposal: false,
@@ -32,8 +31,7 @@ function ProfileSection() {
   const [expError, setExpError] = useState(false)
   const [toggleModal, setToggleModal] = useState<boolean>(false)
   const [index, setIndex] = useRecoilState(proposalIndex)
-  const { setProposal, getProposals } = useContent()
-  const [allProposals, setAllProposals] = useRecoilState(proposals)
+  const { setProposal } = useContent()
   const [editFlag, setEditFlag] = useState({ status: false, name: '' })
 
   const submitHandler = async (e: ChangeEvent<HTMLButtonElement>) => {
@@ -75,10 +73,6 @@ function ProfileSection() {
       if (res) {
         toast('Profile Saved!')
         setEditFlag({ name: '', status: false })
-
-        getProposals().then((data: any) => {
-          setAllProposals(data)
-        })
       }
     }
   }
@@ -94,12 +88,6 @@ function ProfileSection() {
     // setExpError(false)
   }
 
-  useEffect(() => {
-    getProposals().then((res: any) => {
-      setAllProposals(res)
-    })
-  }, [])
-
   return (
     <MainLayout>
       <div className="flex items-center justify-center">
@@ -114,7 +102,6 @@ function ProfileSection() {
             expError={expError}
           />
           <CreatedProfiles
-            allProposals={allProposals}
             setEditFlag={setEditFlag}
             setIndex={setIndex}
             setToggleModal={setToggleModal}
