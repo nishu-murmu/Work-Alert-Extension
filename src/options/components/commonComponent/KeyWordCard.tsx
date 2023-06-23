@@ -1,14 +1,15 @@
 import { BinIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { useRecoilState } from 'recoil'
-import { clickedKeyword, isJobs } from '../../atoms'
+import { clickedKeyword, isJobs, keywords } from '../../atoms'
 import useBgJobs from '../../../customHooks/use-bg-job'
 import { useRef } from 'react'
 import { keywordProps } from '../../../util/types'
 
-const KeyWordCards: React.FC<{ keywordsCount: any; keys: any }> = ({ keywordsCount, keys }) => {
+const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
   const { deleteLocalJobs } = useOpJobs()
   const { deleteLocalKeywordsCount } = useBgJobs()
+  const [keys, setKeywords] = useRecoilState(keywords)
 
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
@@ -19,6 +20,8 @@ const KeyWordCards: React.FC<{ keywordsCount: any; keys: any }> = ({ keywordsCou
     setClickKeyword(key)
     deleteLocalKeywordsCount(key.keyword)
   }
+
+  console.log({ keys })
 
   return (
     <div className="container py-2 mt-2 rounded-xl w-full space-y-4 flex-col">

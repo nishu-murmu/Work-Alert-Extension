@@ -1,5 +1,5 @@
 import { supabase } from '../supabase/init'
-import { proposalsProps } from '../util/types'
+import { keywordProps, proposalsProps } from '../util/types'
 
 export const useSupabase = () => {
   async function login({ email, password }: any) {
@@ -10,7 +10,6 @@ export const useSupabase = () => {
       })
       localStorage.setItem('user', JSON.stringify(data))
       chrome.storage.local.set({ user: data })
-      console.log({ data, error })
       return { data, error }
     } catch (e) {
       console.log({ e })
@@ -24,7 +23,6 @@ export const useSupabase = () => {
         email,
         password,
       })
-      console.log(data)
       chrome.storage.local.set({ user: data })
       localStorage.setItem('user', JSON.stringify(data))
       return data.user
@@ -41,21 +39,24 @@ export const useSupabase = () => {
   }
 
   async function createProfile(proposalParams: proposalsProps) {
-    const { proposal, name, skills, profile, user_id, prebuilt, experience, portfolio } =
+    const { proposal, name, skills, profile, user_id, inbuilt_proposal, experience, portfolio } =
       proposalParams
     try {
-      const { data, error } = await supabase.from('proposal').insert([
-        {
-          proposal,
-          user_id,
-          name,
-          skills,
-          profile,
-          inbuilt_proposal: prebuilt,
-          experience,
-          portfolio,
-        },
-      ])
+      const { data } = await supabase
+        .from('proposals')
+        .insert([
+          {
+            proposal,
+            user_id,
+            name,
+            skills,
+            profile,
+            inbuilt_proposal,
+            experience,
+            portfolio,
+          },
+        ])
+        .select()
       return data
     } catch (err) {
       return err
@@ -63,25 +64,35 @@ export const useSupabase = () => {
   }
 
   async function updateProfile(proposalParams: proposalsProps) {
-    const { proposal, name, skills, profile, client, user_id, prebuilt, experience, portfolio } =
-      proposalParams
+    const {
+      proposal,
+      name,
+      skills,
+      profile,
+      client,
+      inbuilt_proposal,
+      experience,
+      portfolio,
+      id,
+      status,
+    } = proposalParams
     try {
-      const { data, error } = await supabase
-        .from('proposal')
+      const { data } = await supabase
+        .from('proposals')
         .update([
           {
             proposal,
-            user_id,
             name,
             skills,
+            status,
             profile,
             client,
-            inbuilt: prebuilt,
+            inbuilt_proposal,
             experience,
             portfolio,
           },
         ])
-        .eq('user_id', user_id)
+        .eq('id', id)
         .select()
       return data
     } catch (err) {
@@ -91,12 +102,62 @@ export const useSupabase = () => {
 
   async function getAllProfiles() {
     try {
-      const { data } = await supabase.from('proposal').select('*')
+      const { data } = await supabase.from('proposals').select('*')
       return data
     } catch (error) {
       return error
     }
   }
 
-  return { login, signUp, signOut, createProfile, updateProfile, getAllProfiles }
+  async function createKeyword(keywordParams: keywordProps) {
+    const { rssLink, keyword, isPublic, status, user_id } = keywordParams
+    try {
+      const { data } = await supabase
+        .from('keywords')
+        .insert([
+          {
+            rssLink,
+            keyword,
+            isPublic,
+            status,
+            user_id,
+          },
+        ])
+        .select()
+      return data
+    } catch (err) {
+      return err
+    }
+  }
+
+  async function updateKeyword(keywordParams: keywordProps) {
+    const { status, id } = keywordParams
+    try {
+      const { data } = await supabase.from('keywords').update([{ status }]).eq('id', id).select()
+      return data
+    } catch (err) {
+      return err
+    }
+  }
+
+  async function getAllKeywords() {
+    try {
+      const { data } = await supabase.from('keywords').select('*')
+      return data
+    } catch (error) {
+      return error
+    }
+  }
+
+  return {
+    login,
+    signUp,
+    signOut,
+    createProfile,
+    updateProfile,
+    getAllProfiles,
+    createKeyword,
+    updateKeyword,
+    getAllKeywords,
+  }
 }

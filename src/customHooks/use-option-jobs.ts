@@ -4,6 +4,7 @@ import { allJobsState, keywords, proposals, selectedFilter } from '../options/at
 import { useEffect } from 'react'
 import { keywordProps } from '../util/types'
 import useBgJobs from './use-bg-job'
+import { useSupabase } from './use-supabase'
 
 const useOpJobs = () => {
   const [allJobs, setAllJobs] = useRecoilState(allJobsState)
@@ -11,9 +12,9 @@ const useOpJobs = () => {
   const [keys, setKeywords] = useRecoilState(keywords)
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const { getBgLocalJobs, getBgKeywords, deleteLocalKeywordsCount } = useBgJobs()
+  const { createKeyword } = useSupabase()
 
   useEffect(() => {
-    console.log('called')
     getLocalJobs()
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (request.alert === 'Update State') {
@@ -93,14 +94,28 @@ const useOpJobs = () => {
     deleteLocalKeywordsCount(keyword)
   }
 
-  const setLocalKeywords = async (keyword: string, rssLink: string) => {
-    getBgKeywords().then((keywords: any) => {
-      let arr = keywords || []
-      if (arr?.filter((item: keywordProps) => item.rssLink === rssLink).length === 0) {
-        chrome.storage.local.set({ keywords: [...arr, { keyword, rssLink }] }).then(() => {
-          getBgKeywords().then((keywords: any) => {
-            setKeywords(keywords)
-          })
+  const setLocalKeywords = async ({
+    keyword,
+    rssLink,
+    user_id,
+    isPublic,
+  }: {
+    keyword: string
+    rssLink: string
+    user_id: any
+    isPublic: boolean
+  }) => {
+    createKeyword({ keyword, rssLink, user_id, isPublic }).then((res: any) => {
+      if (res?.[0]?.id) {
+        getBgKeywords().then((keywords: any) => {
+          let arr = keywords || []
+          if (arr?.filter((item: keywordProps) => item.rssLink === rssLink).length === 0) {
+            chrome.storage.local.set({ keywords: [...arr, { keyword, rssLink }] }).then(() => {
+              getBgKeywords().then((keywords: any) => {
+                setKeywords(keywords)
+              })
+            })
+          }
         })
       }
     })

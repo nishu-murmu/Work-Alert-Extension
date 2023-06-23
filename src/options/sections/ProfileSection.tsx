@@ -4,11 +4,12 @@ import { proposalIndex, proposals } from '../atoms'
 import { BinIcon, PenIcon } from '../../util/Icons'
 import { proposalsProps } from '../../util/types'
 import { useContent } from '../../customHooks/use-content'
-import Modal from '../components/commonComponent/Modal'
 import CreatedProfiles from './profile/CreatedProfiles'
 import CreateProfile from './profile/CreateProfile'
 import MainLayout from '../layouts/main-layout'
 import { withAuth } from '../components/HOC/withAuth'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function ProfileSection() {
   const [values, setValues] = useState<proposalsProps>({
@@ -20,6 +21,7 @@ function ProfileSection() {
     portfolio: '',
     client: '',
   })
+  const notify = () => toast('Profile Saved!')
   const [emptyFields, setEmptyFields] = useState({
     profile: false,
     proposal: false,
@@ -63,7 +65,7 @@ function ProfileSection() {
         name: '',
         experience: '',
         portfolio: '',
-        prebuilt: '',
+        inbuilt_proposal: '',
       })
       document.querySelectorAll('input').forEach((ele: any) => {
         ele.value = ''
@@ -71,6 +73,7 @@ function ProfileSection() {
 
       const res: any = await setProposal([values], editFlag.name)
       if (res) {
+        toast('Profile Saved!')
         setEditFlag({ name: '', status: false })
 
         getProposals().then((data: any) => {
@@ -119,6 +122,18 @@ function ProfileSection() {
             toggleModal={toggleModal}
           />
         </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </div>
     </MainLayout>
   )

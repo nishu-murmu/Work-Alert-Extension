@@ -46,7 +46,6 @@ const WorkCards: React.FC = () => {
 
   useEffect(() => {
     getNewComingJobs().then((res: any) => {
-      console.log({ res })
       sortedJobs.map((elem: any) => {
         const value = res.find((item: any) => {
           if (item.uid === elem.uid) {
@@ -54,7 +53,6 @@ const WorkCards: React.FC = () => {
           }
         })
         if (value.uid) {
-          console.log({ value })
           return { ...elem, isNew: true }
         }
       })
