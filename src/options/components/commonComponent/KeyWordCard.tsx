@@ -2,26 +2,43 @@ import { BinIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { useRecoilState } from 'recoil'
 import { clickedKeyword, isJobs, keywords } from '../../atoms'
-import useBgJobs from '../../../customHooks/use-bg-job'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { keywordProps } from '../../../util/types'
+import RestoreIcon from '@heroicons/react/24/outline/ArrowLeftCircleIcon'
+import CustomModal from './core/CustomModal'
 
 const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
-  const { deleteLocalJobs } = useOpJobs()
-  const { deleteLocalKeywordsCount } = useBgJobs()
+  const { deleteJobs, restoreJobs } = useOpJobs()
   const [keys, setKeywords] = useRecoilState(keywords)
-
+  const [loading, setLoading] = useState(false)
   const [isClick, setIsClicked] = useRecoilState(isJobs)
+  const [isOpen, setIsOpen] = useState(false)
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
   const divRef = useRef<HTMLDivElement>(null)
 
   const clickHandler = (key: any) => {
     setIsClicked(!isClick)
     setClickKeyword(key)
-    deleteLocalKeywordsCount(key.keyword)
   }
 
-  console.log({ keys })
+  function openModal() {
+    setIsOpen(true)
+  }
+
+  function closeModal() {
+    setIsOpen(false)
+  }
+  async function confirm(keyword: keywordProps, isDeleted?: boolean) {
+    setLoading(true)
+    const res: any = isDeleted ? await deleteJobs(keyword) : restoreJobs(keyword)
+    if (res) {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    console.log({ keys })
+  }, [keys])
 
   return (
     <div className="container py-2 mt-2 rounded-xl w-full space-y-4 flex-col">
@@ -50,12 +67,16 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
                     : 'border-transparent'
                 } bg-custom-bg rounded-md p-4`}
               >
-                <button onClick={() => deleteLocalJobs(item.keyword)}>
-                  <BinIcon
-                    fillColor="black"
-                    className={'hover:cursor-pointer z-50'}
-                    strokeColor="gray"
-                  />
+                <button onClick={() => openModal()}>
+                  {!item.status ? (
+                    <BinIcon
+                      fillColor="black"
+                      className={'hover:cursor-pointer z-50'}
+                      strokeColor="gray"
+                    />
+                  ) : (
+                    <RestoreIcon fill="white" stroke="black" className="h-6 w-6" />
+                  )}
                 </button>
                 <div
                   onClick={() =>
@@ -82,6 +103,17 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
                       )}
                   </div>
                 </div>
+                <CustomModal
+                  confirm={() => confirm(item, item.status)}
+                  loading={loading}
+                  closeModal={closeModal}
+                  openModal={openModal}
+                  isOpen={isOpen}
+                  modal_title={`${!item.status ? 'Delete Keyword' : 'Restore Keyword'}`}
+                  modal_description={`Are you sure you want to ${
+                    !item.status ? 'delete' : 'restore'
+                  } this Keyword?`}
+                />
               </div>
             )
           })

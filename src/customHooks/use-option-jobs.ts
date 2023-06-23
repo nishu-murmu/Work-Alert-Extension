@@ -13,7 +13,7 @@ const useOpJobs = () => {
   const [user, setUser] = useRecoilState(userState)
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const { getBgLocalJobs, deleteLocalKeywordsCount } = useBgJobs()
-  const { createKeyword, getAllKeywords } = useSupabase()
+  const { createKeyword, getAllKeywords, updateKeyword } = useSupabase()
 
   // useEffect(() => {
   //   getLocalJobs()
@@ -74,26 +74,32 @@ const useOpJobs = () => {
     })
   }
 
-  const deleteLocalJobs = (keyword: string) => {
-    getKeywords().then((keywords: any) => {
-      let filteredKeywords = keywords.filter((a: any) => a.keyword !== keyword)
-      chrome.storage.local.set({ keywords: filteredKeywords }).then(() => {
-        getKeywords().then((keywords: any) => {
-          setKeywords(keywords)
-        })
+  const deleteJobs = (keywords: keywordProps): Promise<boolean> => {
+    return new Promise((resolve) => {
+      updateKeyword({ ...keywords, status: true }).then((res: any) => {
+        if (res[0]?.id) {
+          getKeywords().then((data: any) => {
+            setKeywords(data.filter((item: any) => item.status))
+            resolve(true)
+          })
+        }
       })
     })
-
-    getBgLocalJobs().then((jobsByKeyword: any) => {
-      let filteredJobs = jobsByKeyword.filter((a: any) => a.keyword !== keyword)
-      chrome.storage.local.set({ jobsByKeyword: filteredJobs }).then(() => {
-        getBgLocalJobs().then((jobsByKeyword: any) => {
-          setAllJobs(jobsByKeyword)
-        })
-      })
-    })
-    deleteLocalKeywordsCount(keyword)
   }
+
+  const restoreJobs = (keywords: keywordProps): Promise<boolean> => {
+    return new Promise((resolve) => {
+      updateKeyword({ ...keywords, status: true }).then((res: any) => {
+        if (res[0]?.id) {
+          getKeywords().then((data: any) => {
+            setKeywords(data.filter((item: any) => !item.status))
+            resolve(true)
+          })
+        }
+      })
+    })
+  }
+
   const getKeywords = async () => {
     return new Promise((resolve) => {
       getAllKeywords().then((res: any) => {
@@ -175,7 +181,8 @@ const useOpJobs = () => {
     getNewComingJobs,
     removeSeenJobs,
     allJobs,
-    deleteLocalJobs,
+    deleteJobs,
+    restoreJobs,
     setLocalKeywords,
     getKeywords,
     setFilter,
