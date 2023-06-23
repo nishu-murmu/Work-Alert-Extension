@@ -21,6 +21,7 @@
     "fmt": "prettier --write '**/*.{tsx,ts,json,css,scss,md}'"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.15",
     "@heroicons/react": "^2.0.18",
     "@supabase/supabase-js": "^2.26.0",
     "@types/chrome": "^0.0.231",

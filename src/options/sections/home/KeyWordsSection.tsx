@@ -32,18 +32,18 @@ const KeyWordsSection: React.FC = () => {
   }, [])
 
   return (
-    <div className="w-[1300px]">
-      <div className={`text-2xl flex justify-center ${keys.length > 0 ? 'gap-x-[22rem]' : ''}`}>
-        <div className="text-green-500 mt-3 py-1 font-bold">Keywords</div>
-        {keys.length > 0 && (
-          <button className="text-green-500 mt-3 font-bold px-6 py-1 border-white border rounded-md">
+    <div className='w-[1300px]'>
+      <div className={`text-2xl flex justify-center ${keys?.length > 0 ? 'gap-x-[22rem]' : ''}`}>
+        <div className='text-green-500 mt-3 py-1 font-bold'>Keywords</div>
+        {keys?.length > 0 && (
+          <button className='text-green-500 mt-3 font-bold px-6 py-1 border-white border rounded-md'>
             Export
           </button>
         )}
       </div>
       <div
-        id="keywords"
-        className="w-[90%] flex items-center mx-auto overflow-y-hidden justify-center"
+        id='keywords'
+        className='w-[90%] flex items-center mx-auto overflow-y-hidden justify-center'
       >
         <KeyWordCards keywordsCount={keywordsCount} keys={keys} />
       </div>

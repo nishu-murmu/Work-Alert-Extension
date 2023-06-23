@@ -25,6 +25,7 @@ export interface jobsProps {
 }
 
 export interface proposalsProps {
+  user_id?: string
   profile: string
   proposal: string
   name: string
