@@ -8,7 +8,7 @@ export const useSupabase = () => {
         email,
         password,
       })
-      localStorage.setItem('user', JSON.stringify(data))
+      localStorage.setItem('user', JSON.stringify(data.user))
       return { data, error }
     } catch (e) {
       console.log({ e })
@@ -22,7 +22,7 @@ export const useSupabase = () => {
         email,
         password,
       })
-      localStorage.setItem('user', JSON.stringify(data))
+      localStorage.setItem('user', JSON.stringify(data.user))
       return data.user
     } catch (error) {
       console.log({ error })

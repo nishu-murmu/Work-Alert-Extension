@@ -1,14 +1,16 @@
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import KeyWordCards from '../../components/commonComponent/KeyWordCard'
 import useBgJobs from '../../../customHooks/use-bg-job'
 import { useRecoilState } from 'recoil'
 import { keywordCount, keywords, userState } from '../../atoms'
 import { proposalsProps } from '../../../util/types'
+import useOpJobs from '../../../customHooks/use-option-jobs'
 
 const KeyWordsSection: React.FC = () => {
-  const { getBgKeywords, getLocalKeywordsCount } = useBgJobs()
+  const { getLocalKeywordsCount } = useBgJobs()
+  const { getKeywords } = useOpJobs()
   const [keys, setKeywords] = useRecoilState(keywords)
-  const [user, setUser] = useRecoilState(userState)
+  const [keywordType, setKeywordType] = useState<string>('created')
 
   const [keywordsCount, setKeywordsCount] = useRecoilState<any[]>(keywordCount)
 
@@ -32,22 +34,37 @@ const KeyWordsSection: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    getBgKeywords().then((res: any) => {
+    getKeywords().then((res: any) => {
       console.log('check', res)
-      const result = res.filter((item: proposalsProps) => {
-        if (item.user_id === user?.user?.id) {
-          return item
+      res.filter((item: proposalsProps) => {
+        if (keywordType === 'created') {
+          setKeywords(res.filter((item: any) => !item.status))
+        } else {
+          setKeywords(res.filter((item: any) => item.status))
         }
       })
-      console.log({ result })
-      setKeywords(result)
     })
-  }, [])
+  }, [keywordType])
 
   return (
     <div className="w-[1300px]">
-      <div className={`text-2xl flex justify-center gap-x-[22rem]`}>
-        <div className="text-green-500 mt-3 py-1 font-bold">Keywords</div>
+      <div className={`text-xl flex justify-center gap-x-6`}>
+        <div
+          onClick={() => setKeywordType('created')}
+          className={`hover:text-green-500 cursor-pointer mt-3 py-1 font-bold ${
+            keywordType === 'created' && 'text-green-500'
+          }`}
+        >
+          Keywords
+        </div>
+        <div
+          onClick={() => setKeywordType('deleted')}
+          className={`hover:text-green-500 cursor-pointer mt-3 py-1 font-bold ${
+            keywordType === 'deleted' && 'text-green-500'
+          }`}
+        >
+          Deleted Keywords
+        </div>
       </div>
       <div
         id="keywords"

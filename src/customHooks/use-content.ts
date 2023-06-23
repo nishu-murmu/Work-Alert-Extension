@@ -11,9 +11,8 @@ export const useContent = () => {
   const getProposals = async () => {
     return new Promise((resolve) => {
       getAllProfiles().then((res: any) => {
-        console.log({ res })
         const result = res.filter((profile: proposalsProps) => {
-          if (profile.user_id === user?.user?.id) {
+          if (profile.user_id === user?.id) {
             return profile
           }
         })
@@ -32,7 +31,7 @@ export const useContent = () => {
         })
         resolve(true)
       } else {
-        createProfile({ ...proposal[0], user_id: user?.user?.id }).then((res: any) => {
+        createProfile({ ...proposal[0], user_id: user?.id }).then((res: any) => {
           if (res[0]?.id) {
             getProposals().then((data: any) => {
               setAllProposals(data.filter((item: any) => !item.status))
@@ -58,7 +57,6 @@ export const useContent = () => {
   }
 
   const restoreProposal = async (proposal: any) => {
-    console.log('check')
     return new Promise((resolve) => {
       updateProfile({ ...proposal, status: false }).then((response: any) => {
         if (response[0]?.id) {

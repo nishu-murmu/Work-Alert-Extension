@@ -9,7 +9,7 @@ export const withAuth = (Component: any) => {
     const [user, setUser] = useRecoilState(userState)
     useEffect(() => {
       const user = JSON.parse(localStorage.getItem('user') || '{}')
-      if (!user?.user?.id) {
+      if (!user?.id) {
         navigate('/')
       }
     }, [user])

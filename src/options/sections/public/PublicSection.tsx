@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useSupabase } from '../../customHooks/use-supabase'
-import { BinIcon, PenIcon } from '../../util/Icons'
-import MainLayout from '../layouts/main-layout'
-import { proposalsProps } from '../../util/types'
+import { useSupabase } from '../../../customHooks/use-supabase'
+import { BinIcon, PenIcon } from '../../../util/Icons'
+import MainLayout from '../../layouts/main-layout'
+import { proposalsProps } from '../../../util/types'
 
 const PublicSection: React.FC<{}> = () => {
   const [allProfiles, setAllProfiles] = useState<any>()

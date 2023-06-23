@@ -1,9 +1,9 @@
 import { HashRouter, Route, Routes } from 'react-router-dom'
-import HomeSection from './sections/HomeSection'
-import ProfileSection from './sections/ProfileSection'
-import SignUpSection from './sections/SignUpSection'
-import LoginSection from './sections/LoginSection'
-import PublicSection from './sections/PublicSection'
+import HomeSection from './sections/home/HomeSection'
+import ProfileSection from './sections/profile/ProfileSection'
+import SignUpSection from './sections/signUp/SignUpSection'
+import LoginSection from './sections/login/LoginSection'
+import PublicSection from './sections/public/PublicSection'
 
 function App() {
   return (
