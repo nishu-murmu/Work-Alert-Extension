@@ -23,7 +23,7 @@ const ProposalFooter: React.FC<{
         fillProposal(
           inbuilt
             ? proposals?.find((proposal: proposalsProps) => proposal.profile === selectedProfile)
-                ?.prebuilt
+                ?.inbuilt_proposal
             : textarea != ''
             ? textarea
             : '',

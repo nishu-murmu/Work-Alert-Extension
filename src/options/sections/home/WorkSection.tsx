@@ -1,10 +1,10 @@
 import { useRecoilState } from 'recoil'
-import WordCards from '../../commonComponent/WorkCard'
-import { clickedKeyword, isJobs, selectedFilter } from '../../../atoms'
-import { ArrowLeftIcon } from '../../../../util/Icons'
-import useOpJobs from '../../../../customHooks/use-option-jobs'
-import { keywordProps } from '../../../../util/types'
-import { compareArrays } from '../../../../util'
+import WordCards from '../../components/commonComponent/WorkCard'
+import { clickedKeyword, isJobs, selectedFilter } from '../../atoms'
+import { ArrowLeftIcon } from '../../../util/Icons'
+import useOpJobs from '../../../customHooks/use-option-jobs'
+import { keywordProps } from '../../../util/types'
+import { compareArrays } from '../../../util'
 import { ChangeEvent, useEffect, useLayoutEffect, useRef } from 'react'
 
 const WorkSection = () => {
@@ -38,7 +38,7 @@ const WorkSection = () => {
   }
 
   async function getfilters() {
-    const filter = await getFilter()
+    await getFilter()
   }
 
   useEffect(() => {
@@ -53,8 +53,7 @@ const WorkSection = () => {
     if (jobs && jobs.length > 0) {
       getfilters()
     }
-    return () => {}
-  }, [])
+  }, [jobs])
 
   return (
     <div className="max-w-[1300px]">

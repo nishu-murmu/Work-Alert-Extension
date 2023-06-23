@@ -1,27 +1,15 @@
-import { useEffect, useState } from 'react'
-import useOpJobs from '../../../customHooks/use-option-jobs'
+import { useState } from 'react'
 import { timeRange, truncate } from '../../../util'
 import { jobsProps } from '../../../util/types'
 
-const RenderCard = ({ item, flag }: { item: jobsProps; flag: boolean }) => {
+const RenderCard = ({ item }: { item: jobsProps }) => {
   const [showMore, setShowMore] = useState(false)
-  const [isJobNew, setIsJobNew] = useState(false)
-  const { getNewComingJobs } = useOpJobs()
-
-  useEffect(() => {
-    getNewComingJobs().then((res: any) => {
-      const flag = res.filter((elem: any) => elem.uid == item.uid)
-      if (flag?.length) {
-        setIsJobNew(true)
-      } else setIsJobNew(false)
-    })
-  }, [])
 
   return (
     <div
       key={item.uid}
       className={`text-green-500 bg-custom-bg overflow-hidden  rounded-md p-5 h-auto ${
-        isJobNew ? 'border border-green-500' : 'border-transparent'
+        item.isNew ? 'border border-green-500' : 'border-transparent'
       }`}
     >
       <div className="relative text-lg px-2 w-full mb-4 text-gray-500">

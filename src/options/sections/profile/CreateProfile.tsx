@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react'
-import { proposalsProps } from '../../../../util/types'
-import CustomInput from '../../commonComponent/core/CustomInput'
+import { proposalsProps } from '../../../util/types'
+import CustomInput from '../../components/commonComponent/core/CustomInput'
 
 const CreateProfile: React.FC<{
   setValues: any
@@ -116,14 +116,14 @@ const CreateProfile: React.FC<{
       />
       <textarea
         rows={3}
-        value={values.prebuilt ?? ''}
+        value={values.inbuilt_proposal ?? ''}
         placeholder="Enter Prebuilt Proposal"
         className={`bg-transparent border mt-4 ${
           !emptyFields?.proposal ? 'border-white' : 'border-red-600'
         } rounded-md px-4 py-2 text-lg w-[30rem]`}
         onBlur={() => clearState()}
         onChange={(e) => {
-          setValues((prev: any) => ({ ...prev, prebuilt: e.target.value }))
+          setValues((prev: any) => ({ ...prev, inbuilt_proposal: e.target.value }))
         }}
         onClickCapture={() => clearState()}
       />

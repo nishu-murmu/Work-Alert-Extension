@@ -1,6 +1,6 @@
 import React from 'react'
-import { CrossIcon } from '../../util/Icons'
-import { toggleSlider } from '../../util'
+import { CrossIcon } from '../../../util/Icons'
+import { toggleSlider } from '../../../util'
 
 const Slider = ({
   children,

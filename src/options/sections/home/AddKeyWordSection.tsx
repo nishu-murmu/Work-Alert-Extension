@@ -1,15 +1,22 @@
 import { useRef, useState } from 'react'
-import useOpJobs from '../../../../customHooks/use-option-jobs'
-import useBgJobs from '../../../../customHooks/use-bg-job'
-import { keywordProps } from '../../../../util/types'
-import CustomInput from '../../commonComponent/core/CustomInput'
+import useOpJobs from '../../../customHooks/use-option-jobs'
+import useBgJobs from '../../../customHooks/use-bg-job'
+import { keywordProps } from '../../../util/types'
+import CustomInput from '../../components/commonComponent/core/CustomInput'
+import { useSupabase } from '../../../customHooks/use-supabase'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { userState } from '../../atoms'
+import { useRecoilState } from 'recoil'
 
 const AddKeyWordSection: React.FC = () => {
   const [keyword, setKeyword] = useState<string>('')
   const [rssLink, setRssLink] = useState<string>('')
   const [valid, setIsValid] = useState<boolean>(true)
+  const [isPublic, setIsPublic] = useState<boolean>(false)
   const [included, setIncluded] = useState<boolean>(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const { createKeyword } = useSupabase()
   const [emptyFields, setEmptyFields] = useState<{
     emptyKeyword: boolean
     emptyRsl: boolean
@@ -19,6 +26,7 @@ const AddKeyWordSection: React.FC = () => {
   })
   const { setLocalJobs, setLocalKeywords } = useOpJobs()
   const { getBgKeywords } = useBgJobs()
+  const [user, setUser] = useRecoilState(userState)
 
   const submitHandler = async (keyword: string, rssLink: string) => {
     const regex = new RegExp('^https://www.upwork.com/ab/feed/jobs/rss?')
@@ -33,10 +41,6 @@ const AddKeyWordSection: React.FC = () => {
       setEmptyFields((prevState) => ({ ...prevState, emptyRsl: !prevState.emptyKeyword }))
     else if (!regex.test(rssLink)) {
       setIsValid(false)
-    } else if (keywords && keywords.map((item: keywordProps) => item.keyword).includes(keyword)) {
-      setIncluded(true)
-    } else if (keywords && keywords.map((item: keywordProps) => item.rssLink).includes(rssLink)) {
-      setIncluded(true)
     } else {
       setKeyword('')
       setRssLink('')
@@ -44,7 +48,11 @@ const AddKeyWordSection: React.FC = () => {
       setIsValid(true)
       setEmptyFields({ emptyKeyword: false, emptyRsl: false })
 
-      await setLocalKeywords(keyword, rssLink)
+      setLocalKeywords({ keyword, rssLink, user_id: user?.user?.id, isPublic }).then((res: any) => {
+        if (res) {
+          toast('Keyword Saved!')
+        }
+      })
       await setLocalJobs(keyword, rssLink)
     }
   }
@@ -95,6 +103,17 @@ const AddKeyWordSection: React.FC = () => {
             onBlur={() => clearState()}
           />
         </div>
+        <div>
+          <input
+            type="checkbox"
+            name="isPublic"
+            id="isPublic"
+            onChange={() => setIsPublic((prev) => !prev)}
+          />
+          <label htmlFor="isPublic" className="text-lg px-4 py-2 cursor-pointer">
+            Want to make it Public?
+          </label>
+        </div>
         {(emptyFields?.emptyRsl || emptyFields?.emptyKeyword) && (
           <div className="text-red-600 text-md text-center">Please fill all the fields</div>
         )}
@@ -111,6 +130,18 @@ const AddKeyWordSection: React.FC = () => {
           Add New Keyword
         </button>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   )
 }

@@ -8,7 +8,11 @@ type IconProps = {
 type keywordProps = {
   rssLink?: string
   keyword: string
+  id?: string
   jobs?: jobsProps[]
+  user_id?: string
+  isPublic?: boolean
+  status?: boolean
 }
 export interface jobsProps {
   budget: string | null
@@ -20,18 +24,23 @@ export interface jobsProps {
   uid?: string
   link: string
   guid?: string
+  isNew?: boolean
   notification_triggered: boolean
 }
 
 export interface proposalsProps {
+  user_id?: string
   profile: string
   proposal: string
   name: string
+  id?: string
   experience: string
   skills: string
   portfolio?: string
   client?: string
-  prebuilt?: string
+  inbuilt_proposal?: string
+  isPublic?: boolean
+  status?: boolean
 }
 
 export interface QueryProps extends proposalsProps {
@@ -66,4 +75,6 @@ export interface configProps {
   prompt_list: prompt[]
   upwork_msg_url: string
   upwork_msg_ans_macro: string
+  SUPABASE_KEY: string
+  SUPABASE_URL: string
 }

@@ -1,14 +1,17 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { proposalIndex, proposals } from '../../atoms'
-import { BinIcon, PenIcon } from '../../../util/Icons'
-import { proposalsProps } from '../../../util/types'
-import { useContent } from '../../../customHooks/use-content'
-import Modal from '../commonComponent/Modal'
+import { proposalIndex, proposals } from '../atoms'
+import { BinIcon, PenIcon } from '../../util/Icons'
+import { proposalsProps } from '../../util/types'
+import { useContent } from '../../customHooks/use-content'
 import CreatedProfiles from './profile/CreatedProfiles'
 import CreateProfile from './profile/CreateProfile'
+import MainLayout from '../layouts/main-layout'
+import { withAuth } from '../components/HOC/withAuth'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-export default function ProfileSection() {
+function ProfileSection() {
   const [values, setValues] = useState<proposalsProps>({
     profile: '',
     proposal: '',
@@ -18,6 +21,7 @@ export default function ProfileSection() {
     portfolio: '',
     client: '',
   })
+  const notify = () => toast('Profile Saved!')
   const [emptyFields, setEmptyFields] = useState({
     profile: false,
     proposal: false,
@@ -61,7 +65,7 @@ export default function ProfileSection() {
         name: '',
         experience: '',
         portfolio: '',
-        prebuilt: '',
+        inbuilt_proposal: '',
       })
       document.querySelectorAll('input').forEach((ele: any) => {
         ele.value = ''
@@ -69,6 +73,7 @@ export default function ProfileSection() {
 
       const res: any = await setProposal([values], editFlag.name)
       if (res) {
+        toast('Profile Saved!')
         setEditFlag({ name: '', status: false })
 
         getProposals().then((data: any) => {
@@ -96,26 +101,42 @@ export default function ProfileSection() {
   }, [])
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="container flex">
-        <CreateProfile
-          values={values}
-          clearState={clearState}
-          submitHandler={submitHandler}
-          editFlag={editFlag}
-          emptyFields={emptyFields}
-          setValues={setValues}
-          expError={expError}
-        />
-        <CreatedProfiles
-          allProposals={allProposals}
-          setEditFlag={setEditFlag}
-          setIndex={setIndex}
-          setToggleModal={setToggleModal}
-          setValues={setValues}
-          toggleModal={toggleModal}
+    <MainLayout>
+      <div className="flex items-center justify-center">
+        <div className="container flex">
+          <CreateProfile
+            values={values}
+            clearState={clearState}
+            submitHandler={submitHandler}
+            editFlag={editFlag}
+            emptyFields={emptyFields}
+            setValues={setValues}
+            expError={expError}
+          />
+          <CreatedProfiles
+            allProposals={allProposals}
+            setEditFlag={setEditFlag}
+            setIndex={setIndex}
+            setToggleModal={setToggleModal}
+            setValues={setValues}
+            toggleModal={toggleModal}
+          />
+        </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
         />
       </div>
-    </div>
+    </MainLayout>
   )
 }
+
+export default withAuth(ProfileSection)

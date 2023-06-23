@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom/client'
 import { config } from '../../util/config'
 import ClientMessage from '../components/ClientMessage'
 import { toggleSlider } from '../../util'
-import Slider from '../components/Slider'
+import Slider from '../components/core/Slider'
 
 let root = '' as any
 

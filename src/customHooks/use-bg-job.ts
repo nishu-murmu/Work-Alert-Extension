@@ -1,27 +1,32 @@
 import { getAllJobsData } from '../util'
 import { keywordProps } from '../util/types'
+import { useSupabase } from './use-supabase'
 
 const useBgJobs = () => {
+  const { getAllKeywords } = useSupabase()
   const getBgLocalJobs = async () => {
     const result = await chrome.storage.local.get('jobsByKeyword')
     return result.jobsByKeyword
   }
 
-  const getBgKeywords = async (): Promise<keywordProps[]> => {
-    const result = await chrome.storage.local.get('keywords')
-    return result.keywords
+  const getBgKeywords = async () => {
+    return new Promise((resolve) => {
+      getAllKeywords().then((res) => {
+        console.log({ res }, 'from bg')
+        resolve(res)
+      })
+    })
   }
 
   const setLocalJobs = (keyword: string, rssLink: string) => {
-    getAllJobsData({ keyword, rssLink }).then((data) => { })
+    getAllJobsData({ keyword, rssLink }).then((data) => {})
   }
 
   const setLocalJobsToStorage = (jobsByKeyword: any, allKeywordJobs: any) => {
     chrome.storage.local.set({ jobsByKeyword })
-
     chrome.runtime.sendMessage(
       { alert: 'Update State', jobsByKeyword, allKeywordJobs },
-      (response) => { },
+      (response) => {},
     )
   }
 
@@ -49,16 +54,14 @@ const useBgJobs = () => {
   }
 
   const deleteLocalKeywordsCount = (keyword: string) => {
-    getLocalKeywordsCount().then(
-      (keywordsCount: any) => {
-        if (keywordsCount) {
-          const filteredCounts = keywordsCount.filter((key: any) => key.keyword !== keyword)
-          chrome.storage.local.set({ keywordsCount: filteredCounts }, () => {
-            chrome.runtime.sendMessage({ key: 'deleteKeyCount' })
-          })
-        }
-      },
-    )
+    getLocalKeywordsCount().then((keywordsCount: any) => {
+      if (keywordsCount) {
+        const filteredCounts = keywordsCount.filter((key: any) => key.keyword !== keyword)
+        chrome.storage.local.set({ keywordsCount: filteredCounts }, () => {
+          chrome.runtime.sendMessage({ key: 'deleteKeyCount' })
+        })
+      }
+    })
   }
 
   const setLocalAnswer = (answer: string) => {
@@ -78,7 +81,7 @@ const useBgJobs = () => {
     setLocalKeywordsCount,
     deleteLocalKeywordsCount,
     setLocalAnswer,
-    getLocalAnswer
+    getLocalAnswer,
   }
 }
 

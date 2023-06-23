@@ -21,18 +21,20 @@
     "fmt": "prettier --write '**/*.{tsx,ts,json,css,scss,md}'"
   },
   "dependencies": {
-    "@firebase/analytics": "^0.10.0",
-    "@firebase/firestore": "^3.12.0",
+    "@headlessui/react": "^1.7.15",
+    "@heroicons/react": "^2.0.18",
+    "@supabase/supabase-js": "^2.26.0",
     "@types/chrome": "^0.0.231",
     "@types/he": "^1.2.0",
     "@types/tailwindcss": "^3.1.0",
     "axios": "^1.3.5",
     "fast-xml-parser": "^4.2.0",
-    "firebase": "^9.22.0",
     "he": "^1.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
+    "react-router-dom": "^6.13.0",
+    "react-toastify": "^9.1.3",
     "recoil": "^0.7.7",
     "unescape-js": "^1.1.4",
     "uuid": "^9.0.0"
