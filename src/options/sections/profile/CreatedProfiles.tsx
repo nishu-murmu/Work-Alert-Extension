@@ -8,12 +8,11 @@ import { useRecoilState } from 'recoil'
 import RestoreIcon from '@heroicons/react/24/outline/ArrowLeftCircleIcon'
 
 const CreatedProfiles: React.FC<{
+  index: string
   setIndex: any
   setValues: any
   setEditFlag: any
-  setToggleModal: any
-  toggleModal: boolean
-}> = ({ setIndex, setValues, setEditFlag, setToggleModal }) => {
+}> = ({ index, setIndex, setValues, setEditFlag }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [profileType, setProfileType] = useState<string>('created')
@@ -27,9 +26,17 @@ const CreatedProfiles: React.FC<{
     setIsOpen(false)
   }
 
-  async function confirm(index: string, isDeleted: boolean) {
+  async function confirm(isDeleted: boolean) {
     setLoading(true)
-    const proposal = allProposals.slice().reverse()[parseInt(index)]
+    const proposal = isDeleted
+      ? allProposals
+          .slice()
+          .reverse()
+          .filter((item: any) => !item.status)[parseInt(index)]
+      : allProposals
+          .slice()
+          .reverse()
+          .filter((item: any) => item.status)[parseInt(index)]
     const res: any = isDeleted ? await deleteProposal(proposal) : restoreProposal(proposal)
     if (res) {
       setAllProposals(res)
@@ -94,7 +101,6 @@ const CreatedProfiles: React.FC<{
                     )}
                     <button
                       onClick={() => {
-                        setToggleModal(true)
                         setIndex(index.toString())
                         openModal()
                       }}
@@ -107,10 +113,9 @@ const CreatedProfiles: React.FC<{
                       )}
                     </button>
                     <CustomModal
-                      confirm={() => confirm(index.toString(), !proposal.status)}
+                      confirm={() => confirm(!proposal.status)}
                       loading={loading}
                       closeModal={closeModal}
-                      openModal={openModal}
                       isOpen={isOpen}
                       modal_title={`${!proposal.status ? 'Delete Profile' : 'Restore Profile'}`}
                       modal_description={`Are you sure you want to ${

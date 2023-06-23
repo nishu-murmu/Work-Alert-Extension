@@ -10,7 +10,7 @@ import {
 } from '../util'
 import { config } from '../util/config'
 import { jobsProps } from '../util/types'
-const { setLocalJobsToStorage, setLocalKeywordsCount } = useBgJobs()
+const { setLocalJobsToStorage, setJobsCount } = useBgJobs()
 const { getSession, generateAns, closeAns } = useGPT()
 interface keywordsProps {
   keyword: string
@@ -102,7 +102,7 @@ chrome.alarms.onAlarm.addListener(async () => {
     const keywordObj = countJobsKeywords(allKeywordJobs)
     notify(keywordObj) // send Notification
     const result = separateCounts(allKeywordJobs)
-    setLocalKeywordsCount(result)
+    setJobsCount(result)
     setLocalJobsToStorage(newAllJobs, allKeywordJobs)
     updateBadge()
   }

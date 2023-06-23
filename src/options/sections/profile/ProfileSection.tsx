@@ -29,7 +29,6 @@ function ProfileSection() {
     skills: false,
   })
   const [expError, setExpError] = useState(false)
-  const [toggleModal, setToggleModal] = useState<boolean>(false)
   const [index, setIndex] = useRecoilState(proposalIndex)
   const { setProposal } = useContent()
   const [editFlag, setEditFlag] = useState({ status: false, name: '' })
@@ -102,11 +101,10 @@ function ProfileSection() {
             expError={expError}
           />
           <CreatedProfiles
+            index={index}
             setEditFlag={setEditFlag}
             setIndex={setIndex}
-            setToggleModal={setToggleModal}
             setValues={setValues}
-            toggleModal={toggleModal}
           />
         </div>
         <ToastContainer

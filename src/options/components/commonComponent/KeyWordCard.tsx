@@ -1,7 +1,7 @@
 import { BinIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { useRecoilState } from 'recoil'
-import { clickedKeyword, isJobs, keywords } from '../../atoms'
+import { clickedKeyword, isJobs, keywords, proposalIndex } from '../../atoms'
 import { useEffect, useRef, useState } from 'react'
 import { keywordProps } from '../../../util/types'
 import RestoreIcon from '@heroicons/react/24/outline/ArrowLeftCircleIcon'
@@ -14,6 +14,7 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
   const [isClick, setIsClicked] = useRecoilState(isJobs)
   const [isOpen, setIsOpen] = useState(false)
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
+  const [index, setIndex] = useRecoilState(proposalIndex)
   const divRef = useRef<HTMLDivElement>(null)
 
   const clickHandler = (key: any) => {
@@ -28,11 +29,17 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
   function closeModal() {
     setIsOpen(false)
   }
-  async function confirm(keyword: keywordProps, isDeleted?: boolean) {
+  async function confirm(isDeleted?: boolean) {
+    console.log({ isDeleted })
     setLoading(true)
-    const res: any = isDeleted ? await deleteJobs(keyword) : restoreJobs(keyword)
+    const keyword = isDeleted
+      ? keys.slice().filter((item: any) => item.status)[parseInt(index)]
+      : keys.slice().filter((item: any) => !item.status)[parseInt(index)]
+    console.log({ keyword })
+    const res: any = !isDeleted ? await deleteJobs(keyword) : restoreJobs(keyword)
     if (res) {
       setLoading(false)
+      setIsOpen(false)
     }
   }
 
@@ -48,6 +55,7 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
             return (
               <div
                 key={item.keyword}
+                id={index.toString()}
                 ref={divRef}
                 tabIndex={index}
                 onKeyDown={(e: any) => {
@@ -67,7 +75,12 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
                     : 'border-transparent'
                 } bg-custom-bg rounded-md p-4`}
               >
-                <button onClick={() => openModal()}>
+                <button
+                  onClick={() => {
+                    setIndex(index.toString())
+                    openModal()
+                  }}
+                >
                   {!item.status ? (
                     <BinIcon
                       fillColor="black"
@@ -78,6 +91,17 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
                     <RestoreIcon fill="white" stroke="black" className="h-6 w-6" />
                   )}
                 </button>
+                <CustomModal
+                  confirm={() => confirm(item.status)}
+                  loading={loading}
+                  id={item.keyword}
+                  closeModal={closeModal}
+                  isOpen={isOpen}
+                  modal_title={`${!item.status ? 'Delete Keyword' : 'Restore Keyword'}`}
+                  modal_description={`Are you sure you want to ${
+                    !item.status ? 'delete' : 'restore'
+                  } this Keyword?`}
+                />
                 <div
                   onClick={() =>
                     clickHandler({
@@ -103,17 +127,6 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
                       )}
                   </div>
                 </div>
-                <CustomModal
-                  confirm={() => confirm(item, item.status)}
-                  loading={loading}
-                  closeModal={closeModal}
-                  openModal={openModal}
-                  isOpen={isOpen}
-                  modal_title={`${!item.status ? 'Delete Keyword' : 'Restore Keyword'}`}
-                  modal_description={`Are you sure you want to ${
-                    !item.status ? 'delete' : 'restore'
-                  } this Keyword?`}
-                />
               </div>
             )
           })
