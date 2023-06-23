@@ -26,7 +26,7 @@ const useBgJobs = () => {
     return result.keywordsCount
   }
 
-  const setLocalKeywordsCount = (newKeywords: any) => {
+  const setJobsCount = (newKeywords: any) => {
     getLocalKeywordsCount().then((prevKeywords) => {
       prevKeywords = prevKeywords || []
       let value = [...prevKeywords, ...newKeywords].reduce((acc: any, curr: any) => {
@@ -68,7 +68,7 @@ const useBgJobs = () => {
     setLocalJobs,
     setLocalJobsToStorage,
     getLocalKeywordsCount,
-    setLocalKeywordsCount,
+    setJobsCount,
     deleteLocalKeywordsCount,
     setLocalAnswer,
     getLocalAnswer,

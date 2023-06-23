@@ -24,13 +24,13 @@ const AddKeyWordSection: React.FC = () => {
     emptyKeyword: false,
     emptyRsl: false,
   })
-  const { setLocalJobs, setLocalKeywords } = useOpJobs()
-  const { getKeywords } = useOpJobs()
+  const { setLocalJobs, setJobs } = useOpJobs()
+  const { getJobs } = useOpJobs()
   const [user, setUser] = useRecoilState(userState)
 
   const submitHandler = async (keyword: string, rssLink: string) => {
     const regex = new RegExp('^https://www.upwork.com/ab/feed/jobs/rss?')
-    const keywords = await getKeywords()
+    const keywords = await getJobs()
     if (!keyword && !rssLink && keyword.trim() === '') {
       setEmptyFields((prevState) => ({ ...prevState, emptyRsl: !prevState.emptyRsl }))
       setEmptyFields((prevState) => ({ ...prevState, emptyKeyword: !prevState.emptyKeyword }))
@@ -48,7 +48,7 @@ const AddKeyWordSection: React.FC = () => {
       setIsValid(true)
       setEmptyFields({ emptyKeyword: false, emptyRsl: false })
 
-      setLocalKeywords({ keyword, rssLink, user_id: user?.id, isPublic }).then((res: boolean) => {
+      setJobs({ keyword, rssLink, user_id: user?.id, isPublic }).then((res: boolean) => {
         if (res) {
           toast('Keyword Saved!')
         }

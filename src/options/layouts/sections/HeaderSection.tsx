@@ -84,7 +84,6 @@ const Header: React.FC = () => {
         confirm={confirm}
         loading={loading}
         closeModal={closeModal}
-        openModal={openModal}
         isOpen={isOpen}
         modal_title="Are you sure you want to Logout?"
       />

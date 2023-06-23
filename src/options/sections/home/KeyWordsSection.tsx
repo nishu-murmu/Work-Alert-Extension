@@ -8,33 +8,33 @@ import useOpJobs from '../../../customHooks/use-option-jobs'
 
 const KeyWordsSection: React.FC = () => {
   const { getLocalKeywordsCount } = useBgJobs()
-  const { getKeywords } = useOpJobs()
+  const { getJobs } = useOpJobs()
   const [keys, setKeywords] = useRecoilState(keywords)
   const [keywordType, setKeywordType] = useState<string>('created')
 
   const [keywordsCount, setKeywordsCount] = useRecoilState<any[]>(keywordCount)
 
-  useEffect(() => {
-    getLocalKeywordsCount().then((res: any) => {
-      setKeywordsCount(res)
-    })
+  // useEffect(() => {
+  //   getLocalKeywordsCount().then((res: any) => {
+  //     setKeywordsCount(res)
+  //   })
 
-    chrome.runtime.onMessage.addListener((req) => {
-      if (req.key === 'addKeyCount') {
-        getLocalKeywordsCount().then((res: any) => {
-          setKeywordsCount(res)
-        })
-      }
-      if (req.key === 'deleteKeyCount') {
-        getLocalKeywordsCount().then((res: any) => {
-          setKeywordsCount(res)
-        })
-      }
-    })
-  }, [])
+  //   chrome.runtime.onMessage.addListener((req) => {
+  //     if (req.key === 'addKeyCount') {
+  //       getLocalKeywordsCount().then((res: any) => {
+  //         setKeywordsCount(res)
+  //       })
+  //     }
+  //     if (req.key === 'deleteKeyCount') {
+  //       getLocalKeywordsCount().then((res: any) => {
+  //         setKeywordsCount(res)
+  //       })
+  //     }
+  //   })
+  // }, [])
 
   useEffect(() => {
-    getKeywords().then((res: any) => {
+    getJobs().then((res: any) => {
       console.log('check', res)
       res.filter((item: proposalsProps) => {
         if (keywordType === 'created') {
