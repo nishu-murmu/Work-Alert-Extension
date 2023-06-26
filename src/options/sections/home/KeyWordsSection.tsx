@@ -35,7 +35,6 @@ const KeyWordsSection: React.FC = () => {
 
   useEffect(() => {
     getJobs().then((res: any) => {
-      console.log('check', res)
       res.filter((item: proposalsProps) => {
         if (keywordType === 'created') {
           setKeywords(res.filter((item: any) => !item.status))
