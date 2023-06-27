@@ -138,13 +138,15 @@ export const useSupabase = () => {
     }
   }
 
-  async function getAllKeywords() {
-    try {
-      const { data } = await supabase.from('keywords').select('*')
-      return data
-    } catch (error) {
-      return error
-    }
+  async function getAllKeywords(): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await supabase.from('keywords').select('*')
+        resolve(data)
+      } catch (error) {
+        reject(error)
+      }
+    })
   }
 
   return {

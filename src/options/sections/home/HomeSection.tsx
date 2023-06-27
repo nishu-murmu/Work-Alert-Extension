@@ -13,7 +13,7 @@ const HomeSection: React.FC = () => {
   return (
     <MainLayout>
       <div className={`flex flex-col justify-center items-center  p-4 mx-auto`}>
-        <BackToTop />
+        {isClick && <BackToTop />}
         {!isClick && <AddKeyWordSection />}
 
         <div className="py-4 flex flex-col gap-y-4">

@@ -1,47 +1,27 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import KeyWordCards from '../../components/commonComponent/KeyWordCard'
-import useBgJobs from '../../../customHooks/use-bg-job'
 import { useRecoilState } from 'recoil'
-import { keywordCount, keywords, userState } from '../../atoms'
-import { proposalsProps } from '../../../util/types'
+import { keywordTypeAtom, keywordsAtom } from '../../atoms'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 
 const KeyWordsSection: React.FC = () => {
-  const { getLocalKeywordsCount } = useBgJobs()
   const { getJobs } = useOpJobs()
-  const [keys, setKeywords] = useRecoilState(keywords)
-  const [keywordType, setKeywordType] = useState<string>('created')
-
-  const [keywordsCount, setKeywordsCount] = useRecoilState<any[]>(keywordCount)
-
-  // useEffect(() => {
-  //   getLocalKeywordsCount().then((res: any) => {
-  //     setKeywordsCount(res)
-  //   })
-
-  //   chrome.runtime.onMessage.addListener((req) => {
-  //     if (req.key === 'addKeyCount') {
-  //       getLocalKeywordsCount().then((res: any) => {
-  //         setKeywordsCount(res)
-  //       })
-  //     }
-  //     if (req.key === 'deleteKeyCount') {
-  //       getLocalKeywordsCount().then((res: any) => {
-  //         setKeywordsCount(res)
-  //       })
-  //     }
-  //   })
-  // }, [])
+  const [keywords, setKeywords] = useRecoilState(keywordsAtom)
+  const [loading, setLoading] = useState(false)
+  const [keywordType, setKeywordType] = useRecoilState(keywordTypeAtom)
 
   useEffect(() => {
+    setLoading(true)
     getJobs().then((res: any) => {
-      res.filter((item: proposalsProps) => {
+      if (res.length > 0) {
         if (keywordType === 'created') {
-          setKeywords(res.filter((item: any) => !item.status))
-        } else {
-          setKeywords(res.filter((item: any) => item.status))
+          setKeywords(res?.filter((item: any) => !item.status))
         }
-      })
+        if (keywordType === 'deleted') {
+          setKeywords(res?.filter((item: any) => item.status))
+        }
+        setLoading(false)
+      }
     })
   }, [keywordType])
 
@@ -69,7 +49,7 @@ const KeyWordsSection: React.FC = () => {
         id="keywords"
         className="w-[90%] flex items-center mx-auto overflow-y-hidden justify-center"
       >
-        <KeyWordCards keywordsCount={keywordsCount} />
+        <KeyWordCards keywordsLoading={loading} />
       </div>
     </div>
   )

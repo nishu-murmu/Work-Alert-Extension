@@ -6,6 +6,7 @@ import { useContent } from '../../../customHooks/use-content'
 import { proposals } from '../../atoms'
 import { useRecoilState } from 'recoil'
 import RestoreIcon from '@heroicons/react/24/outline/ArrowLeftCircleIcon'
+import SkeletonLoader from '../../../content/components/Loaders/Skeleton'
 
 const CreatedProfiles: React.FC<{
   index: string
@@ -14,7 +15,10 @@ const CreatedProfiles: React.FC<{
   setEditFlag: any
 }> = ({ index, setIndex, setValues, setEditFlag }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState<{ modalLoading?: boolean; skeletonLoading?: boolean }>({
+    modalLoading: false,
+    skeletonLoading: false,
+  })
   const [profileType, setProfileType] = useState<string>('created')
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const { deleteProposal, getProposals, restoreProposal } = useContent()
@@ -27,7 +31,7 @@ const CreatedProfiles: React.FC<{
   }
 
   async function confirm(isDeleted: boolean) {
-    setLoading(true)
+    setLoading({ modalLoading: true })
     const proposal = isDeleted
       ? allProposals
           .slice()
@@ -40,17 +44,19 @@ const CreatedProfiles: React.FC<{
     const res: any = isDeleted ? await deleteProposal(proposal) : restoreProposal(proposal)
     if (res) {
       setAllProposals(res)
-      setLoading(false)
+      setLoading({ modalLoading: false })
     }
   }
 
   useEffect(() => {
+    setLoading({ skeletonLoading: true })
     getProposals().then((res: any) => {
       if (profileType === 'created') {
         setAllProposals(res.filter((item: any) => !item.status))
       } else {
         setAllProposals(res.filter((item: any) => item.status))
       }
+      setLoading({ skeletonLoading: false })
     })
   }, [profileType])
 
@@ -72,7 +78,14 @@ const CreatedProfiles: React.FC<{
         </button>
       </div>
       <div className="w-10/12 gap-y-2 flex flex-col">
-        {allProposals.length > 0 ? (
+        {loading.skeletonLoading ? (
+          <SkeletonLoader
+            className="flex flex-col gap-y-4"
+            gridCount={3}
+            boxLoaderHeight="64px"
+            boxLoaderWidth="500px"
+          />
+        ) : allProposals.length > 0 ? (
           <>
             {allProposals
               ?.slice()
@@ -114,7 +127,7 @@ const CreatedProfiles: React.FC<{
                     </button>
                     <CustomModal
                       confirm={() => confirm(!proposal.status)}
-                      loading={loading}
+                      loading={loading.modalLoading}
                       closeModal={closeModal}
                       isOpen={isOpen}
                       modal_title={`${!proposal.status ? 'Delete Profile' : 'Restore Profile'}`}

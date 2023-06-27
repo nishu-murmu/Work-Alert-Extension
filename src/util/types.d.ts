@@ -80,3 +80,11 @@ export interface configProps {
 }
 
 type profileType = 'created' | 'deleted'
+
+export interface SkeletonLoaderProps {
+  boxLoaderHeight?: string
+  boxLoaderWidth?: string
+  customClass?: string
+  gridCount?: number
+  className?: string
+}

@@ -36,9 +36,9 @@ export const isEmpty = atom({
   default: false as boolean,
 })
 
-export const keywords = atom({
+export const keywordsAtom = atom({
   key: 'keywords',
-  default: [],
+  default: [{ keyword: '' }] as keywordProps[],
 })
 
 export const keywordCount: any = atom({
@@ -59,4 +59,9 @@ export const proposalIndex = atom({
 export const userState = atom({
   key: 'userState',
   default: JSON.parse(localStorage.getItem('user') || '{}') as any,
+})
+
+export const keywordTypeAtom = atom({
+  key: 'keywordAtom',
+  default: 'created' as 'created' | 'deleted',
 })

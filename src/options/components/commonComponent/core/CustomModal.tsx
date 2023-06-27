@@ -7,7 +7,7 @@ const CustomModal: React.FC<{
   modal_title: string
   modal_description?: string
   isOpen: boolean
-  loading: boolean
+  loading?: boolean
   id?: string
   closeModal: () => void
   confirm: () => void

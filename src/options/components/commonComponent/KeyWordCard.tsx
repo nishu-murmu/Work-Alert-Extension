@@ -1,20 +1,21 @@
 import { BinIcon } from '../../../util/Icons'
 import useOpJobs from '../../../customHooks/use-option-jobs'
 import { useRecoilState } from 'recoil'
-import { clickedKeyword, isJobs, keywords, proposalIndex } from '../../atoms'
+import { clickedKeyword, isJobs, keywordsAtom, proposalIndex } from '../../atoms'
 import { useEffect, useRef, useState } from 'react'
 import { keywordProps } from '../../../util/types'
 import RestoreIcon from '@heroicons/react/24/outline/ArrowLeftCircleIcon'
 import CustomModal from './core/CustomModal'
+import SkeletonLoader from '../../../content/components/Loaders/Skeleton'
 
-const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
-  const { deleteJobs, restoreJobs } = useOpJobs()
-  const [keys, setKeywords] = useRecoilState(keywords)
-  const [loading, setLoading] = useState(false)
+const KeyWordCards: React.FC<{ keywordsLoading: boolean }> = ({ keywordsLoading }) => {
+  const { deleteJobs, restoreJobs, getJobs } = useOpJobs()
   const [isClick, setIsClicked] = useRecoilState(isJobs)
-  const [isOpen, setIsOpen] = useState(false)
+  const [keywords, setKeywords] = useRecoilState(keywordsAtom)
   const [clickKeyword, setClickKeyword] = useRecoilState(clickedKeyword)
   const [index, setIndex] = useRecoilState(proposalIndex)
+  const [loading, setLoading] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const divRef = useRef<HTMLDivElement>(null)
 
   const clickHandler = (key: any) => {
@@ -29,11 +30,12 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
   function closeModal() {
     setIsOpen(false)
   }
+
   async function confirm(isDeleted?: boolean) {
     setLoading(true)
     const keyword = isDeleted
-      ? keys.slice().filter((item: any) => item.status)[parseInt(index)]
-      : keys.slice().filter((item: any) => !item.status)[parseInt(index)]
+      ? keywords.slice().filter((item: any) => item.status)[parseInt(index)]
+      : keywords.slice().filter((item: any) => !item.status)[parseInt(index)]
     const res: any = !isDeleted ? await deleteJobs(keyword) : restoreJobs(keyword)
     if (res) {
       setLoading(false)
@@ -44,8 +46,15 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
   return (
     <div className="container py-2 mt-2 rounded-xl w-full space-y-4 flex-col">
       <div className="flex flex-wrap items-center justify-center gap-[1.8rem] overflow-y-auto">
-        {keys?.length ? (
-          keys.map((item: keywordProps, index: number) => {
+        {keywordsLoading ? (
+          <SkeletonLoader
+            className="flex gap-x-4"
+            gridCount={2}
+            boxLoaderHeight="82px"
+            boxLoaderWidth="500px"
+          />
+        ) : keywords?.length ? (
+          keywords.map((item: keywordProps, index: number) => {
             return (
               <div
                 key={item.keyword}
@@ -62,12 +71,7 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
                     })
                   }
                 }}
-                className={`flex max-w-[490px] w-full justify-between items-center gap-x-3 text-lg border cursor-pointer ${
-                  keywordsCount &&
-                  keywordsCount.find((key: any) => key.keyword === item.keyword)?.count
-                    ? 'border-green-400'
-                    : 'border-transparent'
-                } bg-custom-bg rounded-md p-4`}
+                className={`flex max-w-[490px] w-full justify-between items-center gap-x-3 text-lg border cursor-pointer bg-custom-bg rounded-md p-4`}
               >
                 <button
                   onClick={() => {
@@ -112,13 +116,13 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
                     <span className="text-lg line-clamp-1 hover:underline">{item.keyword}</span>
                   </div>
                   <div className="flex items-center justify-center">
-                    {keywordsCount &&
+                    {/* {keywordsCount &&
                       keywordsCount.find((key: any) => key.keyword === item.keyword)?.count && (
                         <span className="text-lg text-black py-1 px-3 bg-green-500 rounded-full">
                           {keywordsCount &&
                             keywordsCount.find((key: any) => key.keyword === item.keyword)?.count}
                         </span>
-                      )}
+                      )} */}
                   </div>
                 </div>
               </div>

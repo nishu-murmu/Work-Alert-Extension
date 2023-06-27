@@ -1,15 +1,14 @@
 import { useRecoilState } from 'recoil'
 import { getAllJobsData } from '../util'
-import { allJobsState, keywords, proposals, selectedFilter, userState } from '../options/atoms'
-import { useEffect } from 'react'
-import { keywordProps } from '../util/types'
+import { allJobsState, keywordsAtom, proposals, selectedFilter, userState } from '../options/atoms'
+import { keywordProps, proposalsProps } from '../util/types'
 import useBgJobs from './use-bg-job'
 import { useSupabase } from './use-supabase'
 
 const useOpJobs = () => {
   const [allJobs, setAllJobs] = useRecoilState(allJobsState)
   const [filter, setSelectedFilter] = useRecoilState(selectedFilter)
-  const [keys, setKeywords] = useRecoilState(keywords)
+  const [keys, setKeywords] = useRecoilState(keywordsAtom)
   const [user, setUser] = useRecoilState(userState)
   const [allProposals, setAllProposals] = useRecoilState(proposals)
   const { getBgLocalJobs, deleteLocalKeywordsCount } = useBgJobs()
@@ -77,10 +76,10 @@ const useOpJobs = () => {
     })
   }
 
-  const getJobs = async () => {
+  const getJobs = async (): Promise<proposalsProps[]> => {
     return new Promise((resolve) => {
-      getAllKeywords().then((res: any) => {
-        const result = res.filter((keywords: keywordProps) => {
+      getAllKeywords().then((res: proposalsProps[]) => {
+        const result = res.filter((keywords: keywordProps | any) => {
           if (keywords.user_id === user?.id) {
             return keywords
           }
@@ -102,13 +101,16 @@ const useOpJobs = () => {
     isPublic: boolean
   }): Promise<boolean> => {
     return new Promise((resolve) => {
-      createKeyword({ keyword, rssLink, user_id, isPublic, status: false }).then((res: any) => {
-        if (res?.[0]?.id) {
-          getJobs().then((keywords: any) => {
-            setKeywords(keywords.filter((item: any) => !item.status))
-            resolve(true)
-          })
-        }
+      getAllJobsData({ keyword, rssLink }).then((res) => {
+        console.log({ res })
+        createKeyword({ keyword, rssLink, user_id, isPublic, status: false }).then((res: any) => {
+          if (res?.[0]?.id) {
+            getJobs().then((keywords: any) => {
+              setKeywords(keywords.filter((item: any) => !item.status))
+              resolve(true)
+            })
+          }
+        })
       })
     })
   }
