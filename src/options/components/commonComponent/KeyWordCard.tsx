@@ -30,22 +30,16 @@ const KeyWordCards: React.FC<{ keywordsCount: any }> = ({ keywordsCount }) => {
     setIsOpen(false)
   }
   async function confirm(isDeleted?: boolean) {
-    console.log({ isDeleted })
     setLoading(true)
     const keyword = isDeleted
       ? keys.slice().filter((item: any) => item.status)[parseInt(index)]
       : keys.slice().filter((item: any) => !item.status)[parseInt(index)]
-    console.log({ keyword })
     const res: any = !isDeleted ? await deleteJobs(keyword) : restoreJobs(keyword)
     if (res) {
       setLoading(false)
       setIsOpen(false)
     }
   }
-
-  useEffect(() => {
-    console.log({ keys })
-  }, [keys])
 
   return (
     <div className="container py-2 mt-2 rounded-xl w-full space-y-4 flex-col">

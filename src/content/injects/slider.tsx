@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client'
 import Slider from '../components/core/Slider'
 import Proposal from '../components/Proposal'
 import { toggleSlider } from '../../util'
+import { RecoilRoot } from 'recoil'
 let root = '' as any
 
 let linkElement = document.createElement('link')
@@ -24,8 +25,10 @@ setTimeout(() => {
   }
 
   root.render(
-    <Slider title="Write Proposal" sliderId="proposal-slider">
-      <Proposal />
-    </Slider>,
+    <RecoilRoot>
+      <Slider title="Write Proposal" sliderId="proposal-slider">
+        <Proposal />
+      </Slider>
+    </RecoilRoot>,
   )
 }, 100)
