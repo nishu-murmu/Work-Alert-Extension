@@ -144,6 +144,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
       generateAns(request.query)
     }
+    if (request.from === 'Proposal.tsx') {
+      chrome.storage.local.get(['user']).then((res) => {
+        sendResponse(res?.user?.user)
+      })
+    }
   })
   return true
 })

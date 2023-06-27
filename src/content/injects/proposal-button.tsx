@@ -1,21 +1,23 @@
 import ReactDOM from 'react-dom/client'
 import ProprosalButton from '../components/proposal/ProposalButton'
 
-window.onload = () => {
-  // Attaching ProposalButton component to shadowDOM
-  let div = document.createElement('div') as HTMLElement
-  div.id = 'injected-button'
-  div.style.position = 'relative'
-  const shadow = div.attachShadow({ mode: 'open' })
-
+const observer = new MutationObserver(() => {
   const coverLetterDiv = document.querySelector('.cover-letter-area')
-  coverLetterDiv?.prepend(div)
-  const renderElem = document.createElement('div')
-  renderElem.id = 'render-button'
-  renderElem.style.right = '2px'
-  renderElem.style.bottom = '-20px'
-  renderElem.style.position = 'absolute'
+  if (coverLetterDiv) {
+    console.log('mutation called')
+    let div = document.createElement('div') as HTMLElement
+    div.style.position = 'relative'
+    div.id = 'proposal-button'
+    div.style.right = '30px'
+    div.style.top = '0px'
+    div.style.position = 'absolute'
+    const coverLetterDiv = document.querySelector('.cover-letter-area')
+    coverLetterDiv?.prepend(div)
 
-  ReactDOM.createRoot(renderElem).render(<ProprosalButton />)
-  shadow.appendChild(renderElem)
-}
+    const shadow = div.attachShadow({ mode: 'open' })
+    ReactDOM.createRoot(shadow).render(<ProprosalButton />)
+    observer.disconnect()
+  }
+})
+
+observer.observe(document.body, { childList: true, attributes: true, subtree: true })

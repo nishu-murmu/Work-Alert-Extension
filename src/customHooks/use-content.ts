@@ -18,7 +18,7 @@ export const useContent = () => {
         })
         resolve(result)
       })
-    })
+    }) as Promise<any>
   }
 
   const setProposal = async (proposal: any, name: any) => {
