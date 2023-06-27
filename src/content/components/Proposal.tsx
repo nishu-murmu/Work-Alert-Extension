@@ -7,9 +7,11 @@ import { getGptAnsFromBG } from '../../util'
 import { proposalQuery } from '../../util/config'
 import ProposalForm from './proposal/ProposalForm'
 import ProposalFooter from './proposal/ProposalFooter'
+import { useSupabase } from '../../customHooks/use-supabase'
 
 const Proposal: React.FC = () => {
   const { getToken, deleteToken } = useGPT()
+  const { getAllProfiles } = useSupabase()
   const [selectedProfile, setSelectedProfile] = useState<string>('')
   const [inbuilt, setIsInbuilt] = useState<boolean>(false)
   const [isConnected, setIsConnected] = useState<boolean>(false)
@@ -31,8 +33,6 @@ const Proposal: React.FC = () => {
   })
   const [proposals, setProposals] = useState<proposalsProps[]>([])
   const [refresh, setRefresh] = useState(false)
-  const { getProposals } = useContent()
-  const [toggleSlide, setToggleSlide] = useState<boolean>(true)
 
   const callSession = () => {
     chrome.runtime.sendMessage({ type: 'session_call' }, (res: any) => {
@@ -101,8 +101,15 @@ const Proposal: React.FC = () => {
     const label: any = document.querySelector('.up-truncation-label')
     document.querySelector('.up-truncation-label') && label.click()
 
-    getProposals().then((res: any) => {
-      setProposals(res)
+    chrome.runtime.sendMessage({ from: 'Proposal.tsx' }, (response) => {
+      getAllProfiles().then((res: any) => {
+        const result = res.filter((profile: proposalsProps) => {
+          if (profile.user_id === response?.id) {
+            return profile
+          }
+        })
+        setProposals(result)
+      })
     })
     getToken().then((res: any) => {
       if (!res?.gpt_access_token) {
